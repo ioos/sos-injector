@@ -330,7 +330,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		field.appendChild(quantity);
 
 		Element uom = doc.createElement("swe:uom");
-		if(station.getProcedureId().length() > 30){
+		if(phenomenon.getUnits().length() > 30){
 			String truncatedUnits = phenomenon.getUnits().substring(0, 30);
 			uom.setAttribute("code", truncatedUnits);
 		}
