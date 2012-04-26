@@ -153,8 +153,8 @@ public class StationObservationsUpdater {
 					+ phenomenon.getName());
 	    	return false;
 	    }
-	    if(observationCollection.getObservationDates().size() > 0
-				&& observationCollection.getObservationValues().size() > 0){
+	    if(observationCollection.getObservationDates().size() == 0
+				&& observationCollection.getObservationValues().size() == 0){
 			logger.info("No values from source "
 					+ " for station: "
 					+ station.getProcedureId() + " and phenomenon: "
