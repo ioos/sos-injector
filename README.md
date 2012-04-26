@@ -1,9 +1,10 @@
-SosInjector
+SOS Observation Injector
 ===========
 
-The SOS Injector is used to enter sensor observations into a SOS. To use the code 
-one must create an instance of the StationUpdater with the URL of your SOS. Then 
-call the method ‘update’ on this instance passing in Station objects. 
+The SOS Observation Injector is used to enter sensor observations into a SOS. 
+To use the code one must create an instance of the StationUpdater with the URL 
+of your SOS. Then call the method ‘update’ on this instance passing in Station 
+objects. 
 
 The Station class represents a location that has one or more sensors. In this 
 class one has to provide: description of the station, latitude/longitude, 
