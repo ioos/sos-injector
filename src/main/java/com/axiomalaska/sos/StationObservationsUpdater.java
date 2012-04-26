@@ -87,12 +87,12 @@ public class StationObservationsUpdater {
 			throws Exception {
 		Calendar startDate = getLatestObservationDate(station, phenomenon);
 		Calendar endDate = Calendar.getInstance();
-		ObservationCollection valuesCollection = station.getObservationCollection(
+		ObservationCollection observationCollection = station.getObservationCollection(
 				phenomenon, startDate, endDate);
-		if (valuesCollection != null) {
+		if (isObservationCollectionValid(observationCollection, station, phenomenon)) {
 			try {
 				InsertObservationBuilder insertObservationBuilder = new InsertObservationBuilder(
-						station, valuesCollection);
+						station, observationCollection);
 
 				String insertXml = insertObservationBuilder.build();
 
@@ -100,7 +100,7 @@ public class StationObservationsUpdater {
 
 				if (response.contains("Exception")) {
 					logger.error("Inputed "
-							+ valuesCollection.getObservationDates().size()
+							+ observationCollection.getObservationDates().size()
 							+ " observations from station: "
 							+ station.getProcedureId() + " and phenomenon: "
 							+ phenomenon.getName() + " from: " + "startDate: "
@@ -108,7 +108,7 @@ public class StationObservationsUpdater {
 							+ formatDate(endDate) + " response: \n" + response);
 				} else {
 					logger.info("Inputed "
-							+ valuesCollection.getObservationDates().size()
+							+ observationCollection.getObservationDates().size()
 							+ " observations from station: "
 							+ station.getProcedureId() + " and phenomenon: "
 							+ phenomenon.getName() + " from: " + "startDate: "
@@ -117,7 +117,7 @@ public class StationObservationsUpdater {
 				}
 			} catch (Exception e) {
 				logger.error("Inputed "
-						+ valuesCollection.getObservationDates().size()
+						+ observationCollection.getObservationDates().size()
 						+ " observations from station: "
 						+ station.getProcedureId() + " and phenomenon: "
 						+ phenomenon.getName() + " from: " + "startDate: "
@@ -125,18 +125,46 @@ public class StationObservationsUpdater {
 						+ formatDate(endDate) + " message: \n" + e.getMessage());
 			}
 		}
-		else{
-			logger.info("No values from source "
-					+ " for station: "
-					+ station.getProcedureId() + " and phenomenon: "
-					+ phenomenon.getName());
-		}
 	}
 	
 	// -------------------------------------------------------------------------
 	// Private Members
 	// -------------------------------------------------------------------------
 
+	/**
+	 * A method to validate the ObservationCollection object. 
+	 * 
+	 * @return [True] if the ObservationCollection object is valid. [False] if the
+	 * ObservationCollection is not valid
+	 */
+	private boolean isObservationCollectionValid(ObservationCollection observationCollection, 
+			Station station, Phenomenon phenomenon){
+		if (observationCollection == null){
+			logger.info("No values from source "
+					+ " for station: "
+					+ station.getProcedureId() + " and phenomenon: "
+					+ phenomenon.getName());
+			return false;
+		}
+	    if (observationCollection.getObservationDates().size() != observationCollection.getObservationValues().size()){
+			logger.info("The observationCollection's size of the dates list is not equal to the values list "
+					+ " for station: "
+					+ station.getProcedureId() + " and phenomenon: "
+					+ phenomenon.getName());
+	    	return false;
+	    }
+	    if(observationCollection.getObservationDates().size() > 0
+				&& observationCollection.getObservationValues().size() > 0){
+			logger.info("No values from source "
+					+ " for station: "
+					+ station.getProcedureId() + " and phenomenon: "
+					+ phenomenon.getName());
+			return false;
+		}
+		
+		return true;
+	}
+	
 	/**
 	 * Convert the date into a readable string. 
 	 */
