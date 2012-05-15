@@ -10,9 +10,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.Phenomenon;
 import com.axiomalaska.sos.data.Station;
 import com.axiomalaska.sos.data.ObservationCollection;
+import com.axiomalaska.sos.tools.IdCreator;
 
 /**
  * Builds a SOS InsertObservation XML String with the ObservationCollection and station
@@ -27,14 +29,17 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	
 	private Station station;
 	private ObservationCollection values;
+	private IdCreator idCreator;
 	
 	// -------------------------------------------------------------------------
 	// Constructor
 	// -------------------------------------------------------------------------
 	
-	public InsertObservationBuilder(Station station, ObservationCollection values){
+	public InsertObservationBuilder(Station station, ObservationCollection values, 
+			IdCreator idCreator){
 		this.station = station;
 		this.values = values;
+		this.idCreator = idCreator;
 	}
 	
 	// -------------------------------------------------------------------------
@@ -54,6 +59,13 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 * 			</gml:TimePeriod>
 	 * 		</om:samplingTime>
 	 * 		<om:procedure xlink:href="urn:ogc:object:feature:Sensor:3234"/>
+	 *      <om:observedProperty>
+   	 *			<swe:CompositePhenomenon gml:id="cpid0" dimension="1">
+     *				<gml:name>resultComponents</gml:name>
+     *				<swe:component xlink:href="http://www.opengis.net/def/uom/ISO-8601/0/Gregorian" />
+     *				<swe:component xlink:href="urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature" />
+     * 			</swe:CompositePhenomenon>
+  	 *		</om:observedProperty>
 	 * 		<om:featureOfInterest>
 	 * 			<gml:FeatureCollection>
 	 * 				<gml:featureMember>
@@ -79,10 +91,10 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 * 				<swe:elementType name="Components">
 	 * 					<swe:DataRecord>
 	 * 						<swe:field name="feature">
-	 * 							<swe:Text definition="urn:ogc:dahttp://www.opengis.net/def/property/OGC/0/FeatureOfInterestta:feature"/>
+	 * 							<swe:Text definition="http://www.opengis.net/def/property/OGC/0/FeatureOfInterest"/>
 	 * 						</swe:field>
 	 * 						<swe:field name="Time">
-	 * 							<swe:Time definition="urn:ogc:data:time:iso8601"/>
+	 * 							<swe:Time definition="http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"/>
 	 * 						</swe:field>
 	 * 						<swe:field name="Air Temperature">
 	 * 							<swe:Quantity definition="urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature">
@@ -124,16 +136,10 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		insertObservation.setAttribute("version", "1.0.0");
 		doc.appendChild(insertObservation);
 		
-		String truncatedProcedureId = "";
-		if(station.getProcedureId().length() > 100){
-			truncatedProcedureId = station.getProcedureId().substring(0, 100);
-		}
-		else{
-			truncatedProcedureId = station.getProcedureId();
-		}
+		String procedureId = idCreator.createProcederId(station);
 		
 		Element assignedSensorId = doc.createElement("AssignedSensorId");
-		assignedSensorId.appendChild(doc.createTextNode(truncatedProcedureId));
+		assignedSensorId.appendChild(doc.createTextNode(procedureId));
 		insertObservation.appendChild(assignedSensorId);
 		
 		Element observation = doc.createElement("om:Observation");
@@ -141,10 +147,18 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		insertObservation.appendChild(observation);
 		
 		Element procedure = doc.createElement("om:procedure");
-		procedure.setAttribute("xlink:href", truncatedProcedureId);
+		procedure.setAttribute("xlink:href", procedureId);
 		observation.appendChild(procedure);
 		
-		observation.appendChild(createFeatureOfInterest(doc, station));
+		observation.appendChild(createObservedProperty(doc, values));
+		
+		if(station.isMoving()){
+			observation.appendChild(createMovingFeatureOfInterest(doc, values));
+		}
+		else{
+			observation.appendChild(createFeatureOfInterest(doc, station, 
+					values.getPhenomenon()));
+		}
 		
 		observation.appendChild(createResult(doc, station, values));
 		
@@ -161,6 +175,46 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	// -------------------------------------------------------------------------
 	
 	/**
+	 *      <om:observedProperty>
+   	 *			<swe:CompositePhenomenon gml:id="cpid0" dimension="1">
+     *				<gml:name>resultComponents</gml:name>
+     *				<swe:component xlink:href="http://www.opengis.net/def/uom/ISO-8601/0/Gregorian" />
+     *				<swe:component xlink:href="urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature" />
+     * 			</swe:CompositePhenomenon>
+  	 *		</om:observedProperty>
+  	 */
+	private Node createObservedProperty(Document doc, ObservationCollection valuesCollection){
+		Element observedProperty = doc.createElement("om:observedProperty");
+		
+		Element compositePhenomenon = doc.createElement("swe:CompositePhenomenon");
+		compositePhenomenon.setAttribute("gml:id", "cpid0");
+		compositePhenomenon.setAttribute("dimension", "1");
+		observedProperty.appendChild(compositePhenomenon);
+		
+		Element name = doc.createElement("gml:name");
+		name.appendChild(doc.createTextNode("resultComponents"));
+		compositePhenomenon.appendChild(name);
+		
+		Element timeComponent = doc.createElement("swe:component");
+		timeComponent.setAttribute("xlink:href", "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian");
+		compositePhenomenon.appendChild(timeComponent);
+		
+		Element dataComponent = doc.createElement("swe:component");
+		Phenomenon phenomenon = valuesCollection.getPhenomenon();
+		if(phenomenon.getId().length() > 100){
+			String truncatedTag = phenomenon.getId().substring(0, 100);
+			dataComponent.setAttribute("xlink:href", truncatedTag);
+		}
+		else{
+			dataComponent.setAttribute("xlink:href", phenomenon.getId());
+		}
+		
+		compositePhenomenon.appendChild(dataComponent);
+		
+		return observedProperty;
+	}
+	
+	/**
 	 * Create the Result node
 	 * example:
 	 * <om:result>
@@ -173,7 +227,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 * 		<swe:elementType name="Components">
 	 * 			<swe:DataRecord>
 	 * 				<swe:field name="feature">
-	 * 					<swe:Text definition="urn:ogc:dahttp://www.opengis.net/def/property/OGC/0/FeatureOfInterestta:feature"/>
+	 * 					<swe:Text definition="http://www.opengis.net/def/property/OGC/0/FeatureOfInterest"/>
 	 * 				</swe:field>
 	 * 				<swe:field name="Time">
 	 * 					<swe:Time definition="urn:ogc:data:time:iso8601"/>
@@ -223,7 +277,12 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		encoding.appendChild(textBlock);
 		
 		Element values = doc.createElement("swe:values");
-		values.appendChild(buildValues(doc, station, valuesCollection));
+		if(station.isMoving()){
+			values.appendChild(buildMovingValues(doc, station, valuesCollection));
+		}
+		else{
+			values.appendChild(buildValues(doc, station, valuesCollection));
+		}
 		dataArray.appendChild(values);
 		
 		return result;
@@ -242,6 +301,41 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 * example:
 	 * foi_3234,2012-04-17T20:02:05-0000,10.0;foi_3234,2012-04-17T16:02:05-0000,11.0;foi_3234,2012-04-17T12:02:05-0000,12.0;
 	 */
+	private Node buildMovingValues(Document doc, Station station,
+			ObservationCollection valuesCollection) {
+		
+		List<Calendar> dates = valuesCollection.getObservationDates();
+		List<Double> values = 
+				valuesCollection.getObservationValues();
+		List<Location> locations = valuesCollection.getObservationLocations();
+		
+		String text = "";
+		int size = getNumberOfValues(valuesCollection);
+		
+
+		
+		for(int index = 0; index < size; index++){
+			Calendar date = dates.get(index);
+			Double value = values.get(index);
+			Location location = locations.get(index);
+			
+			String featureOfInterestId = 
+					idCreator.createFeatureOfInterestId(station, 
+							valuesCollection.getPhenomenon(), location);
+			
+			text += featureOfInterestId + "," + 
+					formatCalendarIntoGMTTime(date) + "," + value + ";"; 
+		}
+		
+		return doc.createTextNode(text);
+	}
+	
+	/**
+	 * Builds the values list. Each set of values is separated by a semicolon. 
+	 * Each value in the set of values is separated by a comma. 
+	 * example:
+	 * foi_3234,2012-04-17T20:02:05-0000,10.0;foi_3234,2012-04-17T16:02:05-0000,11.0;foi_3234,2012-04-17T12:02:05-0000,12.0;
+	 */
 	private Node buildValues(Document doc, Station station,
 			ObservationCollection valuesCollection) {
 		
@@ -252,19 +346,15 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		String text = "";
 		int size = getNumberOfValues(valuesCollection);
 		
-		String truncatedFeatureOfInterestId = "";
-		if(station.getFeatureOfInterestId().length() > 100){
-			truncatedFeatureOfInterestId = station.getFeatureOfInterestId().substring(0, 100);
-		}
-		else{
-			truncatedFeatureOfInterestId = station.getFeatureOfInterestId();
-		}
+		String featureOfInterestId = 
+				idCreator.createFeatureOfInterestId(station, 
+						valuesCollection.getPhenomenon());
 		
 		for(int index = 0; index < size; index++){
 			Calendar date = dates.get(index);
 			Double value = values.get(index);
 			
-			text += truncatedFeatureOfInterestId + "," + 
+			text += featureOfInterestId + "," + 
 					formatCalendarIntoGMTTime(date) + "," + value + ";"; 
 		}
 		
@@ -277,7 +367,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 * <swe:elementType name="Components">
 	 * 	<swe:DataRecord>
 	 * 		<swe:field name="feature">
-	 * 			<swe:Text definition="urn:ogc:dahttp://www.opengis.net/def/property/OGC/0/FeatureOfInterestta:feature"/>
+	 * 			<swe:Text definition="http://www.opengis.net/def/property/OGC/0/FeatureOfInterest"/>
 	 * 		</swe:field>
 	 * 		<swe:field name="Time">
 	 * 			<swe:Time definition="urn:ogc:data:time:iso8601"/>
@@ -302,7 +392,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		dataRecord.appendChild(fieldFeature);
 		
 		Element text = doc.createElement("swe:Text");
-		text.setAttribute("definition", "urn:ogc:dahttp://www.opengis.net/def/property/OGC/0/FeatureOfInterestta:feature");
+		text.setAttribute("definition", "http://www.opengis.net/def/property/OGC/0/FeatureOfInterest");
 		fieldFeature.appendChild(text);
 		
 		Element fieldTime = doc.createElement("swe:field");
@@ -310,7 +400,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		dataRecord.appendChild(fieldTime);
 		
 		Element time = doc.createElement("swe:Time");
-		time.setAttribute("definition", "urn:ogc:data:time:iso8601");
+		time.setAttribute("definition", "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian");
 		fieldTime.appendChild(time);
 		
 		Phenomenon phenomenon = valuesCollection.getPhenomenon();
@@ -320,12 +410,12 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		dataRecord.appendChild(field);
 
 		Element quantity = doc.createElement("swe:Quantity");
-		if(station.getProcedureId().length() > 100){
-			String truncatedTag = phenomenon.getTag().substring(0, 100);
+		if(phenomenon.getId().length() > 100){
+			String truncatedTag = phenomenon.getId().substring(0, 100);
 			quantity.setAttribute("definition", truncatedTag);
 		}
 		else{
-			quantity.setAttribute("definition", phenomenon.getTag());
+			quantity.setAttribute("definition", phenomenon.getId());
 		}
 		field.appendChild(quantity);
 
@@ -342,6 +432,94 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		return elementType;
 	}
 
+	/**
+	 * 
+	<om:featureOfInterest>
+		<gml:FeatureCollection>
+			<gml:featureMember>
+				<sa:SamplingPoint gml:id="aoos:1111:MV_62.0_-151.0">
+					<gml:name>station at 1111 source Aoos</gml:name>
+					<sa:sampledFeature xlink:href=""/>
+					<sa:position>
+						<gml:Point>
+							<gml:pos srsName="urn:ogc:def:crs:EPSG::4326">-151.0 62.0</gml:pos>
+						</gml:Point>
+					</sa:position>
+				</sa:SamplingPoint>
+			</gml:featureMember>
+			<gml:featureMember>
+				<sa:SamplingPoint gml:id="aoos:1111:MV_62.2_-151.2">
+					<gml:name>station at 1111 source Aoos</gml:name>
+					<sa:sampledFeature xlink:href=""/>
+					<sa:position>
+						<gml:Point>
+							<gml:pos srsName="urn:ogc:def:crs:EPSG::4326">-151.2 62.2</gml:pos>
+						</gml:Point>
+					</sa:position>
+				</sa:SamplingPoint>
+			</gml:featureMember>
+			<gml:featureMember>
+				<sa:SamplingPoint gml:id="aoos:1111:MV_62.4_-151.4">
+					<gml:name>station at 1111 source Aoos</gml:name>
+					<sa:sampledFeature xlink:href=""/>
+					<sa:position>
+						<gml:Point>
+							<gml:pos srsName="urn:ogc:def:crs:EPSG::4326">-151.4 62.4</gml:pos>
+						</gml:Point>
+					</sa:position>
+				</sa:SamplingPoint>
+			</gml:featureMember>
+		</gml:FeatureCollection>
+	</om:featureOfInterest>
+	 */
+	private Node createMovingFeatureOfInterest(Document doc, ObservationCollection valuesCollection){
+		Phenomenon phenomenon = valuesCollection.getPhenomenon();
+		Station station = valuesCollection.getStation();
+		
+		Element featureOfInterest = doc.createElement("om:featureOfInterest");
+		Element featureCollection = doc.createElement("gml:FeatureCollection");
+		featureOfInterest.appendChild(featureCollection);
+		
+		for (Location location : valuesCollection.getObservationLocations()) {
+			Element featureMember = doc.createElement("gml:featureMember");
+			featureCollection.appendChild(featureMember);
+
+			Element samplingPoint = doc.createElement("sa:SamplingPoint");
+
+			String featureOfInterestId = idCreator.createFeatureOfInterestId(
+					station, phenomenon, location);
+
+			samplingPoint.setAttribute("gml:id", featureOfInterestId);
+			featureMember.appendChild(samplingPoint);
+
+			String featureOfInterestDescription = idCreator
+					.createFeatureOfInterestName(station, phenomenon);
+
+			Element gmlName = doc.createElement("gml:name");
+			gmlName.appendChild(doc
+					.createTextNode(featureOfInterestDescription));
+			samplingPoint.appendChild(gmlName);
+
+			Element sampledFeature = doc.createElement("sa:sampledFeature");
+			sampledFeature.setAttribute("xlink:href", "");
+			samplingPoint.appendChild(sampledFeature);
+
+			Element position = doc.createElement("sa:position");
+			samplingPoint.appendChild(position);
+
+			Element point = doc.createElement("gml:Point");
+			position.appendChild(point);
+
+			Element pos = doc.createElement("gml:pos");
+			pos.setAttribute("srsName", "urn:ogc:def:crs:EPSG::4326");
+			pos.appendChild(doc.createTextNode(location.getLongitude() + " "
+					+ location.getLatitude()));
+			point.appendChild(pos);
+		}
+		
+		return featureOfInterest;
+	}
+	
 	/**
 	 * Create the Feature of Interest Node
 	 * example
@@ -363,7 +541,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 * 
 	 * @param station - station to get information from
 	 */
-	private Node createFeatureOfInterest(Document doc, Station station) {
+	private Node createFeatureOfInterest(Document doc, Station station, 
+			Phenomenon phenomenon) {
 		Element featureOfInterest = doc.createElement("om:featureOfInterest");
 		Element featureCollection = doc.createElement("gml:FeatureCollection");
 		featureOfInterest.appendChild(featureCollection);
@@ -373,23 +552,17 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		
 		Element samplingPoint = doc.createElement("sa:SamplingPoint");
 
-		if(station.getFeatureOfInterestId().length() > 100){
-			String truncatedFeatureOfInterestId = station.getFeatureOfInterestId().substring(0, 100);
-			samplingPoint.setAttribute("gml:id", truncatedFeatureOfInterestId);
-		}
-		else{
-			samplingPoint.setAttribute("gml:id", station.getFeatureOfInterestId());
-		}
+		String featureOfInterestId = 
+				idCreator.createFeatureOfInterestId(station, phenomenon);
+
+		samplingPoint.setAttribute("gml:id", featureOfInterestId);
 		featureMember.appendChild(samplingPoint);
 		
+		String featureOfInterestDescription = 
+				idCreator.createFeatureOfInterestName(station, phenomenon);
+		
 		Element gmlName = doc.createElement("gml:name");
-		if(station.getFoiDescription().length() > 100){
-			String truncatedFoiDescription = station.getFoiDescription().substring(0, 100);
-			gmlName.appendChild(doc.createTextNode(truncatedFoiDescription));
-		}
-		else{
-			gmlName.appendChild(doc.createTextNode(station.getFoiDescription()));
-		}
+		gmlName.appendChild(doc.createTextNode(featureOfInterestDescription));
 		samplingPoint.appendChild(gmlName);
 		
 		Element sampledFeature = doc.createElement("sa:sampledFeature");
@@ -404,7 +577,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		
 		Element pos = doc.createElement("gml:pos");
 		pos.setAttribute("srsName", "urn:ogc:def:crs:EPSG::4326");
-		pos.appendChild(doc.createTextNode(station.getLongitude() + " " + station.getLatitude()));
+		pos.appendChild(doc.createTextNode(station.getLocation().getLongitude() 
+				+ " " + station.getLocation().getLatitude()));
 		point.appendChild(pos);
 		
 		return featureOfInterest;
@@ -419,9 +593,6 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 * 			<gml:endPosition>2012-04-17T20:02:05-0000</gml:endPosition>
 	 * 		</gml:TimePeriod>
 	 * </om:samplingTime>
-	 * @param doc
-	 * @param values
-	 * @return
 	 */
 	private Node getSamplingTime(Document doc, ObservationCollection values){
 		List<Calendar> dates = values.getObservationDates();

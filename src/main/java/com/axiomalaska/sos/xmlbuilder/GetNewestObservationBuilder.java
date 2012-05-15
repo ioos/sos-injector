@@ -9,6 +9,7 @@ import org.w3c.dom.Node;
 
 import com.axiomalaska.sos.data.Phenomenon;
 import com.axiomalaska.sos.data.Station;
+import com.axiomalaska.sos.tools.IdCreator;
 
 /**
  * Builds a SOS GetObservation XML String for the newest observation from a station
@@ -16,7 +17,7 @@ import com.axiomalaska.sos.data.Station;
  * 
  * @author Lance Finfrock
  */
-public class GetObservationLatestBuilder extends SosXmlBuilder {
+public class GetNewestObservationBuilder extends SosXmlBuilder {
 
 	// -------------------------------------------------------------------------
 	// Private Data
@@ -24,14 +25,17 @@ public class GetObservationLatestBuilder extends SosXmlBuilder {
 
 	private Station station;
 	private Phenomenon phenomenon;
-
+	private IdCreator idCreator;
+	
 	// -------------------------------------------------------------------------
 	// Constructor
 	// -------------------------------------------------------------------------
 
-	public GetObservationLatestBuilder(Station station, Phenomenon phenomenon) {
+	public GetNewestObservationBuilder(Station station, Phenomenon phenomenon, 
+			IdCreator idCreator) {
 		this.station = station;
 		this.phenomenon = phenomenon;
+		this.idCreator = idCreator;
 	}
 
 	// -------------------------------------------------------------------------
@@ -39,7 +43,8 @@ public class GetObservationLatestBuilder extends SosXmlBuilder {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Build the XML String
+	 * Build the GetObservation XML String to pull the newest observation
+	 * 
 	<GetObservation xmlns="http://www.opengis.net/sos/1.0"
 	  xmlns:ows="http://www.opengis.net/ows/1.1"
 	  xmlns:gml="http://www.opengis.net/gml"
@@ -62,6 +67,9 @@ public class GetObservationLatestBuilder extends SosXmlBuilder {
 	  </eventTime>
 	  <procedure>urn:ogc:object:feature:Sensor:13774</procedure>
 	  <observedProperty>urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature</observedProperty>
+	  <featureOfInterest>
+		  <ObjectID>foi_13774</ObjectID>
+	  </featureOfInterest>
 	  <responseFormat>text/xml;subtype="om/1.0.0"</responseFormat>   
 	</GetObservation>
 	 *
@@ -80,9 +88,14 @@ public class GetObservationLatestBuilder extends SosXmlBuilder {
 			
 			getObservation.appendChild(createEventTime(doc));
 			
-			getObservation.appendChild(createProcedure(doc));
+			getObservation.appendChild(createProcedure(doc, station));
 			
-			getObservation.appendChild(createObservedProperty(doc));
+			getObservation.appendChild(createObservedProperty(doc, phenomenon));
+			
+			if (!station.isMoving()) {
+				getObservation.appendChild(createFeatureOfInterest(doc,
+						station, phenomenon));
+			}
 			
 			getObservation.appendChild(createResponseFormat(doc));
 
@@ -97,6 +110,25 @@ public class GetObservationLatestBuilder extends SosXmlBuilder {
 	// Private Member
 	// -------------------------------------------------------------------------
 	
+	/**
+ 	  <featureOfInterest>
+		  <ObjectID>foi_13774</ObjectID>
+	  </featureOfInterest>
+	 */
+	private Node createFeatureOfInterest(Document doc, Station station, 
+			Phenomenon phenomenon) {
+		Element featureOfInterest = doc.createElement("featureOfInterest");
+		
+	    String featureOfInterestId = idCreator.createFeatureOfInterestId(
+				station, phenomenon);
+		
+		Element offering = doc.createElement("ObjectID");
+		offering.appendChild(doc.createTextNode(featureOfInterestId));
+		featureOfInterest.appendChild(offering);
+		
+		return featureOfInterest;
+	}
+
 	/**
 	 * 
 		<GetObservation xmlns="http://www.opengis.net/sos/1.0"
@@ -150,16 +182,10 @@ public class GetObservationLatestBuilder extends SosXmlBuilder {
 	/**
 	 * <observedProperty>urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature</observedProperty>
 	 */
-	private Node createObservedProperty(Document doc) {
+	private Node createObservedProperty(Document doc, Phenomenon phenomenon) {
 		Element observedProperty = doc.createElement("observedProperty");
 
-		if(station.getProcedureId().length() > 100){
-			String truncatedTag = phenomenon.getTag().substring(0, 100);
-			observedProperty.appendChild(doc.createTextNode(truncatedTag));
-		}
-		else{
-			observedProperty.appendChild(doc.createTextNode(phenomenon.getTag()));
-		}
+		observedProperty.appendChild(doc.createTextNode(phenomenon.getId()));
 		
 		return observedProperty;
 	}
@@ -167,16 +193,11 @@ public class GetObservationLatestBuilder extends SosXmlBuilder {
 	/**
 	 * <procedure>urn:ogc:object:feature:Sensor:13774</procedure>
 	 */
-	private Node createProcedure(Document doc) {
+	private Node createProcedure(Document doc, Station station) {
 		Element procedure = doc.createElement("procedure");
 		
-		if(station.getProcedureId().length() > 100){
-			String truncatedProcedureId = station.getProcedureId().substring(0, 100);
-			procedure.appendChild(doc.createTextNode(truncatedProcedureId));
-		}
-		else{
-			procedure.appendChild(doc.createTextNode(station.getProcedureId()));
-		}
+		String procedureId = idCreator.createProcederId(station);
+		procedure.appendChild(doc.createTextNode(procedureId));
 
 		return procedure;
 	}
@@ -205,7 +226,7 @@ public class GetObservationLatestBuilder extends SosXmlBuilder {
 		ogcTMEquals.appendChild(gmlTimeInstant);
 		
 		Element gmlTimePosition = doc.createElement("gml:timePosition");
-		gmlTimePosition.appendChild(doc.createTextNode("getFirst"));
+		gmlTimePosition.appendChild(doc.createTextNode("latest"));
 		gmlTimeInstant.appendChild(gmlTimePosition);
 		
 		return eventTime;

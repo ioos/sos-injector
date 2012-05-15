@@ -1,6 +1,9 @@
 package com.axiomalaska.sos.xmlbuilder;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -11,6 +14,7 @@ import org.w3c.dom.Node;
 
 import com.axiomalaska.sos.data.Phenomenon;
 import com.axiomalaska.sos.data.Station;
+import com.axiomalaska.sos.tools.IdCreator;
 
 /**
  * Builds a SOS RegisterSensor XML String used to add a station to the SOS server
@@ -24,13 +28,15 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
   // ---------------------------------------------------------------------------
 
 	private Station station;
+	private IdCreator idCreator;
 	
   // ---------------------------------------------------------------------------
   // Constructor
   // ---------------------------------------------------------------------------
 
-	public RegisterSensorBuilder(Station station){
+	public RegisterSensorBuilder(Station station, IdCreator idCreator){
 		this.station = station;
+		this.idCreator = idCreator;
 	}
 	
   // ---------------------------------------------------------------------------
@@ -69,10 +75,6 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 			sensorML.setAttribute("version", "1.0.1");
 			sensorDescription.appendChild(sensorML);
 			
-			Element description = doc.createElement("gml:description");
-			description.appendChild(doc.createTextNode(station.getDescription()));
-			sensorML.appendChild(description);
-			
 			Element member = doc.createElement("sml:member");
 			sensorML.appendChild(member);
 			
@@ -82,13 +84,15 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 			
 			system.appendChild(createIdentificationNode(doc, station));
 			
-			system.appendChild(createCapabilitiesNode(doc));
-			
 			system.appendChild(createPositionNode(doc, station));
 			
-			system.appendChild(createInputsNode(doc, station));
+			List<Phenomenon> phenomena = station.getPhenomena();
 			
-			system.appendChild(createOutputsNode(doc, station));
+			List<Phenomenon> filteredPhenomena = removeDuplicatePhenomena(phenomena);
+			
+			system.appendChild(createInputsNode(doc, filteredPhenomena));
+			
+			system.appendChild(createOutputsNode(doc, filteredPhenomena));
 			
 			registerSensor.appendChild(createObservationTemplate(doc));
 			
@@ -106,13 +110,33 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
   // ---------------------------------------------------------------------------
 
 	/**
+	 * A station can have more than one phenomenon with the same id, but the depth
+	 * of the phenomenon must be different. 
+	 * 
+	 * @param phenomena - the list of phenomena to remove duplicates from
+	 * @return a list of phenomena with the duplicate phenomena id removed. 
+	 */
+	private List<Phenomenon> removeDuplicatePhenomena(List<Phenomenon> phenomena) {
+		List<Phenomenon> filteredPhenomena = new ArrayList<Phenomenon>();
+		Set<String> set = new HashSet<String>();
+		for(Phenomenon phenomenon : phenomena){
+			if(!set.contains(phenomenon.getId())){
+				filteredPhenomena.add(phenomenon);
+				set.add(phenomenon.getId());
+			}
+		}
+		
+		return filteredPhenomena;
+	}
+
+	/**
 	 *  <ObservationTemplate>
           <om:Measurement>
             <om:samplingTime/>
             <om:procedure/>
             <om:observedProperty/>
             <om:featureOfInterest></om:featureOfInterest>
-            <om:result uom=""></om:result>
+            <om:result xsi:type="gml:MeasureType" uom="" >0.0</om:result>
           </om:Measurement>
         </ObservationTemplate>
 	 */
@@ -136,12 +160,30 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 		
 		Element result = doc.createElement("om:result");
 		result.setAttribute("uom", "");
+		result.setAttribute("xsi:type", "gml:MeasureType");
+		result.appendChild(doc.createTextNode("0.0"));
 		measurement.appendChild(result);
+		
 		return observationTemplate;
 	}
-
-	private Node createOutputsNode(Document doc, Station station) {
-		List<Phenomenon> phenomenons = station.getPhenomena();
+	/**
+	<sml:outputs>
+		<sml:OutputList>
+			<sml:output name="Air Temperature">
+				<swe:Quantity definition="urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature">
+					<gml:metaDataProperty>
+						<offering>
+							<id>network-All</id>
+							<name>Includes all the sensors in the network</name>
+						</offering>
+					</gml:metaDataProperty>
+					<swe:uom code="C"/>
+				</swe:Quantity>
+			</sml:output>
+		</sml:OutputList>
+	</sml:outputs>
+	 */
+	private Node createOutputsNode(Document doc, List<Phenomenon> phenomenons) {
 		Element outputs = doc.createElement("sml:outputs");
 		
 		Element outputList = doc.createElement("sml:OutputList");
@@ -154,13 +196,7 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 			
 			Element quantity = doc.createElement("swe:Quantity");
 			
-			if(station.getProcedureId().length() > 100){
-				String truncatedTag = phenomenon.getTag().substring(0, 100);
-				quantity.setAttribute("definition", truncatedTag);
-			}
-			else{
-				quantity.setAttribute("definition", phenomenon.getTag());
-			}
+			quantity.setAttribute("definition", phenomenon.getId());
 			
 			output.appendChild(quantity);
 			
@@ -192,9 +228,16 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 		return outputs;
 	}
 
-	private Node createInputsNode(Document doc, Station station) {
-		List<Phenomenon> phenomenons = station.getPhenomena();
-		
+	/**
+	<sml:inputs>
+		<sml:InputList>
+			<sml:input name="Air Temperature">
+			<	swe:ObservableProperty definition="urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature"/>
+			</sml:input>
+		</sml:InputList>
+	</sml:inputs>
+	 */
+	private Node createInputsNode(Document doc, List<Phenomenon> phenomenons) {
 		Element inputs = doc.createElement("sml:inputs");
 		
 		Element inputList = doc.createElement("sml:InputList");
@@ -206,13 +249,7 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 			inputList.appendChild(input);
 			
 			Element observableProperty = doc.createElement("swe:ObservableProperty");
-			if(station.getProcedureId().length() > 100){
-				String truncatedTag = phenomenon.getTag().substring(0, 100);
-				observableProperty.setAttribute("definition", truncatedTag);
-			}
-			else{
-				observableProperty.setAttribute("definition", phenomenon.getTag());
-			}
+			observableProperty.setAttribute("definition", phenomenon.getId());
 			
 			input.appendChild(observableProperty);
 		}
@@ -220,6 +257,34 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 		return inputs;
 	}
 
+	/**
+	<sml:position name="sensorPosition">
+		<swe:Position referenceFrame="urn:ogc:def:crs:EPSG::4326">
+			<swe:location>
+				<swe:Vector gml:id="STATION_LOCATION">
+					<swe:coordinate name="easting">
+						<swe:Quantity>
+							<swe:uom code="degree"/>
+							<swe:value>-143.0</swe:value>
+						</swe:Quantity>
+					</swe:coordinate>
+					<swe:coordinate name="northing">
+						<swe:Quantity>
+							<swe:uom code="degree"/>
+							<swe:value>63.0</swe:value>
+						</swe:Quantity>
+					</swe:coordinate>
+					<swe:coordinate name="altitude">
+						<swe:Quantity>
+							<swe:uom code="m"/>
+							<swe:value>0.0</swe:value>
+						</swe:Quantity>
+					</swe:coordinate>
+				</swe:Vector>
+			</swe:location>
+		</swe:Position>
+	</sml:position>
+	 */
 	private Node createPositionNode(Document doc, Station station) {
 		Element position = doc.createElement("sml:position");
 		position.setAttribute("name", "sensorPosition");
@@ -242,12 +307,12 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 		Element eastingQuantity = doc.createElement("swe:Quantity");
 		eastingCoordinate.appendChild(eastingQuantity);
 		
-		Element eastingUom = doc.createElement("swe:Quantity");
+		Element eastingUom = doc.createElement("swe:uom");
 		eastingUom.setAttribute("code", "degree");
 		eastingQuantity.appendChild(eastingUom);
 		
 		Element eastingValue = doc.createElement("swe:value");
-		eastingValue.appendChild(doc.createTextNode(station.getLongitude() + ""));
+		eastingValue.appendChild(doc.createTextNode(station.getLocation().getLongitude() + ""));
 		eastingQuantity.appendChild(eastingValue);
 		
 		Element northingCoordinate = doc.createElement("swe:coordinate");
@@ -257,12 +322,12 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 		Element northingQuantity = doc.createElement("swe:Quantity");
 		northingCoordinate.appendChild(northingQuantity);
 		
-		Element northingUom = doc.createElement("swe:Quantity");
+		Element northingUom = doc.createElement("swe:uom");
 		northingUom.setAttribute("code", "degree");
 		northingQuantity.appendChild(northingUom);
 		
 		Element northingValue = doc.createElement("swe:value");
-		northingValue.appendChild(doc.createTextNode(station.getLatitude() + ""));
+		northingValue.appendChild(doc.createTextNode(station.getLocation().getLatitude() + ""));
 		northingQuantity.appendChild(northingValue);
 		
 		Element altitudeCoordinate = doc.createElement("swe:coordinate");
@@ -272,7 +337,7 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 		Element altitudeQuantity = doc.createElement("swe:Quantity");
 		altitudeCoordinate.appendChild(altitudeQuantity);
 		
-		Element altitudeUom = doc.createElement("swe:Quantity");
+		Element altitudeUom = doc.createElement("swe:uom");
 		altitudeUom.setAttribute("code", "m");
 		altitudeQuantity.appendChild(altitudeUom);
 		
@@ -283,53 +348,17 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 		return position;
 	}
 
-	private Node createCapabilitiesNode(Document doc) {
-		Element capabilities = doc.createElement("sml:capabilities");
-		
-		Element simpleDataRecord = doc.createElement("swe:SimpleDataRecord");
-		capabilities.appendChild(simpleDataRecord);
-		
-		Element statusField = doc.createElement("swe:field");
-		statusField.setAttribute("name", "status");
-		simpleDataRecord.appendChild(statusField);
-		
-		Element statusBoolean = doc.createElement("swe:Boolean");
-		statusField.appendChild(statusBoolean);
-		
-		Element statusValue = doc.createElement("swe:value");
-		statusValue.appendChild(doc.createTextNode("true"));
-		statusBoolean.appendChild(statusValue);
-		
-		Element mobileField = doc.createElement("swe:field");
-		mobileField.setAttribute("name", "mobile");
-		simpleDataRecord.appendChild(mobileField);
-		
-		Element mobileBoolean = doc.createElement("swe:Boolean");
-		mobileField.appendChild(mobileBoolean);
-		
-		Element mobileValue = doc.createElement("swe:value");
-		mobileValue.appendChild(doc.createTextNode("false"));
-		mobileBoolean.appendChild(mobileValue);
-		
-		return capabilities;
-	}
-
 	/**
 	 * Produces the XML below
-        <sml:capabilities>
-          <swe:SimpleDataRecord>
-            <swe:field name="status">
-              <swe:Boolean>
-                <swe:value>true</swe:value>
-              </swe:Boolean>
-            </swe:field>
-            <swe:field name="mobile">
-              <swe:Boolean>
-                <swe:value>false</swe:value>
-              </swe:Boolean>
-            </swe:field>
-          </swe:SimpleDataRecord>
-        </sml:capabilities>
+          <sml:identification>
+               <sml:IdentifierList>
+                    <sml:identifier>
+                         <sml:Term definition="urn:ogc:def:identifier:OGC:uniqueID">
+                              <sml:value>urn:ogc:object:feature:Sensor:global_hawk_24</sml:value>
+                         </sml:Term>
+                    </sml:identifier>
+               </sml:IdentifierList>
+          </sml:identification>
 	 */
 	private Node createIdentificationNode(Document doc, Station station) {
 		Element identification = doc.createElement("sml:identification");
@@ -345,13 +374,8 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 		identifier.appendChild(term);
 		
 		Element value = doc.createElement("sml:value");
-		if(station.getProcedureId().length() > 100){
-			String truncatedProcedureId = station.getProcedureId().substring(0, 100);
-			value.appendChild(doc.createTextNode(truncatedProcedureId));
-		}
-		else{
-			value.appendChild(doc.createTextNode(station.getProcedureId()));
-		}
+		String procedureId = idCreator.createProcederId(station);
+		value.appendChild(doc.createTextNode(procedureId));
 		term.appendChild(value);
 		
 		return identification;
