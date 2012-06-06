@@ -1,8 +1,8 @@
 package com.axiomalaska.sos.tools;
 
 import com.axiomalaska.sos.data.Location;
-import com.axiomalaska.sos.data.Phenomenon;
-import com.axiomalaska.sos.data.PhenomenonDepth;
+import com.axiomalaska.sos.data.Sensor;
+import com.axiomalaska.sos.data.SensorDepth;
 import com.axiomalaska.sos.data.Station;
 
 public class IdCreator {
@@ -12,10 +12,10 @@ public class IdCreator {
 	}
 	
 	public String createFeatureOfInterestId(Station station, 
-			Phenomenon phenomenon, Location location){
+			Sensor sensor, Location location){
 		
 		String featureOfInterestId = station.getSourceName() + ":" + station.getId();
-		PhenomenonDepth depth = phenomenon.getDepth();
+		SensorDepth depth = sensor.getSensorDepth();
 		
 		featureOfInterestId += ":" + location.getLatitude() + "_" + location.getLongitude();
 		
@@ -28,10 +28,10 @@ public class IdCreator {
 	}
 	
 	public String createFeatureOfInterestName(Station station,
-			Phenomenon phenomenon) {
+			Sensor sensor) {
 		String featureOfInterestName = station.getFeatureOfInterestName();
 		
-		PhenomenonDepth depth = phenomenon.getDepth();
+		SensorDepth depth = sensor.getSensorDepth();
 		if(depth != null){
 			featureOfInterestName += " Depth " + depth.getValue() + " " + 
 					depth.getUnits();
@@ -41,10 +41,10 @@ public class IdCreator {
 	}
 	
 	public String createFeatureOfInterestId(Station station, 
-			Phenomenon phenomenon){
+			Sensor sensor){
 		
 		String featureOfInterestId = station.getSourceName() + ":" + station.getId();
-		PhenomenonDepth depth = phenomenon.getDepth();
+		SensorDepth depth = sensor.getSensorDepth();
 		
 		if(depth != null){
 			featureOfInterestId += "_Depth_" + depth.getValue() + "_" + 
@@ -53,5 +53,4 @@ public class IdCreator {
 		
 		return featureOfInterestId;
 	}
-
 }

@@ -14,6 +14,7 @@ import org.junit.Test;
 import com.axiomalaska.sos.cnfaic.CnfaicObservationRetriever;
 import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.Phenomenon;
+import com.axiomalaska.sos.data.Sensor;
 import com.axiomalaska.sos.data.Station;
 import com.axiomalaska.sos.data.ObservationCollection;
 
@@ -47,21 +48,39 @@ public class AppTest {
 		Calendar startDate = Calendar.getInstance();
 		startDate.add(Calendar.DAY_OF_MONTH, -1);
 		
+		Sensor sensor = new Sensor();
+		
+		sensor.setPhenomenon(airTemperature);
+		
 		observationRetriever.getObservationCollection(
-				seattle, airTemperature, startDate);
+				seattle, sensor, startDate);
 	}
 	
-	private List<Phenomenon> getPhenomena() {
-		List<Phenomenon> phenomena = new ArrayList<Phenomenon>();
+	private List<Sensor> getSensors() {
 		PhenomenaBuilder phenomenaBuilder = new PhenomenaBuilder();
+		List<Sensor> sensors = new ArrayList<Sensor>();
 		
-		phenomena.add(phenomenaBuilder.createAirTemperature());
-		phenomena.add(phenomenaBuilder.createRelativeHumidity());
-		phenomena.add(phenomenaBuilder.createWindSpeed());
-		phenomena.add(phenomenaBuilder.createWindfromDirection());
-		phenomena.add(phenomenaBuilder.createWindSpeedofGust());
+		Sensor airTemperatureSensor = new Sensor();
+		airTemperatureSensor.setPhenomenon(phenomenaBuilder.createAirTemperature());
+		sensors.add(airTemperatureSensor);
+	
+		Sensor relativeHumiditySensor = new Sensor();
+		relativeHumiditySensor.setPhenomenon(phenomenaBuilder.createRelativeHumidity());
+		sensors.add(relativeHumiditySensor);
+		
+		Sensor windSpeedSensor = new Sensor();
+		windSpeedSensor.setPhenomenon(phenomenaBuilder.createWindSpeed());
+		sensors.add(windSpeedSensor);
+		
+		Sensor windDirectionSensor = new Sensor();
+		windDirectionSensor.setPhenomenon(phenomenaBuilder.createWindfromDirection());
+		sensors.add(windDirectionSensor);
+		
+		Sensor windGustSensor = new Sensor();
+		windGustSensor.setPhenomenon(phenomenaBuilder.createWindSpeedofGust());
+		sensors.add(windGustSensor);
 
-		return phenomena;
+		return sensors;
 	}
 	
 	private Station createSeattleRidge() {
@@ -74,7 +93,7 @@ public class AppTest {
 		seattleRidge.setLocation(location);
 		seattleRidge.setMoving(false);
 		seattleRidge.setSourceName("CNFAIC");
-		seattleRidge.setPhenomena(getPhenomena());
+		seattleRidge.setSensors(getSensors());
 
 		return seattleRidge;
 	}
@@ -108,10 +127,10 @@ public class AppTest {
 	private ObservationRetriever createObservationRetriever(){
 		ObservationRetriever observationRetriever = new ObservationRetriever(){
 			public ObservationCollection getObservationCollection(Station station, 
-					Phenomenon phenomenon, 	Calendar startDate){
+					Sensor sensor, 	Calendar startDate){
 				ObservationCollection valuesCollection = new ObservationCollection();
 				
-				valuesCollection.setPhenomenon(phenomenon);
+				valuesCollection.setSensor(sensor);
 				valuesCollection.setStation(station);
 				
 				List<Double> values = new ArrayList<Double>();
@@ -143,27 +162,32 @@ public class AppTest {
 	
 	private Station createStation(){
 		
-		List<Phenomenon> phenomena = new ArrayList<Phenomenon>();
+		List<Sensor> sensors = new ArrayList<Sensor>();
 		Phenomenon airTemPhenomenonDepth20 = new Phenomenon();
 		airTemPhenomenonDepth20.setId("urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature");
 		airTemPhenomenonDepth20.setName("Air Temperature");
 		airTemPhenomenonDepth20.setUnits("C");
-		airTemPhenomenonDepth20.setDepth(-20.339, "m");
-		phenomena.add(airTemPhenomenonDepth20);
+		Sensor airTem20Sensor = new Sensor();
+		airTem20Sensor.setSensorDepth(-20.339, "m");
+		
+		sensors.add(airTem20Sensor);
 		
 		Phenomenon airTemPhenomenonDepth10 = new Phenomenon();
 		airTemPhenomenonDepth10.setId("urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature");
 		airTemPhenomenonDepth10.setName("Air Temperature");
 		airTemPhenomenonDepth10.setUnits("C");
-		airTemPhenomenonDepth10.setDepth(-10.5392, "m");
-		phenomena.add(airTemPhenomenonDepth10);
+		
+		Sensor airTem10Sensor = new Sensor();
+		airTem10Sensor.setSensorDepth(-10.5392, "m");
+		
+		sensors.add(airTem10Sensor);
 		
 		Station station = new Station();
 		
 		station.setLocation(new Location(63.0, -143.0));
 		station.setFeatureOfInterestName("Sonoma House - AOOS");
 		station.setId("6");
-		station.setPhenomena(phenomena);
+		station.setSensors(sensors);
 		
 		return station;
 	}

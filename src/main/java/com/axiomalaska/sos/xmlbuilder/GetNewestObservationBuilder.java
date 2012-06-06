@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.axiomalaska.sos.data.Phenomenon;
+import com.axiomalaska.sos.data.Sensor;
 import com.axiomalaska.sos.data.Station;
 import com.axiomalaska.sos.tools.IdCreator;
 
@@ -24,17 +25,17 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	// -------------------------------------------------------------------------
 
 	private Station station;
-	private Phenomenon phenomenon;
+	private Sensor sensor;
 	private IdCreator idCreator;
 	
 	// -------------------------------------------------------------------------
 	// Constructor
 	// -------------------------------------------------------------------------
 
-	public GetNewestObservationBuilder(Station station, Phenomenon phenomenon, 
+	public GetNewestObservationBuilder(Station station, Sensor sensor, 
 			IdCreator idCreator) {
 		this.station = station;
-		this.phenomenon = phenomenon;
+		this.sensor = sensor;
 		this.idCreator = idCreator;
 	}
 
@@ -90,11 +91,11 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 			
 			getObservation.appendChild(createProcedure(doc, station));
 			
-			getObservation.appendChild(createObservedProperty(doc, phenomenon));
+			getObservation.appendChild(createObservedProperty(doc, sensor));
 			
 			if (!station.isMoving()) {
 				getObservation.appendChild(createFeatureOfInterest(doc,
-						station, phenomenon));
+						station, sensor));
 			}
 			
 			getObservation.appendChild(createResponseFormat(doc));
@@ -116,11 +117,11 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	  </featureOfInterest>
 	 */
 	private Node createFeatureOfInterest(Document doc, Station station, 
-			Phenomenon phenomenon) {
+			Sensor sensor) {
 		Element featureOfInterest = doc.createElement("featureOfInterest");
 		
 	    String featureOfInterestId = idCreator.createFeatureOfInterestId(
-				station, phenomenon);
+				station, sensor);
 		
 		Element offering = doc.createElement("ObjectID");
 		offering.appendChild(doc.createTextNode(featureOfInterestId));
@@ -182,9 +183,10 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	/**
 	 * <observedProperty>urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature</observedProperty>
 	 */
-	private Node createObservedProperty(Document doc, Phenomenon phenomenon) {
+	private Node createObservedProperty(Document doc, Sensor sensor) {
 		Element observedProperty = doc.createElement("observedProperty");
 
+		Phenomenon phenomenon = sensor.getPhenomenon();
 		observedProperty.appendChild(doc.createTextNode(phenomenon.getId()));
 		
 		return observedProperty;

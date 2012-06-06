@@ -12,6 +12,7 @@ import org.w3c.dom.Node;
 
 import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.Phenomenon;
+import com.axiomalaska.sos.data.Sensor;
 import com.axiomalaska.sos.data.Station;
 import com.axiomalaska.sos.data.ObservationCollection;
 import com.axiomalaska.sos.tools.IdCreator;
@@ -157,7 +158,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		}
 		else{
 			observation.appendChild(createFeatureOfInterest(doc, station, 
-					values.getPhenomenon()));
+					values.getSensor()));
 		}
 		
 		observation.appendChild(createResult(doc, station, values));
@@ -200,7 +201,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		compositePhenomenon.appendChild(timeComponent);
 		
 		Element dataComponent = doc.createElement("swe:component");
-		Phenomenon phenomenon = valuesCollection.getPhenomenon();
+		Sensor sensor = valuesCollection.getSensor();
+		Phenomenon phenomenon = sensor.getPhenomenon();
 		if(phenomenon.getId().length() > 100){
 			String truncatedTag = phenomenon.getId().substring(0, 100);
 			dataComponent.setAttribute("xlink:href", truncatedTag);
@@ -321,7 +323,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 			
 			String featureOfInterestId = 
 					idCreator.createFeatureOfInterestId(station, 
-							valuesCollection.getPhenomenon(), location);
+							valuesCollection.getSensor(), location);
 			
 			text += featureOfInterestId + "," + 
 					formatCalendarIntoGMTTime(date) + "," + value + ";"; 
@@ -348,7 +350,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		
 		String featureOfInterestId = 
 				idCreator.createFeatureOfInterestId(station, 
-						valuesCollection.getPhenomenon());
+						valuesCollection.getSensor());
 		
 		for(int index = 0; index < size; index++){
 			Calendar date = dates.get(index);
@@ -403,7 +405,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		time.setAttribute("definition", "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian");
 		fieldTime.appendChild(time);
 		
-		Phenomenon phenomenon = valuesCollection.getPhenomenon();
+		Sensor sensor = valuesCollection.getSensor();
+		Phenomenon phenomenon = sensor.getPhenomenon();
 		
 		Element field = doc.createElement("swe:field");
 		field.setAttribute("name", phenomenon.getName());
@@ -473,7 +476,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	</om:featureOfInterest>
 	 */
 	private Node createMovingFeatureOfInterest(Document doc, ObservationCollection valuesCollection){
-		Phenomenon phenomenon = valuesCollection.getPhenomenon();
+		Sensor sensor = valuesCollection.getSensor();
 		Station station = valuesCollection.getStation();
 		
 		Element featureOfInterest = doc.createElement("om:featureOfInterest");
@@ -487,13 +490,13 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 			Element samplingPoint = doc.createElement("sa:SamplingPoint");
 
 			String featureOfInterestId = idCreator.createFeatureOfInterestId(
-					station, phenomenon, location);
+					station, sensor, location);
 
 			samplingPoint.setAttribute("gml:id", featureOfInterestId);
 			featureMember.appendChild(samplingPoint);
 
 			String featureOfInterestDescription = idCreator
-					.createFeatureOfInterestName(station, phenomenon);
+					.createFeatureOfInterestName(station, sensor);
 
 			Element gmlName = doc.createElement("gml:name");
 			gmlName.appendChild(doc
@@ -542,7 +545,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 * @param station - station to get information from
 	 */
 	private Node createFeatureOfInterest(Document doc, Station station, 
-			Phenomenon phenomenon) {
+			Sensor sensor) {
 		Element featureOfInterest = doc.createElement("om:featureOfInterest");
 		Element featureCollection = doc.createElement("gml:FeatureCollection");
 		featureOfInterest.appendChild(featureCollection);
@@ -553,13 +556,13 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		Element samplingPoint = doc.createElement("sa:SamplingPoint");
 
 		String featureOfInterestId = 
-				idCreator.createFeatureOfInterestId(station, phenomenon);
+				idCreator.createFeatureOfInterestId(station, sensor);
 
 		samplingPoint.setAttribute("gml:id", featureOfInterestId);
 		featureMember.appendChild(samplingPoint);
 		
 		String featureOfInterestDescription = 
-				idCreator.createFeatureOfInterestName(station, phenomenon);
+				idCreator.createFeatureOfInterestName(station, sensor);
 		
 		Element gmlName = doc.createElement("gml:name");
 		gmlName.appendChild(doc.createTextNode(featureOfInterestDescription));

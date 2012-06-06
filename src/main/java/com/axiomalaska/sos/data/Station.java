@@ -19,7 +19,7 @@ public class Station {
 	private String sourceName;
 	private String id;
 	private boolean isMoving = false;
-	private List<Phenomenon> phenomena = new ArrayList<Phenomenon>();
+	private List<Sensor> sensors = new ArrayList<Sensor>();
 	
 	// -------------------------------------------------------------------------
 	// Public Members
@@ -28,8 +28,8 @@ public class Station {
 	/**
 	 * A list of phenomena that this station has readings for
 	 */
-	public List<Phenomenon> getPhenomena() {
-		return phenomena;
+	public List<Sensor> getSensors() {
+		return sensors;
 	}
 	
 	/**
@@ -94,8 +94,8 @@ public class Station {
 		this.id = id;
 	}
 	
-	public void setPhenomena(List<Phenomenon> phenomena) {
-		this.phenomena = phenomena;
+	public void setSensors(List<Sensor> sensors) {
+		this.sensors = sensors;
 	}
 	
 	public String toString(){

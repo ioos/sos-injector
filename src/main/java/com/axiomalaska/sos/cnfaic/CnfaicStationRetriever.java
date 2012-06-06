@@ -6,7 +6,7 @@ import java.util.List;
 import com.axiomalaska.sos.PhenomenaBuilder;
 import com.axiomalaska.sos.StationRetriever;
 import com.axiomalaska.sos.data.Location;
-import com.axiomalaska.sos.data.Phenomenon;
+import com.axiomalaska.sos.data.Sensor;
 import com.axiomalaska.sos.data.Station;
 
 public class CnfaicStationRetriever implements StationRetriever {
@@ -32,17 +32,31 @@ public class CnfaicStationRetriever implements StationRetriever {
 	// Private Members
 	// -------------------------------------------------------------------------
 
-	private List<Phenomenon> getPhenomena() {
+	private List<Sensor> getSensors() {
 		PhenomenaBuilder phenomenaBuilder = new PhenomenaBuilder();
-		List<Phenomenon> phenomena = new ArrayList<Phenomenon>();
+		List<Sensor> sensors = new ArrayList<Sensor>();
 		
-		phenomena.add(phenomenaBuilder.createAirTemperature());
-		phenomena.add(phenomenaBuilder.createRelativeHumidity());
-		phenomena.add(phenomenaBuilder.createWindSpeed());
-		phenomena.add(phenomenaBuilder.createWindfromDirection());
-		phenomena.add(phenomenaBuilder.createWindSpeedofGust());
+		Sensor airTemperatureSensor = new Sensor();
+		airTemperatureSensor.setPhenomenon(phenomenaBuilder.createAirTemperature());
+		sensors.add(airTemperatureSensor);
+	
+		Sensor relativeHumiditySensor = new Sensor();
+		relativeHumiditySensor.setPhenomenon(phenomenaBuilder.createRelativeHumidity());
+		sensors.add(relativeHumiditySensor);
+		
+		Sensor windSpeedSensor = new Sensor();
+		windSpeedSensor.setPhenomenon(phenomenaBuilder.createWindSpeed());
+		sensors.add(windSpeedSensor);
+		
+		Sensor windDirectionSensor = new Sensor();
+		windDirectionSensor.setPhenomenon(phenomenaBuilder.createWindfromDirection());
+		sensors.add(windDirectionSensor);
+		
+		Sensor windGustSensor = new Sensor();
+		windGustSensor.setPhenomenon(phenomenaBuilder.createWindSpeedofGust());
+		sensors.add(windGustSensor);
 
-		return phenomena;
+		return sensors;
 	}
 	
 	private Station createArcticValley() {
@@ -54,7 +68,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		marmot.setLocation(location);
 		marmot.setMoving(false);
 		marmot.setSourceName("CNFAIC");
-		marmot.setPhenomena(getPhenomena());
+		marmot.setSensors(getSensors());
 
 		return marmot;
 	}
@@ -68,7 +82,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		marmot.setLocation(location);
 		marmot.setMoving(false);
 		marmot.setSourceName("CNFAIC");
-		marmot.setPhenomena(getPhenomena());
+		marmot.setSensors(getSensors());
 
 		return marmot;
 	}
@@ -83,7 +97,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		fresnoRidge.setLocation(location);
 		fresnoRidge.setMoving(false);
 		fresnoRidge.setSourceName("CNFAIC");
-		fresnoRidge.setPhenomena(getPhenomena());
+		fresnoRidge.setSensors(getSensors());
 
 		return fresnoRidge;
 	}
@@ -98,7 +112,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		sunburstRidge.setLocation(location);
 		sunburstRidge.setMoving(false);
 		sunburstRidge.setSourceName("CNFAIC");
-		sunburstRidge.setPhenomena(getPhenomena());
+		sunburstRidge.setSensors(getSensors());
 
 		return sunburstRidge;
 	}
@@ -113,7 +127,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		seattleRidge.setLocation(location);
 		seattleRidge.setMoving(false);
 		seattleRidge.setSourceName("CNFAIC");
-		seattleRidge.setPhenomena(getPhenomena());
+		seattleRidge.setSensors(getSensors());
 
 		return seattleRidge;
 	}

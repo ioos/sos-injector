@@ -1,14 +1,14 @@
 package com.axiomalaska.sos.data;
 
 /**
- * Represents the depth where a phenomena readings are taken from.
+ * Represents the depth where a sensor readings are taken from.
  * 
  * When a station has multiple sensors reading the same phenomenon at different
  * depths this object must be used to differentiate the sensors in the SOS.
  * 
  * @author Lance Finfrock
  */
-public class PhenomenonDepth {
+public class SensorDepth {
 
 	// -------------------------------------------------------------------------
 	// Private Data
@@ -21,7 +21,7 @@ public class PhenomenonDepth {
 	// Constructor
 	// -------------------------------------------------------------------------
 
-	public PhenomenonDepth(double value, String units) {
+	public SensorDepth(double value, String units) {
 		this.value = value;
 		this.units = units;
 	}

@@ -19,7 +19,6 @@ public class Phenomenon {
 	private String name;
 	private String id;
 	private String units;
-	private PhenomenonDepth depth;
 
 	// -------------------------------------------------------------------------
 	// Public Members
@@ -53,23 +52,6 @@ public class Phenomenon {
 	 */
 	public String getUnits() {
 		return units;
-	}
-	
-	/**
-	 * If there is a station with multiple of the same phenomena but different 
-	 * depths one must get the depth to differentiate the phenomena. 
-	 * @return
-	 */
-	public PhenomenonDepth getDepth(){
-		return depth;
-	}
-	
-	public void setDepth(PhenomenonDepth depth){
-		this.depth = depth;
-	}
-	
-	public void setDepth(double value, String units){
-		this.depth = new PhenomenonDepth(value, units);
 	}
 
 	public void setName(String name) {

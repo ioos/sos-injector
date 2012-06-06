@@ -14,6 +14,7 @@ import com.axiomalaska.sos.ObservationRetriever;
 import com.axiomalaska.sos.PhenomenaBuilder;
 import com.axiomalaska.sos.data.ObservationCollection;
 import com.axiomalaska.sos.data.Phenomenon;
+import com.axiomalaska.sos.data.Sensor;
 import com.axiomalaska.sos.data.Station;
 import com.axiomalaska.sos.tools.HttpSender;
 
@@ -40,7 +41,7 @@ public class CnfaicObservationRetriever implements ObservationRetriever {
 
 	@Override
 	public ObservationCollection getObservationCollection(Station station,
-			Phenomenon phenomenon, Calendar startDate) {
+			Sensor sensor, Calendar startDate) {
 		String hoursText = calculatedDifferenceFromNow(startDate);
 		
 		try {
@@ -57,6 +58,7 @@ public class CnfaicObservationRetriever implements ObservationRetriever {
 					Pattern.compile(station.getId() + 
 							",((\\d{4}-\\d{2}-\\d{2} \\d{2}):\\d{2}:\\d{2},(\\d+.\\d+),(\\d+),(\\d+),(\\d+),(\\d+))");
 		
+			Phenomenon phenomenon = sensor.getPhenomenon();
 			Matcher matcher = observationParser.matcher(rawObservationData);
 			List<Calendar> dateValues = new ArrayList<Calendar>();
 			List<Double> dataValues = new ArrayList<Double>();
@@ -111,7 +113,7 @@ public class CnfaicObservationRetriever implements ObservationRetriever {
 			
 			observationCollection.setObservationDates(dateValues);
 			observationCollection.setObservationValues(dataValues);
-			observationCollection.setPhenomenon(phenomenon);
+			observationCollection.setSensor(sensor);
 			observationCollection.setStation(station);
 			
 			return observationCollection;
