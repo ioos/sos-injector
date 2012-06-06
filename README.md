@@ -1,5 +1,9 @@
-SOS Observation Injector
+#SOS Observation Injector#
 ===========
+
+### NOTE: THIS SOFTWARE IS IN A DRAFT STATE AND SUBJECT TO SIGNIFICANT CHANGE. PLEASE
+DO NOT INTERPRET THE CURRENT CODE AS AN INDICATION OF FINAL INTENDED FORMATS OR DATA
+STRUCTURES.###
 
 The SOS Observation Injector is used to enter sensor observations into a SOS. 
 To use the code one must create an instance of the ObservationUpdater with the URL 
