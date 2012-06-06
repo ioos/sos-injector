@@ -2,6 +2,7 @@ package com.axiomalaska.sos.tools;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.apache.commons.httpclient.HostConfiguration;
@@ -46,6 +47,13 @@ public class HttpSender {
 		} finally {
 			is.close();
 		}
+	}
+	
+	public String sendGetMessage(String urlText) throws IOException{
+		URL url = new URL(urlText);
+		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+	    connection.setConnectTimeout(5000);
+	    return getStringResult(connection.getInputStream());
 	}
 	
 	// -------------------------------------------------------------------------

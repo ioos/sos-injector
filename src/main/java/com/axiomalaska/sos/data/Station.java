@@ -94,8 +94,8 @@ public class Station {
 		this.id = id;
 	}
 	
-	public void setPhenomena(List<Phenomenon> phenomenons) {
-		this.phenomena = phenomenons;
+	public void setPhenomena(List<Phenomenon> phenomena) {
+		this.phenomena = phenomena;
 	}
 	
 	public String toString(){

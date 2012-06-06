@@ -5,11 +5,13 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-import retriever.ObservationRetriever;
 
+import com.axiomalaska.sos.cnfaic.CnfaicObservationRetriever;
 import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.Phenomenon;
 import com.axiomalaska.sos.data.Station;
@@ -23,7 +25,62 @@ public class AppTest {
 	}
 	
 	@Test
-	public void test3() throws Exception{
+	public void test4() {
+		Pattern pattern = Pattern.compile(".*/(\\w+)");
+		
+		Matcher matcher = pattern.matcher("lkjasdfljasdflkj/matches");
+		
+		while(matcher.find()){
+			System.out.println(matcher.group(1));
+		}
+	}
+	
+	@Test
+	public void testCnfaic(){
+		PhenomenaBuilder phenomenaBuilder = new PhenomenaBuilder();
+		CnfaicObservationRetriever observationRetriever = 
+				new CnfaicObservationRetriever();
+		
+		Station seattle = createSeattleRidge();
+		Phenomenon airTemperature = phenomenaBuilder.createAirTemperature();
+		
+		Calendar startDate = Calendar.getInstance();
+		startDate.add(Calendar.DAY_OF_MONTH, -1);
+		
+		observationRetriever.getObservationCollection(
+				seattle, airTemperature, startDate);
+	}
+	
+	private List<Phenomenon> getPhenomena() {
+		List<Phenomenon> phenomena = new ArrayList<Phenomenon>();
+		PhenomenaBuilder phenomenaBuilder = new PhenomenaBuilder();
+		
+		phenomena.add(phenomenaBuilder.createAirTemperature());
+		phenomena.add(phenomenaBuilder.createRelativeHumidity());
+		phenomena.add(phenomenaBuilder.createWindSpeed());
+		phenomena.add(phenomenaBuilder.createWindfromDirection());
+		phenomena.add(phenomenaBuilder.createWindSpeedofGust());
+
+		return phenomena;
+	}
+	
+	private Station createSeattleRidge() {
+		Station seattleRidge = new Station();
+
+		seattleRidge
+				.setFeatureOfInterestName("At station: Seattle Ridge of source: CNFAIC");
+		seattleRidge.setId("seattle");
+		Location location = new Location(60.8338, -149.1593);
+		seattleRidge.setLocation(location);
+		seattleRidge.setMoving(false);
+		seattleRidge.setSourceName("CNFAIC");
+		seattleRidge.setPhenomena(getPhenomena());
+
+		return seattleRidge;
+	}
+	
+	@Test
+	public void test3() throws Exception {
 //		ObservationRetriever observationRetriever = createObservationRetriever();
 //		
 //		ObservationUpdater sosSensorBuilder = 
