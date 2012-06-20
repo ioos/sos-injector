@@ -12,9 +12,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.axiomalaska.sos.data.Phenomenon;
-import com.axiomalaska.sos.data.Sensor;
-import com.axiomalaska.sos.data.Station;
+import com.axiomalaska.sos.data.SosPhenomenon;
+import com.axiomalaska.sos.data.SosSensor;
+import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.tools.IdCreator;
 
 /**
@@ -28,14 +28,14 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
   // Private Data
   // ---------------------------------------------------------------------------
 
-	private Station station;
+	private SosStation station;
 	private IdCreator idCreator;
 	
   // ---------------------------------------------------------------------------
   // Constructor
   // ---------------------------------------------------------------------------
 
-	public RegisterSensorBuilder(Station station, IdCreator idCreator){
+	public RegisterSensorBuilder(SosStation station, IdCreator idCreator){
 		this.station = station;
 		this.idCreator = idCreator;
 	}
@@ -87,9 +87,9 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 			
 			system.appendChild(createPositionNode(doc, station));
 			
-			List<Sensor> sensors = station.getSensors();
+			List<SosSensor> sensors = station.getSensors();
 			
-			List<Sensor> filteredSensors = removeDuplicatePhenomena(sensors);
+			List<SosSensor> filteredSensors = removeDuplicatePhenomena(sensors);
 			
 			system.appendChild(createInputsNode(doc, filteredSensors));
 			
@@ -117,11 +117,11 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 	 * @param phenomena - the list of phenomena to remove duplicates from
 	 * @return a list of phenomena with the duplicate phenomena id removed. 
 	 */
-	private List<Sensor> removeDuplicatePhenomena(List<Sensor> sensors) {
-		List<Sensor> filteredPhenomena = new ArrayList<Sensor>();
+	private List<SosSensor> removeDuplicatePhenomena(List<SosSensor> sensors) {
+		List<SosSensor> filteredPhenomena = new ArrayList<SosSensor>();
 		Set<String> set = new HashSet<String>();
-		for(Sensor sensor : sensors){
-			Phenomenon phenomenon = sensor.getPhenomenon();
+		for(SosSensor sensor : sensors){
+			SosPhenomenon phenomenon = sensor.getPhenomena().get(0);
 			if(!set.contains(phenomenon.getId())){
 				filteredPhenomena.add(sensor);
 				set.add(phenomenon.getId());
@@ -185,14 +185,14 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 		</sml:OutputList>
 	</sml:outputs>
 	 */
-	private Node createOutputsNode(Document doc, List<Sensor> sensors) {
+	private Node createOutputsNode(Document doc, List<SosSensor> sensors) {
 		Element outputs = doc.createElement("sml:outputs");
 		
 		Element outputList = doc.createElement("sml:OutputList");
 		outputs.appendChild(outputList);
 		
-		for(Sensor sensor : sensors){
-			Phenomenon phenomenon = sensor.getPhenomenon();
+		for(SosSensor sensor : sensors){
+			SosPhenomenon phenomenon = sensor.getPhenomena().get(0);
 			Element output = doc.createElement("sml:output");
 			output.setAttribute("name", phenomenon.getName());
 			outputList.appendChild(output);
@@ -240,14 +240,14 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 		</sml:InputList>
 	</sml:inputs>
 	 */
-	private Node createInputsNode(Document doc, List<Sensor> sensors) {
+	private Node createInputsNode(Document doc, List<SosSensor> sensors) {
 		Element inputs = doc.createElement("sml:inputs");
 		
 		Element inputList = doc.createElement("sml:InputList");
 		inputs.appendChild(inputList);
 		
-		for(Sensor sensor : sensors){
-			Phenomenon phenomenon = sensor.getPhenomenon();
+		for(SosSensor sensor : sensors){
+			SosPhenomenon phenomenon = sensor.getPhenomena().get(0);
 			Element input = doc.createElement("sml:input");
 			input.setAttribute("name", phenomenon.getName());
 			inputList.appendChild(input);
@@ -289,7 +289,7 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
 		</swe:Position>
 	</sml:position>
 	 */
-	private Node createPositionNode(Document doc, Station station) {
+	private Node createPositionNode(Document doc, SosStation station) {
 		Element position = doc.createElement("sml:position");
 		position.setAttribute("name", "sensorPosition");
 		
@@ -364,7 +364,7 @@ public class RegisterSensorBuilder extends SosXmlBuilder  {
                </sml:IdentifierList>
           </sml:identification>
 	 */
-	private Node createIdentificationNode(Document doc, Station station) {
+	private Node createIdentificationNode(Document doc, SosStation station) {
 		Element identification = doc.createElement("sml:identification");
 	
 		Element identifierList = doc.createElement("sml:IdentifierList");

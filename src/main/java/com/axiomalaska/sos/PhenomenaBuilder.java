@@ -1,11 +1,12 @@
 package com.axiomalaska.sos;
 
-import com.axiomalaska.sos.data.Phenomenon;
+import com.axiomalaska.sos.data.SosPhenomenon;
+import com.axiomalaska.sos.data.SosPhenomenonImp;
 
 public class PhenomenaBuilder {
 
-	public Phenomenon createSeaWaterTemperature() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaWaterTemperature() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_water_temperature");
@@ -15,8 +16,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceWaveSignificantHeight() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceWaveSignificantHeight() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wave_significant_height");
@@ -26,8 +27,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createDominantWavePeriod() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createDominantWavePeriod() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_dominant_wave_period");
@@ -37,8 +38,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createAverageWavePeriod() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createAverageWavePeriod() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wave_mean_period");
@@ -48,8 +49,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createseaSurfaceSwellWaveHeight() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createseaSurfaceSwellWaveHeight() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_swell_wave_height");
@@ -59,8 +60,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createseaseaSurfaceSwellWavePeriod() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createseaseaSurfaceSwellWavePeriod() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_swell_wave_period");
@@ -70,8 +71,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createElevationofReservoirWaterSurfaceaboveDatum() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createElevationofReservoirWaterSurfaceaboveDatum() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/elevation_of_reservoir_water_surface_above_datum");
@@ -81,8 +82,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createWebcam() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createWebcam() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/webcam");
 		phenomenon.setUnits("image");
@@ -91,8 +92,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createReflectedShortwaveRadiation() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createReflectedShortwaveRadiation() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/reflected_shortwave_radiation");
@@ -102,8 +103,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createIncomingShortwaveRadiation() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createIncomingShortwaveRadiation() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/incoming_shortwave_radiation");
@@ -113,8 +114,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createPhotosyntheticallyActiveRadiation() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createPhotosyntheticallyActiveRadiation() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/photosynthetically_active_radiation");
@@ -124,8 +125,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createWindGeneratorCurrent() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createWindGeneratorCurrent() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/wind_generator_current");
@@ -135,8 +136,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createPanelTemperature() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createPanelTemperature() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/panel_temperature");
@@ -146,8 +147,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createRealDielectricconstant() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createRealDielectricconstant() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/real_dielectric_constant");
@@ -157,8 +158,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createFuelMoisture() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createFuelMoisture() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/fuel_moisture");
 		phenomenon.setUnits("%");
@@ -167,8 +168,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createFuelTemperature() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createFuelTemperature() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/fuel_temperature");
@@ -178,8 +179,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createStreamflow() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createStreamflow() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/streamflow");
 		phenomenon.setUnits("cfs");
@@ -188,8 +189,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSoilMoisturePercent() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSoilMoisturePercent() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/soil_moisture_percent");
@@ -199,8 +200,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createGroundTemperature() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createGroundTemperature() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/ground_temperature");
@@ -210,8 +211,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createDepthtoWaterLevel() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createDepthtoWaterLevel() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/depth_to_water_level");
@@ -221,8 +222,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createStreamGageHeight() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createStreamGageHeight() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/stream_gage_height");
@@ -232,8 +233,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createAirPressure() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createAirPressure() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/air_pressure");
 		phenomenon.setUnits("Pa");
@@ -242,8 +243,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createAirTemperature() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createAirTemperature() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/air_temperature");
 		phenomenon.setUnits("C");
@@ -252,8 +253,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createAltitude() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createAltitude() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/altitude");
 		phenomenon.setUnits("m");
@@ -262,8 +263,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createConcentrationofChlorophyllinSeaWater() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createConcentrationofChlorophyllinSeaWater() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/mass_concentration_of_chlorophyll_in_sea_water");
@@ -273,8 +274,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaWaterElectricalConductivity() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaWaterElectricalConductivity() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_water_electrical_conductivity");
@@ -284,8 +285,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createRadialSeaWaterVelocityAwayFromInstrument() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createRadialSeaWaterVelocityAwayFromInstrument() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/radial_sea_water_velocity_away_from_instrument");
@@ -295,8 +296,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createDirectionofSeaWaterVelocity() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createDirectionofSeaWaterVelocity() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/direction_of_sea_water_velocity");
@@ -306,8 +307,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaWaterspeed() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaWaterspeed() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/sea_water_speed");
 		phenomenon.setUnits("cm/s");
@@ -316,8 +317,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createDewPointTemperature() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createDewPointTemperature() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/dew_point_temperature");
@@ -327,8 +328,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createWaterVolumeTransportintoSeaWaterfromRivers() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createWaterVolumeTransportintoSeaWaterfromRivers() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/water_volume_transport_into_sea_water_from_rivers");
@@ -338,8 +339,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createGridLatitude() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createGridLatitude() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/grid_latitude");
 		phenomenon.setUnits("degree");
@@ -348,8 +349,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createGrideLongitude() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createGrideLongitude() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/grid_longitude");
 		phenomenon.setUnits("degree");
@@ -358,8 +359,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createPhycoerythrin() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createPhycoerythrin() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/phycoerythrin");
 		phenomenon.setUnits("RFU");
@@ -368,8 +369,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createPrecipitation() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createPrecipitation() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/precipitation");
 		phenomenon.setUnits("m");
@@ -378,8 +379,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createRelativeHumidity() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createRelativeHumidity() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/relative_humidity");
@@ -389,8 +390,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaWaterSalinity() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaWaterSalinity() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_water_salinity");
@@ -400,8 +401,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSimpleTurbidity() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSimpleTurbidity() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/simple_turbidity");
@@ -411,8 +412,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createAirVisibility() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createAirVisibility() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/visibility_in_air");
@@ -422,8 +423,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaFloorDepthBelowSeaSurface() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaFloorDepthBelowSeaSurface() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_floor_depth_below_sea_surface");
@@ -433,8 +434,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createWindfromDirection() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createWindfromDirection() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/wind_from_direction");
@@ -444,8 +445,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createWindSpeed() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createWindSpeed() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/wind_speed");
 		phenomenon.setUnits("cm/s");
@@ -454,8 +455,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceWindWavePeriod() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceWindWavePeriod() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wind_wave_period");
@@ -465,8 +466,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceSwelWavePeriod() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceSwelWavePeriod() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_swell_wave_period");
@@ -476,8 +477,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceWaveSignificatHeight() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceWaveSignificatHeight() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wave_significant_height");
@@ -487,8 +488,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceWaveMeanHeight() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceWaveMeanHeight() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wave_mean_height");
@@ -498,8 +499,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceMaximumWaveHeight() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceMaximumWaveHeight() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_maximum_wave_height");
@@ -509,8 +510,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceWaveFromDirection() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceWaveFromDirection() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wave_from_direction");
@@ -520,8 +521,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createWaveDirectionSpread() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createWaveDirectionSpread() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/wave_direction_spread");
@@ -531,8 +532,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createProductofAirTemperatureandSpecificHumidity() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createProductofAirTemperatureandSpecificHumidity() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/product_of_air_temperature_and_specific_humidity");
@@ -542,8 +543,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceHeightaboveSeaLevel() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceHeightaboveSeaLevel() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_height_above_sea_level");
@@ -553,8 +554,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaWaterAcidity() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaWaterAcidity() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_water_acidity");
@@ -564,8 +565,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createConcentrationofOxygeninSeaWater() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createConcentrationofOxygeninSeaWater() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/mass_concentration_of_oxygen_in_sea_water ");
@@ -575,8 +576,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createAverageAirTemperature() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createAverageAirTemperature() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/air_temperature_average");
@@ -586,8 +587,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createMaximumAirTemperature() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createMaximumAirTemperature() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/air_temperature_maximum");
@@ -597,8 +598,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createMinimumAirTemperature() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createMinimumAirTemperature() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/air_temperature_minimum");
@@ -608,8 +609,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createPrecipitationIncrement() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createPrecipitationIncrement() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/precipitation_increment");
@@ -619,8 +620,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createPrecipitationAccumulation() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createPrecipitationAccumulation() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/precipitation_accumulation");
@@ -630,8 +631,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createMaximumRelativeHumidity() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createMaximumRelativeHumidity() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/relative_humidity_maximum");
@@ -641,8 +642,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createMinimumRelativeHumidity() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createMinimumRelativeHumidity() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/relative_humidity_minimum");
@@ -652,8 +653,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createAverageRelativeHumidity() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createAverageRelativeHumidity() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/relative_humidity_average");
@@ -663,8 +664,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceHeightaboveSeaLevelPredictions() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceHeightaboveSeaLevelPredictions() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_height_above_sea_level_predictions");
@@ -674,8 +675,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createWaterTemperatureIntragravel() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createWaterTemperatureIntragravel() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/water_temperature_intragravel");
@@ -685,8 +686,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createWindVerticalVelocity() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createWindVerticalVelocity() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/wind_vertical_velocity");
@@ -696,8 +697,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createWindGustfromDirection() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createWindGustfromDirection() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/wind_gust_from_direction");
@@ -707,8 +708,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceWaveMeanPeriod() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceWaveMeanPeriod() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wave_mean_period");
@@ -718,8 +719,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceSwellWaveHeight() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceSwellWaveHeight() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_swell_wave_height");
@@ -729,8 +730,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceWindWaveHeight() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceWindWaveHeight() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wind_wave_height");
@@ -740,8 +741,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceWindWaveDirection() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceWindWaveDirection() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wind_wave_from_direction");
@@ -751,8 +752,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceSwellWaveFromDirection() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceSwellWaveFromDirection() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_swell_wave_from_direction");
@@ -762,8 +763,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceDominantWaveFromDirection() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceDominantWaveFromDirection() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_dominant_wave_from_direction");
@@ -773,8 +774,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSeaSurfaceDominantWavePeriod() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSeaSurfaceDominantWavePeriod() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_dominant_wave_period");
@@ -784,8 +785,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createBattery() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createBattery() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/battery");
 		phenomenon.setUnits("V");
@@ -794,8 +795,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createMaximumBattery() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createMaximumBattery() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/battery_maximum");
 		phenomenon.setUnits("V");
@@ -804,8 +805,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createMinimumBattery() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createMinimumBattery() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/battery_minimum");
 		phenomenon.setUnits("V");
@@ -814,8 +815,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createAverageSolarRadiation() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createAverageSolarRadiation() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/solar_radiation_average");
@@ -825,8 +826,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSolarRadiation() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSolarRadiation() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/solar_radiation");
 		phenomenon.setUnits("W/m2");
@@ -835,8 +836,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createMaximumSolarRadiation() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createMaximumSolarRadiation() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/solar_radiation_maximum");
@@ -846,8 +847,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createMinimumSolarRadiation() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createMinimumSolarRadiation() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/solar_radiation_minimum");
@@ -857,8 +858,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createOxygenSaturationinSeaWater() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createOxygenSaturationinSeaWater() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/saturation_of_oxygen_in_sea_water");
@@ -868,8 +869,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createCarbonDioxideConcentrationinSeaWater() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createCarbonDioxideConcentrationinSeaWater() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/mass_concentration_of_carbon_dioxide_in_sea_water");
@@ -879,8 +880,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createCarbonDioxideConcentrationinAir() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createCarbonDioxideConcentrationinAir() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/mass_concentration_of_carbon_dioxide_in_air");
@@ -890,8 +891,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSnowPillow() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSnowPillow() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/snow_pillow");
 		phenomenon.setUnits("m");
@@ -900,8 +901,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSnowdepth() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSnowdepth() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/snow_depth");
 		phenomenon.setUnits("m");
@@ -910,8 +911,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createSnowWaterEquivalent() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createSnowWaterEquivalent() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/snow_water_equivalent");
@@ -921,8 +922,8 @@ public class PhenomenaBuilder {
 		return phenomenon;
 	}
 
-	public Phenomenon createWindSpeedofGust() {
-		Phenomenon phenomenon = new Phenomenon();
+	public SosPhenomenon createWindSpeedofGust() {
+		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
 		phenomenon
 				.setId("http://mmisw.org/ont/ioos/parameter/wind_speed_of_gust");

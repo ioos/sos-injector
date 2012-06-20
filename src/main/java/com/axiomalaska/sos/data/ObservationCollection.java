@@ -20,8 +20,9 @@ public class ObservationCollection {
 	// Private Data
 	// -------------------------------------------------------------------------
 	
-	private Station station;
-	private Sensor sensor;
+	private SosStation station;
+	private SosSensor sensor;
+	private SosPhenomenon phenomenon;
 	private List<Double> observationValues = new ArrayList<Double>();
 	private List<Calendar> observationDates = new ArrayList<Calendar>();
 	private List<Location> observationLocations = new ArrayList<Location>();
@@ -30,13 +31,21 @@ public class ObservationCollection {
 	// Public Members
 	// -------------------------------------------------------------------------
 	
+	public SosPhenomenon getPhenomenon() {
+		return phenomenon;
+	}
+
+	public void setPhenomenon(SosPhenomenon phenomenon) {
+		this.phenomenon = phenomenon;
+	}
+	
 	/**
 	 * The sensor of the observations
 	 */
-	public Sensor getSensor() {
+	public SosSensor getSensor() {
 		return sensor;
 	}
-	
+
 	/**
 	 * The location of each observation
 	 */
@@ -47,7 +56,7 @@ public class ObservationCollection {
 	/**
 	 * The associated station to the observations
 	 */
-	public Station getStation() {
+	public SosStation getStation() {
 		return station;
 	}
 
@@ -69,11 +78,11 @@ public class ObservationCollection {
 		this.observationLocations = observationLocations;
 	}
 	
-	public void setStation(Station station) {
+	public void setStation(SosStation station) {
 		this.station = station;
 	}
 	
-	public void setSensor(Sensor sensor) {
+	public void setSensor(SosSensor sensor) {
 		this.sensor = sensor;
 	}
 
@@ -83,9 +92,5 @@ public class ObservationCollection {
 
 	public void setObservationDates(List<Calendar> dateValues) {
 		this.observationDates = dateValues;
-	}
-	
-	public String toString(){
-		return station + " " + sensor.getPhenomenon() + " items: " + observationDates.size();
 	}
 }

@@ -1,24 +1,13 @@
 package com.axiomalaska.sos.data;
 
-/**
- * Contains information for a phenomenon. 
- * 
- * Examples of phenomena are:
- * 		Air temperature
- * 		Wind speed
- * 		Wind direction
- * 
- * @author Lance Finfrock
- */
-public class Phenomenon {
-	
+public class SosPhenomenonImp implements SosPhenomenon {
 	// -------------------------------------------------------------------------
 	// Private Data
 	// -------------------------------------------------------------------------
 
-	private String name;
-	private String id;
-	private String units;
+	private String name = "";
+	private String id = "";
+	private String units = "";
 
 	// -------------------------------------------------------------------------
 	// Public Members

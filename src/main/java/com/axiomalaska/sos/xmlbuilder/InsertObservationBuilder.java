@@ -11,9 +11,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.axiomalaska.sos.data.Location;
-import com.axiomalaska.sos.data.Phenomenon;
-import com.axiomalaska.sos.data.Sensor;
-import com.axiomalaska.sos.data.Station;
+import com.axiomalaska.sos.data.SosPhenomenon;
+import com.axiomalaska.sos.data.SosSensor;
+import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.data.ObservationCollection;
 import com.axiomalaska.sos.tools.IdCreator;
 
@@ -28,7 +28,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	// Private Data
 	// -------------------------------------------------------------------------
 	
-	private Station station;
+	private SosStation station;
 	private ObservationCollection values;
 	private IdCreator idCreator;
 	
@@ -36,7 +36,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	// Constructor
 	// -------------------------------------------------------------------------
 	
-	public InsertObservationBuilder(Station station, ObservationCollection values, 
+	public InsertObservationBuilder(SosStation station, ObservationCollection values, 
 			IdCreator idCreator){
 		this.station = station;
 		this.values = values;
@@ -201,8 +201,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		compositePhenomenon.appendChild(timeComponent);
 		
 		Element dataComponent = doc.createElement("swe:component");
-		Sensor sensor = valuesCollection.getSensor();
-		Phenomenon phenomenon = sensor.getPhenomenon();
+		SosSensor sensor = valuesCollection.getSensor();
+		SosPhenomenon phenomenon = sensor.getPhenomena().get(0);
 		if(phenomenon.getId().length() > 100){
 			String truncatedTag = phenomenon.getId().substring(0, 100);
 			dataComponent.setAttribute("xlink:href", truncatedTag);
@@ -250,7 +250,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 * 	</swe:DataArray>
 	 * </om:result>
 	 */
-	private Node createResult(Document doc, Station station,
+	private Node createResult(Document doc, SosStation station,
 			ObservationCollection valuesCollection) {
 		Element result = doc.createElement("om:result");
 		
@@ -303,7 +303,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 * example:
 	 * foi_3234,2012-04-17T20:02:05-0000,10.0;foi_3234,2012-04-17T16:02:05-0000,11.0;foi_3234,2012-04-17T12:02:05-0000,12.0;
 	 */
-	private Node buildMovingValues(Document doc, Station station,
+	private Node buildMovingValues(Document doc, SosStation station,
 			ObservationCollection valuesCollection) {
 		
 		List<Calendar> dates = valuesCollection.getObservationDates();
@@ -338,7 +338,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 * example:
 	 * foi_3234,2012-04-17T20:02:05-0000,10.0;foi_3234,2012-04-17T16:02:05-0000,11.0;foi_3234,2012-04-17T12:02:05-0000,12.0;
 	 */
-	private Node buildValues(Document doc, Station station,
+	private Node buildValues(Document doc, SosStation station,
 			ObservationCollection valuesCollection) {
 		
 		List<Calendar> dates = valuesCollection.getObservationDates();
@@ -405,8 +405,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		time.setAttribute("definition", "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian");
 		fieldTime.appendChild(time);
 		
-		Sensor sensor = valuesCollection.getSensor();
-		Phenomenon phenomenon = sensor.getPhenomenon();
+		SosSensor sensor = valuesCollection.getSensor();
+		SosPhenomenon phenomenon = sensor.getPhenomena().get(0);
 		
 		Element field = doc.createElement("swe:field");
 		field.setAttribute("name", phenomenon.getName());
@@ -476,8 +476,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	</om:featureOfInterest>
 	 */
 	private Node createMovingFeatureOfInterest(Document doc, ObservationCollection valuesCollection){
-		Sensor sensor = valuesCollection.getSensor();
-		Station station = valuesCollection.getStation();
+		SosSensor sensor = valuesCollection.getSensor();
+		SosStation station = valuesCollection.getStation();
 		
 		Element featureOfInterest = doc.createElement("om:featureOfInterest");
 		Element featureCollection = doc.createElement("gml:FeatureCollection");
@@ -544,8 +544,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 * 
 	 * @param station - station to get information from
 	 */
-	private Node createFeatureOfInterest(Document doc, Station station, 
-			Sensor sensor) {
+	private Node createFeatureOfInterest(Document doc, SosStation station, 
+			SosSensor sensor) {
 		Element featureOfInterest = doc.createElement("om:featureOfInterest");
 		Element featureCollection = doc.createElement("gml:FeatureCollection");
 		featureOfInterest.appendChild(featureCollection);

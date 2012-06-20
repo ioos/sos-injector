@@ -13,9 +13,9 @@ import java.util.regex.Pattern;
 import com.axiomalaska.sos.ObservationRetriever;
 import com.axiomalaska.sos.PhenomenaBuilder;
 import com.axiomalaska.sos.data.ObservationCollection;
-import com.axiomalaska.sos.data.Phenomenon;
-import com.axiomalaska.sos.data.Sensor;
-import com.axiomalaska.sos.data.Station;
+import com.axiomalaska.sos.data.SosPhenomenon;
+import com.axiomalaska.sos.data.SosSensor;
+import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.tools.HttpSender;
 
 public class CnfaicObservationRetriever implements ObservationRetriever {
@@ -40,25 +40,24 @@ public class CnfaicObservationRetriever implements ObservationRetriever {
 	// -------------------------------------------------------------------------
 
 	@Override
-	public ObservationCollection getObservationCollection(Station station,
-			Sensor sensor, Calendar startDate) {
+	public ObservationCollection getObservationCollection(SosStation station,
+			SosSensor sensor, SosPhenomenon phenomenon, Calendar startDate) {
 		String hoursText = calculatedDifferenceFromNow(startDate);
 		
 		try {
 			String rawObservationData = httpSender.sendGetMessage(
 					"http://www.cnfaic.org/library/grabbers/nws_feed.php?hours=" + hoursText);
 			
-			Phenomenon airTemperaturePhenomenon = phenomenaBuilder.createAirTemperature();
-			Phenomenon relativeHumidityPhenomenon = phenomenaBuilder.createRelativeHumidity();
-			Phenomenon windSpeedPhenomenon = phenomenaBuilder.createWindSpeed();
-			Phenomenon windfromDirectionPhenomenon = phenomenaBuilder.createWindfromDirection();
-			Phenomenon windSpeedofGustPhenomenon = phenomenaBuilder.createWindSpeedofGust();
+			SosPhenomenon airTemperaturePhenomenon = phenomenaBuilder.createAirTemperature();
+			SosPhenomenon relativeHumidityPhenomenon = phenomenaBuilder.createRelativeHumidity();
+			SosPhenomenon windSpeedPhenomenon = phenomenaBuilder.createWindSpeed();
+			SosPhenomenon windfromDirectionPhenomenon = phenomenaBuilder.createWindfromDirection();
+			SosPhenomenon windSpeedofGustPhenomenon = phenomenaBuilder.createWindSpeedofGust();
 			
 			Pattern observationParser = 
 					Pattern.compile(station.getId() + 
 							",((\\d{4}-\\d{2}-\\d{2} \\d{2}):\\d{2}:\\d{2},(\\d+.\\d+),(\\d+),(\\d+),(\\d+),(\\d+))");
 		
-			Phenomenon phenomenon = sensor.getPhenomenon();
 			Matcher matcher = observationParser.matcher(rawObservationData);
 			List<Calendar> dateValues = new ArrayList<Calendar>();
 			List<Double> dataValues = new ArrayList<Double>();

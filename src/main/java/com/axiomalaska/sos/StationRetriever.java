@@ -2,9 +2,9 @@ package com.axiomalaska.sos;
 
 import java.util.List;
 
-import com.axiomalaska.sos.data.Station;
+import com.axiomalaska.sos.data.SosStation;
 
 public interface StationRetriever {
 
-	public List<Station> getStations()  throws Exception ;
+	public List<SosStation> getStations()  throws Exception ;
 }

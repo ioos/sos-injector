@@ -6,7 +6,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.axiomalaska.sos.data.Station;
+import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.tools.IdCreator;
 
 /**
@@ -20,14 +20,14 @@ public class DescribeSensorBuilder extends SosXmlBuilder {
   // Private Data
   // ---------------------------------------------------------------------------
 
-	private Station station;
+	private SosStation station;
 	private IdCreator idCreator;
 
   // ---------------------------------------------------------------------------
   // Constructor
   // ---------------------------------------------------------------------------
 
-	public DescribeSensorBuilder(Station station, IdCreator idCreator) {
+	public DescribeSensorBuilder(SosStation station, IdCreator idCreator) {
 		this.station = station;
 		this.idCreator = idCreator;
 	}

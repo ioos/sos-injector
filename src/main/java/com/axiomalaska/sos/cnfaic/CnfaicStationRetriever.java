@@ -6,8 +6,11 @@ import java.util.List;
 import com.axiomalaska.sos.PhenomenaBuilder;
 import com.axiomalaska.sos.StationRetriever;
 import com.axiomalaska.sos.data.Location;
-import com.axiomalaska.sos.data.Sensor;
-import com.axiomalaska.sos.data.Station;
+import com.axiomalaska.sos.data.SosPhenomenon;
+import com.axiomalaska.sos.data.SosSensor;
+import com.axiomalaska.sos.data.SosSensorImp;
+import com.axiomalaska.sos.data.SosStationImp;
+import com.axiomalaska.sos.data.SosStation;
 
 public class CnfaicStationRetriever implements StationRetriever {
 
@@ -15,9 +18,9 @@ public class CnfaicStationRetriever implements StationRetriever {
 	// StationRetriever Members
 	// -------------------------------------------------------------------------
 
-	public List<Station> getStations() throws Exception {
+	public List<SosStation> getStations() throws Exception {
 
-		List<Station> stations = new ArrayList<Station>();
+		List<SosStation> stations = new ArrayList<SosStation>();
 
 		stations.add(createSeattleRidge());
 		stations.add(createSunburstRidge());
@@ -32,35 +35,55 @@ public class CnfaicStationRetriever implements StationRetriever {
 	// Private Members
 	// -------------------------------------------------------------------------
 
-	private List<Sensor> getSensors() {
+	private List<SosSensor> getSensors() {
 		PhenomenaBuilder phenomenaBuilder = new PhenomenaBuilder();
-		List<Sensor> sensors = new ArrayList<Sensor>();
+		List<SosSensor> sensors = new ArrayList<SosSensor>();
 		
-		Sensor airTemperatureSensor = new Sensor();
-		airTemperatureSensor.setPhenomenon(phenomenaBuilder.createAirTemperature());
+		SosSensorImp airTemperatureSensor = new SosSensorImp();
+		List<SosPhenomenon> phenomena = new ArrayList<SosPhenomenon>();
+		phenomena.add(phenomenaBuilder.createAirTemperature());
+		airTemperatureSensor.setPhenomena(phenomena);
+		airTemperatureSensor.setId("Air Temperature");
+		airTemperatureSensor.setDescription("Air Temperature");
 		sensors.add(airTemperatureSensor);
 	
-		Sensor relativeHumiditySensor = new Sensor();
-		relativeHumiditySensor.setPhenomenon(phenomenaBuilder.createRelativeHumidity());
+		SosSensorImp relativeHumiditySensor = new SosSensorImp();
+		phenomena = new ArrayList<SosPhenomenon>();
+		phenomena.add(phenomenaBuilder.createRelativeHumidity());
+		relativeHumiditySensor.setPhenomena(phenomena);
+		relativeHumiditySensor.setId("Relative Humidity");
+		relativeHumiditySensor.setDescription("Relative Humidity");
 		sensors.add(relativeHumiditySensor);
 		
-		Sensor windSpeedSensor = new Sensor();
-		windSpeedSensor.setPhenomenon(phenomenaBuilder.createWindSpeed());
+		SosSensorImp windSpeedSensor = new SosSensorImp();
+		phenomena = new ArrayList<SosPhenomenon>();
+		phenomena.add(phenomenaBuilder.createWindSpeed());
+		windSpeedSensor.setPhenomena(phenomena);
+		windSpeedSensor.setId("Wind Speed");
+		windSpeedSensor.setDescription("");
 		sensors.add(windSpeedSensor);
 		
-		Sensor windDirectionSensor = new Sensor();
-		windDirectionSensor.setPhenomenon(phenomenaBuilder.createWindfromDirection());
+		SosSensorImp windDirectionSensor = new SosSensorImp();
+		phenomena = new ArrayList<SosPhenomenon>();
+		phenomena.add(phenomenaBuilder.createWindfromDirection());
+		windDirectionSensor.setPhenomena(phenomena);
+		windDirectionSensor.setId("Wind Direction");
+		windDirectionSensor.setDescription("");
 		sensors.add(windDirectionSensor);
 		
-		Sensor windGustSensor = new Sensor();
-		windGustSensor.setPhenomenon(phenomenaBuilder.createWindSpeedofGust());
+		SosSensorImp windGustSensor = new SosSensorImp();
+		phenomena = new ArrayList<SosPhenomenon>();
+		phenomena.add(phenomenaBuilder.createWindSpeedofGust());
+		windGustSensor.setPhenomena(phenomena);
+		windGustSensor.setId("Wind Gust");
+		windGustSensor.setDescription("");
 		sensors.add(windGustSensor);
 
 		return sensors;
 	}
 	
-	private Station createArcticValley() {
-		Station marmot = new Station();
+	private SosStation createArcticValley() {
+		SosStationImp marmot = new SosStationImp();
 
 		marmot.setFeatureOfInterestName("At station:Arctic Valley Ridge of source: CNFAIC");
 		marmot.setId("arctic_valley");
@@ -73,8 +96,8 @@ public class CnfaicStationRetriever implements StationRetriever {
 		return marmot;
 	}
 
-	private Station createMarmotRidge() {
-		Station marmot = new Station();
+	private SosStation createMarmotRidge() {
+		SosStationImp marmot = new SosStationImp();
 
 		marmot.setFeatureOfInterestName("At station: Marmot Ridge in Hatcher Pass of source: CNFAIC");
 		marmot.setId("marmot");
@@ -87,8 +110,8 @@ public class CnfaicStationRetriever implements StationRetriever {
 		return marmot;
 	}
 
-	private Station createFresnoRidge() {
-		Station fresnoRidge = new Station();
+	private SosStation createFresnoRidge() {
+		SosStationImp fresnoRidge = new SosStationImp();
 
 		fresnoRidge
 				.setFeatureOfInterestName("At station: Fresno Ridge (Near Summit Lake) of source: CNFAIC");
@@ -102,8 +125,8 @@ public class CnfaicStationRetriever implements StationRetriever {
 		return fresnoRidge;
 	}
 
-	private Station createSunburstRidge() {
-		Station sunburstRidge = new Station();
+	private SosStation createSunburstRidge() {
+		SosStationImp sunburstRidge = new SosStationImp();
 
 		sunburstRidge
 				.setFeatureOfInterestName("At station: Sunburst Ridge of source: CNFAIC");
@@ -117,8 +140,8 @@ public class CnfaicStationRetriever implements StationRetriever {
 		return sunburstRidge;
 	}
 
-	private Station createSeattleRidge() {
-		Station seattleRidge = new Station();
+	private SosStation createSeattleRidge() {
+		SosStationImp seattleRidge = new SosStationImp();
 
 		seattleRidge
 				.setFeatureOfInterestName("At station: Seattle Ridge of source: CNFAIC");

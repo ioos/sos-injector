@@ -19,9 +19,9 @@ import org.w3c.dom.NodeList;
 
 
 import com.axiomalaska.sos.data.ObservationCollection;
-import com.axiomalaska.sos.data.Phenomenon;
-import com.axiomalaska.sos.data.Sensor;
-import com.axiomalaska.sos.data.Station;
+import com.axiomalaska.sos.data.SosPhenomenon;
+import com.axiomalaska.sos.data.SosSensor;
+import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.tools.HttpSender;
 import com.axiomalaska.sos.tools.IdCreator;
 import com.axiomalaska.sos.xmlbuilder.DescribeSensorBuilder;
@@ -128,7 +128,7 @@ public class ObservationSubmitter {
 	 */
 	public void update(ObservationCollection observationCollection) throws Exception {
 		if (isObservationCollectionValid(observationCollection)) {
-			Station station = observationCollection.getStation();
+			SosStation station = observationCollection.getStation();
 			boolean isStationCreated = isStationCreated(station);
 			if (!isStationCreated) {
 				isStationCreated = createNewSosStation(station);
@@ -153,9 +153,9 @@ public class ObservationSubmitter {
 	 * @param observationRetriever - the data store of observations used to 
 	 * pull observations from
 	 */
-	public void update(List<Station> stations, 
+	public void update(List<SosStation> stations, 
 			ObservationRetriever observationRetriever) throws Exception {
-		for (Station station : stations) {
+		for (SosStation station : stations) {
 			update(station, observationRetriever);
 		}
 	}
@@ -173,7 +173,7 @@ public class ObservationSubmitter {
 	 * @param observationRetriever -  the data store of observations used to 
 	 * pull observations from
 	 */
-	public void update(Station station,  
+	public void update(SosStation station,  
 			ObservationRetriever observationRetriever) throws Exception {
 		if (station.getSensors().size() > 0) {
 			boolean isStationCreated = isStationCreated(station);
@@ -182,14 +182,37 @@ public class ObservationSubmitter {
 			}
 
 			if (isStationCreated) {
-				for (Sensor sensor : station.getSensors()) {
+				for (SosSensor sensor : station.getSensors()) {
 					update(station, sensor,
 							observationRetriever);
 				}
 			}
 		}
 		else{
-			logger.info("Station " + idCreator.createProcederId(station) + " does not have any phenomena. The station will not be added.");
+			logger.info("Station " + idCreator.createProcederId(station) + 
+					" does not have any sensors. The station will not be added.");
+		}
+	}
+	
+	/**
+	 * Pull: Update the observations of a station with a specific phenomenon in the SOS server.
+	 * 
+	 * @param station - the station to pull observations 
+	 * @param sensor - the sensor to pull observations 
+	 * @param observationRetriever - the data store of observations used to 
+	 * pull observations from
+	 */
+	public void update(SosStation station, SosSensor sensor,  
+			ObservationRetriever observationRetriever)
+			throws Exception {
+		if(sensor.getPhenomena().size() > 0){
+			for(SosPhenomenon phenomenon : sensor.getPhenomena()){
+				update(station, sensor, phenomenon, observationRetriever);
+			}
+		}
+		else{
+			logger.info("Station " + idCreator.createProcederId(station) + 
+					" does not have any phenomena. The station will not be added.");
 		}
 	}
 	
@@ -201,14 +224,14 @@ public class ObservationSubmitter {
 	 * @param observationRetriever - the data store of observations used to 
 	 * pull observations from
 	 */
-	public void update(Station station, Sensor sensor,  
-			ObservationRetriever observationRetriever)
-			throws Exception {
-		Calendar startDate = getNewestObservationDate(station, sensor);
-		
-		ObservationCollection observationCollection = observationRetriever.getObservationCollection(
-				station, sensor, startDate);
-		
+	public void update(SosStation station, SosSensor sensor, SosPhenomenon phenomenon,
+			ObservationRetriever observationRetriever) throws Exception {
+		Calendar startDate = getNewestObservationDate(station, sensor, phenomenon);
+
+		ObservationCollection observationCollection = observationRetriever
+				.getObservationCollection(station, sensor, phenomenon,
+						startDate);
+
 		if (isObservationCollectionValid(observationCollection)) {
 			insertObservations(observationCollection, startDate);
 		}
@@ -227,7 +250,8 @@ public class ObservationSubmitter {
 	private void insertObservations(ObservationCollection observationCollection) 
 			throws Exception {
 		Calendar newestObservationInSosDate = getNewestObservationDate(
-				observationCollection.getStation(), observationCollection.getSensor());
+				observationCollection.getStation(), observationCollection.getSensor(), 
+				observationCollection.getPhenomenon());
 		
 		insertObservations(observationCollection, newestObservationInSosDate);
 	}
@@ -241,8 +265,7 @@ public class ObservationSubmitter {
 	 */
 	private void insertObservations(ObservationCollection observationCollection, 
 			Calendar newestObservationInSosDate) throws Exception {
-		Sensor sensor = observationCollection.getSensor();
-		Station station = observationCollection.getStation();
+		SosStation station = observationCollection.getStation();
 
 		ObservationCollection filteredObservationCollection = removeOlderObservations(
 				newestObservationInSosDate, observationCollection);
@@ -259,19 +282,17 @@ public class ObservationSubmitter {
 				logger.error("Inputed "
 						+ observationCollection.getObservationDates().size()
 						+ " observations from station: " + idCreator.createProcederId(station)
-						+ " and phenomenon: " + sensor.getPhenomenon().getName()
 						+ " from: " + " response: \n" + response);
 			} else {
 				logger.info("Inputed "
 						+ observationCollection.getObservationDates().size()
 						+ " observations from station: " + idCreator.createProcederId(station)
-						+ " and phenomenon: " + sensor.getPhenomenon().getName());
+						+ "");
 			}
 		} catch (Exception e) {
 			logger.error("Inputed "
 					+ observationCollection.getObservationDates().size()
 					+ " observations from station: " + idCreator.createProcederId(station)
-					+ " and phenomenon: " + sensor.getPhenomenon().getName()
 					+ " message: \n" + e.getMessage());
 		}
 	}
@@ -324,6 +345,12 @@ public class ObservationSubmitter {
 		}
 		
 		if(observationCollection.getSensor() == null){
+			logger.info("Sensor was null in ObservationCollection");
+			
+			return false;
+		}
+		
+		if(observationCollection.getPhenomenon() == null){
 			logger.info("Phenomenon was null in ObservationCollection");
 			
 			return false;
@@ -335,22 +362,23 @@ public class ObservationSubmitter {
 			return false;
 		}
 		
-		Sensor sensor = observationCollection.getSensor();
-		Station station = observationCollection.getStation();
+		SosStation station = observationCollection.getStation();
+		SosPhenomenon phenomenon = observationCollection.getPhenomenon();
+		SosSensor sensor = observationCollection.getSensor();
 		
 	    if (observationCollection.getObservationDates().size() != observationCollection.getObservationValues().size()){
 			logger.info("The observationCollection's size of the dates list is not equal to the values list "
-					+ " for station: "
-					+ idCreator.createProcederId(station) + " and phenomenon: "
-					+ sensor.getPhenomenon().getName());
+					+ " for station: " + idCreator.createProcederId(station)
+					+ " sensor: " + sensor.getId() 
+					+ " phenomenon: " + phenomenon.getId());
 	    	return false;
 	    }
 	    if(observationCollection.getObservationDates().size() == 0
 				&& observationCollection.getObservationValues().size() == 0){
 			logger.info("No values from source "
-					+ " for station: "
-					+ idCreator.createProcederId(station) + " and phenomenon: "
-					+ sensor.getPhenomenon().getName());
+					+ " for station: " + idCreator.createProcederId(station)
+					+ " sensor: " + sensor.getId() 
+					+ " phenomenon: " + phenomenon.getId());
 			return false;
 		}
 	    
@@ -358,9 +386,9 @@ public class ObservationSubmitter {
 	    		observationCollection.getObservationLocations().size() != 
 	    		observationCollection.getObservationValues().size()){
 			logger.info("Moving station does not have the same amount of " +
-					"locations has values. Station name " + 
-					idCreator.createProcederId(station) + " and phenomenon: "
-					+ sensor.getPhenomenon().getName());
+					"locations has values. Station name " + idCreator.createProcederId(station)
+					+ " sensor: " + sensor.getId() 
+					+ " phenomenon: " + phenomenon.getId());
 			
 	    	return false;
 	    }
@@ -378,10 +406,10 @@ public class ObservationSubmitter {
 	 * from the station phenomenon passed in. If there are no observations in 
 	 * the SOS it returns a date from the first century.
 	 */
-	private Calendar getNewestObservationDate(Station station,
-			Sensor sensor) throws Exception {
+	private Calendar getNewestObservationDate(SosStation station,
+			SosSensor sensor, SosPhenomenon phenomenon) throws Exception {
 		GetNewestObservationBuilder getObservationLatestBuilder = 
-				new GetNewestObservationBuilder(station, sensor, idCreator);
+				new GetNewestObservationBuilder(station, sensor, phenomenon, idCreator);
 
 		String getObservationXml = getObservationLatestBuilder.build();
 
@@ -414,8 +442,8 @@ public class ObservationSubmitter {
 
 			return date;
 		} else {
-			logger.info("station: " + idCreator.createProcederId(station) + " phenomenon: "
-					+ sensor.getPhenomenon().getName() + " has no observations in SOS");
+			logger.info("station: " + idCreator.createProcederId(station) + 
+					" has no observations in SOS");
 			Calendar defaultDate = Calendar.getInstance();
 
 			defaultDate.set(1970, Calendar.JANUARY, 1);
@@ -455,7 +483,7 @@ public class ObservationSubmitter {
 	 *            - the station to be created
 	 * @return - [true] if the station was create successfully [false] if else. 
 	 */
-	private boolean createNewSosStation(Station station) throws Exception {
+	private boolean createNewSosStation(SosStation station) throws Exception {
 		logger.info("Creating station: " + idCreator.createProcederId(station));
 
 		RegisterSensorBuilder registerSensorBuilder = new RegisterSensorBuilder(
@@ -482,7 +510,7 @@ public class ObservationSubmitter {
 	 * @return [true] if the station needs to be created. [false] if the station
 	 *         does not need to be created
 	 */
-	private Boolean isStationCreated(Station station) throws Exception {
+	private Boolean isStationCreated(SosStation station) throws Exception {
 		DescribeSensorBuilder describeSensorBuilder = new DescribeSensorBuilder(
 				station, idCreator);
 

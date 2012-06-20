@@ -3,23 +3,17 @@ package com.axiomalaska.sos.data;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A station represents a location where one or more phenomena are measured. 
- * 
- * @author Lance Finfrock
- */
-public class Station {
-	
+public class SosStationImp implements SosStation {
 	// -------------------------------------------------------------------------
 	// Private Members
 	// -------------------------------------------------------------------------
 	
 	private Location location;
-	private String featureOfInterestName;
-	private String sourceName;
-	private String id;
+	private String featureOfInterestName = "";
+	private String sourceName = "";
+	private String id = "";
 	private boolean isMoving = false;
-	private List<Sensor> sensors = new ArrayList<Sensor>();
+	private List<SosSensor> sensors = new ArrayList<SosSensor>();
 	
 	// -------------------------------------------------------------------------
 	// Public Members
@@ -28,7 +22,7 @@ public class Station {
 	/**
 	 * A list of phenomena that this station has readings for
 	 */
-	public List<Sensor> getSensors() {
+	public List<SosSensor> getSensors() {
 		return sensors;
 	}
 	
@@ -94,7 +88,7 @@ public class Station {
 		this.id = id;
 	}
 	
-	public void setSensors(List<Sensor> sensors) {
+	public void setSensors(List<SosSensor> sensors) {
 		this.sensors = sensors;
 	}
 	

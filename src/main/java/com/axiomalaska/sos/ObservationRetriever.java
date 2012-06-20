@@ -3,8 +3,9 @@ package com.axiomalaska.sos;
 import java.util.Calendar;
 
 import com.axiomalaska.sos.data.ObservationCollection;
-import com.axiomalaska.sos.data.Sensor;
-import com.axiomalaska.sos.data.Station;
+import com.axiomalaska.sos.data.SosPhenomenon;
+import com.axiomalaska.sos.data.SosSensor;
+import com.axiomalaska.sos.data.SosStation;
 
 /**
  * Represents an interface to request observations from some data store.
@@ -21,6 +22,6 @@ public interface ObservationRetriever {
 	 * @param station - the associated station of the requested observations
 	 * @param startDate - all observations returned should be older than this date
 	 */
-	public ObservationCollection getObservationCollection(Station station, 
-			Sensor sensor, 	Calendar startDate);
+	public ObservationCollection getObservationCollection(SosStation station, 
+			SosSensor sensor, SosPhenomenon phenomenon, Calendar startDate);
 }
