@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.axiomalaska.sos.cnfaic.CnfaicObservationRetriever;
 import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.SosPhenomenon;
 import com.axiomalaska.sos.data.SosSensor;
@@ -25,36 +24,36 @@ public class AppTest {
 		assertTrue(true);
 	}
 	
-	@Test
-	public void testCnfaic2() throws Exception{
-		ObservationUpdaterFactory factory = new ObservationUpdaterFactory();
-		
-		ObservationUpdater observationUpdater = 
-				factory.buildCnfaicObservationUpdater("http://192.168.8.15:8080/sos/sos");
-		
-		observationUpdater.update();
-	}
-	
-	@Test
-	public void testCnfaic(){
-		PhenomenaBuilder phenomenaBuilder = new PhenomenaBuilder();
-		CnfaicObservationRetriever observationRetriever = 
-				new CnfaicObservationRetriever();
-		
-		SosStation seattle = createSeattleRidge();
-		SosPhenomenon airTemperature = phenomenaBuilder.createAirTemperature();
-		
-		Calendar startDate = Calendar.getInstance();
-		startDate.add(Calendar.DAY_OF_MONTH, -1);
-		
-		SosSensorImp sensor = new SosSensorImp();
-		List<SosPhenomenon> phenomena = new ArrayList<SosPhenomenon>();
-		phenomena.add(airTemperature);
-		sensor.setPhenomena(phenomena);
-		
-		observationRetriever.getObservationCollection(
-				seattle, sensor, airTemperature, startDate);
-	}
+//	@Test
+//	public void testCnfaic2() throws Exception{
+//		ObservationUpdaterFactory factory = new ObservationUpdaterFactory();
+//		
+//		ObservationUpdater observationUpdater = 
+//				factory.buildCnfaicObservationUpdater("http://192.168.8.15:8080/sos/sos");
+//		
+//		observationUpdater.update();
+//	}
+//	
+//	@Test
+//	public void testCnfaic(){
+//		PhenomenaBuilder phenomenaBuilder = new PhenomenaBuilder();
+//		CnfaicObservationRetriever observationRetriever = 
+//				new CnfaicObservationRetriever();
+//		
+//		SosStation seattle = createSeattleRidge();
+//		SosPhenomenon airTemperature = phenomenaBuilder.createAirTemperature();
+//		
+//		Calendar startDate = Calendar.getInstance();
+//		startDate.add(Calendar.DAY_OF_MONTH, -1);
+//		
+//		SosSensorImp sensor = new SosSensorImp();
+//		List<SosPhenomenon> phenomena = new ArrayList<SosPhenomenon>();
+//		phenomena.add(airTemperature);
+//		sensor.setPhenomena(phenomena);
+//		
+//		observationRetriever.getObservationCollection(
+//				seattle, sensor, airTemperature, startDate);
+//	}
 	
 	private List<SosSensor> getSensors() {
 		PhenomenaBuilder phenomenaBuilder = new PhenomenaBuilder();
