@@ -1,11 +1,10 @@
-package com.axiomalaska.sos;
+package com.axiomalaska.sos.cnfaic;
 
 import org.apache.log4j.Logger;
 
-import com.axiomalaska.sos.cnfaic.CnfaicObservationRetriever;
-import com.axiomalaska.sos.cnfaic.CnfaicStationRetriever;
+import com.axiomalaska.sos.ObservationUpdater;
 
-public class ObservationUpdaterFactory {
+public class CnfaicObservationUpdaterFactory {
 
 	// -------------------------------------------------------------------------
 	// Public Members
