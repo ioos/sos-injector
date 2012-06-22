@@ -5,11 +5,8 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.Test;
-
 
 import com.axiomalaska.sos.cnfaic.CnfaicObservationRetriever;
 import com.axiomalaska.sos.data.Location;
@@ -29,22 +26,13 @@ public class AppTest {
 	}
 	
 	@Test
-	public void test2() {
-		String st1 = "test";
-		String st2 = "test";
-		System.out.println(st1.equals(st2));
-		assertTrue(true);
-	}
-	
-	@Test
-	public void test4() {
-		Pattern pattern = Pattern.compile(".*/(\\w+)");
+	public void testCnfaic2() throws Exception{
+		ObservationUpdaterFactory factory = new ObservationUpdaterFactory();
 		
-		Matcher matcher = pattern.matcher("lkjasdfljasdflkj/matches");
+		ObservationUpdater observationUpdater = 
+				factory.buildCnfaicObservationUpdater("http://192.168.8.15:8080/sos/sos");
 		
-		while(matcher.find()){
-			System.out.println(matcher.group(1));
-		}
+		observationUpdater.update();
 	}
 	
 	@Test

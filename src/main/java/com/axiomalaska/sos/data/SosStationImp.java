@@ -14,6 +14,7 @@ public class SosStationImp implements SosStation {
 	private String id = "";
 	private boolean isMoving = false;
 	private List<SosSensor> sensors = new ArrayList<SosSensor>();
+	private List<SosNetwork> networks = new ArrayList<SosNetwork>();
 	
 	// -------------------------------------------------------------------------
 	// Public Members
@@ -64,7 +65,7 @@ public class SosStationImp implements SosStation {
 	 * 
 	 * @return
 	 */
-	public String getSourceName() {
+	public String getSourceId() {
 		return sourceName;
 	}
 	
@@ -94,5 +95,17 @@ public class SosStationImp implements SosStation {
 	
 	public String toString(){
 		return "ID " + id + " " + featureOfInterestName;
+	}
+	
+	/**
+	 * A list of networks this station is associated to
+	 * @return
+	 */
+	public List<SosNetwork> getNetworks(){
+		return networks;
+	}
+	
+	public void setNetworks(List<SosNetwork> networks){
+		this.networks = networks;
 	}
 }

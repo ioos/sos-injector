@@ -63,7 +63,6 @@ public class HttpSender {
 		URL url = new URL(urlText);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setConnectTimeout(TIME_OUT);
-		System.out.println("timeout is " + connection.getConnectTimeout());
 		return getStringResult(connection.getInputStream());
 	}
 

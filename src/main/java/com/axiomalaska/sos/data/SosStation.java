@@ -21,7 +21,7 @@ public interface SosStation {
 	/**
 	 * This ID should be unique for each station. For example '11111'
 	 */
-	public String getId() ;
+	public String getId();
 
 	/**
 	 * The default name of the location with which the station takes its 
@@ -43,5 +43,11 @@ public interface SosStation {
 	 * 
 	 * @return
 	 */
-	public String getSourceName();
+	public String getSourceId();
+	
+	/**
+	 * A list of networks this station is associated to
+	 * @return
+	 */
+	public List<SosNetwork> getNetworks();
 }

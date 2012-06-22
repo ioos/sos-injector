@@ -6,9 +6,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.axiomalaska.sos.data.SosStation;
-import com.axiomalaska.sos.tools.IdCreator;
-
 /**
  * Builds a SOS DescribeSensor XML String with a passed in Station
  * 
@@ -20,16 +17,14 @@ public class DescribeSensorBuilder extends SosXmlBuilder {
   // Private Data
   // ---------------------------------------------------------------------------
 
-	private SosStation station;
-	private IdCreator idCreator;
+	private String procedureId;
 
   // ---------------------------------------------------------------------------
   // Constructor
   // ---------------------------------------------------------------------------
-
-	public DescribeSensorBuilder(SosStation station, IdCreator idCreator) {
-		this.station = station;
-		this.idCreator = idCreator;
+	
+	public DescribeSensorBuilder(String procedureId) {
+		this.procedureId = procedureId;
 	}
 
   // ---------------------------------------------------------------------------
@@ -74,7 +69,6 @@ public class DescribeSensorBuilder extends SosXmlBuilder {
 			doc.appendChild(describeSensor);
 
 			Element procedure = doc.createElement("procedure");
-			String procedureId = idCreator.createProcederId(station);
 
 			procedure.appendChild(doc.createTextNode(procedureId));
 			

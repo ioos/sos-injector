@@ -1,37 +1,40 @@
 package com.axiomalaska.sos.tools;
 
 import com.axiomalaska.sos.data.Location;
+import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
 
 public class IdCreator {
-
-	public String createProcederId(SosStation station){
-		return "urn:ioos:station:" + station.getSourceName() + ":" + station.getId();
-	}
 	
 	public String createFeatureOfInterestId(SosStation station, 
 			SosSensor sensor, Location location){
+		String locationTag = ":" + location.getLatitude() + ":" + location.getLongitude();
 		
-		String featureOfInterestId = station.getSourceName() + ":" + station.getId();
-		
-		featureOfInterestId += ":" + location.getLatitude() + "_" + location.getLongitude();
-		
-		return featureOfInterestId;
+		return "urn:ioos:foi:" + station.getSourceId() + ":" + 
+			station.getId() + ":" + sensor.getId() + locationTag;
 	}
 	
-	public String createFeatureOfInterestName(SosStation station,
-			SosSensor sensor) {
-		String featureOfInterestName = station.getFeatureOfInterestName();
-		
-		return featureOfInterestName;
+	public String createFeatureOfInterestName(SosStation station, SosSensor sensor) {
+		return station.getFeatureOfInterestName();
 	}
 	
 	public String createFeatureOfInterestId(SosStation station, 
 			SosSensor sensor){
-		
-		String featureOfInterestId = station.getSourceName() + ":" + station.getId();
-		
-		return featureOfInterestId;
+		return "urn:ioos:foi:" + station.getSourceId() + ":" + 
+			station.getId();
+	}
+	
+	public String createNetworkId(SosNetwork network){
+		return "urn:ioos:network:" + network.getSourceId() + ":" + network.getId();
+	}
+	
+	public String createStationId(SosStation station){
+		return "urn:ioos:station:" + station.getSourceId() + ":" + station.getId();
+	}
+	
+	public String createSensorId(SosStation station, SosSensor sensor){
+		return "urn:ioos:sensor:" + station.getSourceId() + ":" + 
+				station.getId() + ":" + sensor.getId();
 	}
 }

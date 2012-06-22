@@ -114,6 +114,7 @@ public class CnfaicObservationRetriever implements ObservationRetriever {
 			observationCollection.setObservationValues(dataValues);
 			observationCollection.setSensor(sensor);
 			observationCollection.setStation(station);
+			observationCollection.setPhenomenon(phenomenon);
 			
 			return observationCollection;
 		} catch (Exception e) {
@@ -155,6 +156,11 @@ public class CnfaicObservationRetriever implements ObservationRetriever {
 
 		int hourDiff = Math.round(diff / (1000 * 60 * 60));
 
-		return hourDiff + "";
+		if(hourDiff > 720){
+			return "720";
+		}
+		else{
+			return hourDiff + "";
+		}
 	}
 }

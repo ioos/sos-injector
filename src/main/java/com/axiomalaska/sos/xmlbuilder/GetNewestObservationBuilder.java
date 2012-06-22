@@ -91,13 +91,12 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 			
 			getObservation.appendChild(createEventTime(doc));
 			
-			getObservation.appendChild(createProcedure(doc, station));
+			getObservation.appendChild(createProcedure(doc));
 			
 			getObservation.appendChild(createObservedProperty(doc));
 			
 			if (!station.isMoving()) {
-				getObservation.appendChild(createFeatureOfInterest(doc,
-						station, sensor));
+				getObservation.appendChild(createFeatureOfInterest(doc));
 			}
 			
 			getObservation.appendChild(createResponseFormat(doc));
@@ -118,8 +117,7 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 		  <ObjectID>foi_13774</ObjectID>
 	  </featureOfInterest>
 	 */
-	private Node createFeatureOfInterest(Document doc, SosStation station, 
-			SosSensor sensor) {
+	private Node createFeatureOfInterest(Document doc) {
 		Element featureOfInterest = doc.createElement("featureOfInterest");
 		
 	    String featureOfInterestId = idCreator.createFeatureOfInterestId(
@@ -196,10 +194,10 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	/**
 	 * <procedure>urn:ogc:object:feature:Sensor:13774</procedure>
 	 */
-	private Node createProcedure(Document doc, SosStation station) {
+	private Node createProcedure(Document doc) {
 		Element procedure = doc.createElement("procedure");
 		
-		String procedureId = idCreator.createProcederId(station);
+		String procedureId = idCreator.createSensorId(station, sensor);
 		procedure.appendChild(doc.createTextNode(procedureId));
 
 		return procedure;
