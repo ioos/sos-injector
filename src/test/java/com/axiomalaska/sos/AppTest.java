@@ -123,20 +123,20 @@ public class AppTest {
 //		sosSensorBuilder.update(station, observationRetriever);
 	}
 	
-//	private String formatDate(Calendar date) {
-//		Calendar localDate = (Calendar) date.clone();
-//
-//		// localDate.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"))
-//
-////		localDate.setTimeZone(TimeZone.getTimeZone("US/Alaska"));
-//		String text = localDate.get(Calendar.YEAR) + "/"
-//				+ (localDate.get(Calendar.MONTH) + 1) + "/"
-//				+ localDate.get(Calendar.DAY_OF_MONTH) + " "
-//				+ localDate.get(Calendar.HOUR_OF_DAY) + ":"
-//				+ localDate.get(Calendar.MINUTE) + " "
-//				+ localDate.getTimeZone().getID();
-//		return text;
-//	}
+	private String formatDate(Calendar date) {
+		Calendar localDate = (Calendar) date.clone();
+
+		// localDate.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"))
+
+//		localDate.setTimeZone(TimeZone.getTimeZone("US/Alaska"));
+		String text = localDate.get(Calendar.YEAR) + "/"
+				+ (localDate.get(Calendar.MONTH) + 1) + "/"
+				+ localDate.get(Calendar.DAY_OF_MONTH) + " "
+				+ localDate.get(Calendar.HOUR_OF_DAY) + ":"
+				+ localDate.get(Calendar.MINUTE) + " "
+				+ localDate.getTimeZone().getID();
+		return text;
+	}
 	
 	private ObservationRetriever createObservationRetriever(){
 		ObservationRetriever observationRetriever = new ObservationRetriever(){

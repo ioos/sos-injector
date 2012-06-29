@@ -3,6 +3,11 @@ package com.axiomalaska.sos;
 import com.axiomalaska.sos.data.SosPhenomenon;
 import com.axiomalaska.sos.data.SosPhenomenonImp;
 
+/**
+ * This class builds the default Phenomena
+ * 
+ * @author Lance Finfrock
+ */
 public class PhenomenaBuilder {
 
 	public SosPhenomenon createSeaWaterTemperature() {

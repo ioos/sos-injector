@@ -21,6 +21,8 @@ public interface ObservationRetriever {
 	 * @param sensor - the associated sensor of the requested observations 
 	 * @param station - the associated station of the requested observations
 	 * @param startDate - all observations returned should be older than this date
+	 * 
+	 * @return a ObservationCollection with observations or null if no observation were found
 	 */
 	public ObservationCollection getObservationCollection(SosStation station, 
 			SosSensor sensor, SosPhenomenon phenomenon, Calendar startDate);

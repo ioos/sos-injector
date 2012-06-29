@@ -2,6 +2,11 @@ package com.axiomalaska.sos;
 
 import org.apache.log4j.Logger;
 
+/**
+ * This class is used to update the a SOS server
+ * 
+ * @author lance Finfrock
+ */
 public class ObservationUpdater {
 
 	// -------------------------------------------------------------------------
@@ -37,11 +42,15 @@ public class ObservationUpdater {
 	// Public Members
 	// -------------------------------------------------------------------------
 	
+	/**
+	 * Update the SOS with new observations
+	 * @throws Exception
+	 */
 	public void update() throws Exception {
-		ObservationSubmitter observationUpdater = new ObservationSubmitter(
+		ObservationSubmitter observationSubmitter = new ObservationSubmitter(
 				sosUrl, logger);
 
-		observationUpdater.update(stationRetriever.getStations(),
+		observationSubmitter.update(stationRetriever.getStations(),
 				observationRetriever);
 	}
 }

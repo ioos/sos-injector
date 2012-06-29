@@ -5,6 +5,13 @@ import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
 
+/**
+ * This class is used to create the ID of the objects of the SOS. This was created
+ * because of the multiple changes being made to the IDs. 
+ * 
+ * @author Lance Finfrock
+ *
+ */
 public class IdCreator {
 	
 	public String createFeatureOfInterestId(SosStation station, 

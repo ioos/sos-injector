@@ -13,13 +13,18 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.List;
 
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 
 /**
- * This class is a Helper for interfacing with HTTP. 
+ * This class is a Helper for interfacing with servers with HTTP. 
  * 
  * @author Lance Finfrock
  */
@@ -60,10 +65,29 @@ public class HttpSender {
 	}
 	
 	public String sendGetMessage(String urlText) throws IOException {
-		URL url = new URL(urlText);
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setConnectTimeout(TIME_OUT);
-		return getStringResult(connection.getInputStream());
+		HttpClient client = new HttpClient();
+		GetMethod method = new GetMethod(urlText);   
+		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
+				new DefaultHttpMethodRetryHandler(3, false));    
+		method.getParams().setSoTimeout(TIME_OUT);
+		
+		try {
+			if (client.executeMethod(method) != HttpStatus.SC_OK) {
+				System.err.println("Method failed: " + method.getStatusLine());
+				return null;
+			}
+			return getStringResult(method.getResponseBodyAsStream());
+		} catch (HttpException e) {
+			System.err.println("Fatal protocol violation: " + e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.err.println("Fatal transport error: " + e.getMessage());
+			e.printStackTrace();
+		} finally {
+			method.releaseConnection();    
+		} 
+
+		return null;
 	}
 
 	public String sendGetMessage(String serviceURL, List<HttpPart> httpParts)
@@ -102,7 +126,10 @@ public class HttpSender {
 		InputStream inputStream = conn.getInputStream();
 		try {
 			return getStringResult(inputStream);
-		} finally {
+		} catch(Exception e){
+			return null;
+		}
+		finally {
 			inputStream.close();
 		}
 	}
@@ -142,20 +169,23 @@ public class HttpSender {
 	}
 	
 	public String downloadReadFile(String url) throws Exception {
-		String filename = downloadFile(url);
-
-		File file = new File(filename);
-		int ch;
 		StringBuffer strContent = new StringBuffer("");
 		FileInputStream fin = null;
 		try {
+			String filename = downloadFile(url);
+			File file = new File(filename);
+			int ch;
 			fin = new FileInputStream(file);
 			while ((ch = fin.read()) != -1){
 				strContent.append((char) ch);
 			}
-			fin.close();
 		} catch (Exception e) {
 			System.out.println(e);
+		}
+		finally{
+			if(fin != null){
+				fin.close();
+			}
 		}
 		return strContent.toString();
 	}
