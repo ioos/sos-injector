@@ -1,5 +1,10 @@
 package com.axiomalaska.sos.data;
 
+/**
+ * The Location object that contains a Latitude and Longitude
+ * 
+ * @author Lance Finfrock
+ */
 public class Location {
 
 	// -------------------------------------------------------------------------

@@ -26,7 +26,7 @@ public class CnfaicObservationUpdaterFactory {
 				new CnfaicObservationRetriever();
 		
 		ObservationUpdater observationUpdater = new ObservationUpdater(sosUrl, 
-				logger, stationRetriever, observationRetriever);
+				logger, stationRetriever, observationRetriever, "CNFAIC Observation Updater");
 		
 		return observationUpdater;
 	}

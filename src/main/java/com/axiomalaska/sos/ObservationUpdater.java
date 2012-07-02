@@ -17,6 +17,7 @@ public class ObservationUpdater {
 	private String sosUrl;
 	private StationRetriever stationRetriever;
 	private ObservationRetriever observationRetriever;
+	private String name;
 	
 	// -------------------------------------------------------------------------
 	// Constructor
@@ -26,22 +27,33 @@ public class ObservationUpdater {
 			StationRetriever stationRetriever, 
 			ObservationRetriever observationRetriever){
 		this(sosUrl, Logger.getRootLogger(), 
-				stationRetriever, observationRetriever);
+				stationRetriever, observationRetriever, "no name");
 	}
 	
 	public ObservationUpdater(String sosUrl, Logger logger, 
 			StationRetriever stationRetriever, 
 			ObservationRetriever observationRetriever){
+		this(sosUrl, logger, 
+				stationRetriever, observationRetriever, "no name");
+	}
+	
+	public ObservationUpdater(String sosUrl, Logger logger, 
+			StationRetriever stationRetriever, 
+			ObservationRetriever observationRetriever, String name){
 		this.sosUrl = sosUrl;
 		this.logger = logger;
 		this.stationRetriever = stationRetriever;
 		this.observationRetriever = observationRetriever;
+		this.name = name;
 	}
 	
 	// -------------------------------------------------------------------------
 	// Public Members
 	// -------------------------------------------------------------------------
 	
+	public String getName(){
+		return name;
+	}
 	/**
 	 * Update the SOS with new observations
 	 * @throws Exception

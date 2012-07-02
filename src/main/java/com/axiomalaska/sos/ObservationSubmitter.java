@@ -296,7 +296,7 @@ public class ObservationSubmitter {
 			String response = httpSender.sendPostMessage(sosUrl, insertXml);
 
 			if (response.contains("Exception")) {
-				logger.error("Inputed "
+				logger.error("Trying to input "
 						+ observationCollection.getObservationDates().size()
 						+ " observations from sensor: " + idCreator.createSensorId(station, sensor)
 						+ " phenomenon: " + phenomenon.getId()
@@ -308,7 +308,7 @@ public class ObservationSubmitter {
 						+ " phenomenon: " + phenomenon.getId());
 			}
 		} catch (Exception e) {
-			logger.error("Inputed "
+			logger.error("Trying to inputk "
 					+ observationCollection.getObservationDates().size()
 					+ " observations from sensor: " + idCreator.createSensorId(station, sensor)
 					+ " phenomenon: " + phenomenon.getId()
@@ -360,7 +360,6 @@ public class ObservationSubmitter {
 	 */
 	private boolean isObservationCollectionValid(ObservationCollection observationCollection){
 		if (observationCollection == null){
-			logger.info("observationCollection is null");
 			return false;
 		}
 		
@@ -462,8 +461,8 @@ public class ObservationSubmitter {
 
 			return date;
 		} else {
-			logger.info("Sensor: " + idCreator.createSensorId(station, sensor) + 
-					" phenomonon: " + phenomenon.getId() + " has no observations in SOS");
+			logger.debug("No observations found in SOS for Sensor: " + idCreator.createSensorId(station, sensor) + 
+					" phenomonon: " + phenomenon.getId() );
 			Calendar defaultDate = Calendar.getInstance();
 
 			defaultDate.set(1970, Calendar.JANUARY, 1);

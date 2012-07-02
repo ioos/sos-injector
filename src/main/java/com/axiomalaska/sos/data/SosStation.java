@@ -3,7 +3,8 @@ package com.axiomalaska.sos.data;
 import java.util.List;
 
 /**
- * A station represents a location where one or more phenomena are measured. 
+ * A station represents a actual physical station. A station contains a location 
+ * where one or more phenomena are measured. 
  * 
  * @author Lance Finfrock
  */

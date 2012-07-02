@@ -16,7 +16,6 @@ import java.util.List;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -45,22 +44,26 @@ public class HttpSender {
 	 */
 	public String sendPostMessage(String serviceURL, String message)
 			throws IOException {
-		HttpClient httpClient = new HttpClient();
-		PostMethod method = new PostMethod(serviceURL);
 
-		method.setRequestEntity(new StringRequestEntity(message, "text/xml",
-				"UTF-8"));
-
-		HostConfiguration hostConfig = getHostConfiguration(new URL(serviceURL));
-		httpClient.setHostConfiguration(hostConfig);
-		httpClient.executeMethod(method);
-
-		InputStream is = method.getResponseBodyAsStream();
-
+		InputStream is = null;
 		try {
+			HttpClient httpClient = new HttpClient();
+			PostMethod method = new PostMethod(serviceURL);
+
+			method.setRequestEntity(new StringRequestEntity(message, "text/xml",
+					"UTF-8"));
+
+			HostConfiguration hostConfig = getHostConfiguration(new URL(serviceURL));
+			httpClient.setHostConfiguration(hostConfig);
+			httpClient.executeMethod(method);
+			is = method.getResponseBodyAsStream();
 			return getStringResult(is);
+		} catch (Exception e) {
+			return null;
 		} finally {
-			is.close();
+			if(is != null){
+				is.close();
+			}
 		}
 	}
 	
@@ -77,17 +80,11 @@ public class HttpSender {
 				return null;
 			}
 			return getStringResult(method.getResponseBodyAsStream());
-		} catch (HttpException e) {
-			System.err.println("Fatal protocol violation: " + e.getMessage());
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.err.println("Fatal transport error: " + e.getMessage());
-			e.printStackTrace();
+		} catch (Exception e) {
+			return null;
 		} finally {
 			method.releaseConnection();    
 		} 
-
-		return null;
 	}
 
 	public String sendGetMessage(String serviceURL, List<HttpPart> httpParts)
@@ -99,16 +96,17 @@ public class HttpSender {
 	public String sendPostMessage(String serviceURL, List<HttpPart> httpParts)
 			throws Exception {
 		URL siteUrl = new URL(serviceURL);
-		HttpURLConnection conn = (HttpURLConnection) siteUrl.openConnection();
 
-		conn.setConnectTimeout(TIME_OUT);
-		conn.setRequestMethod("POST");
-		conn.setDoOutput(true);
-		conn.setDoInput(true);
-
-		DataOutputStream out = new DataOutputStream(conn.getOutputStream());
-
+		DataOutputStream out = null;
+		HttpURLConnection conn = null;
 		try {
+			conn = (HttpURLConnection) siteUrl.openConnection();
+
+			conn.setConnectTimeout(TIME_OUT);
+			conn.setRequestMethod("POST");
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+			out = new DataOutputStream(conn.getOutputStream());
 			String content = "";
 			for (HttpPart httpPart : httpParts) {
 				if (content.length() != 0) {
@@ -119,33 +117,39 @@ public class HttpSender {
 			}
 			out.writeBytes(content);
 			out.flush();
+		} catch(Exception e){
+			return null;
 		} finally {
-			out.close();
+			if(out != null){
+				out.close();
+			}
 		}
 
-		InputStream inputStream = conn.getInputStream();
+		InputStream inputStream = null;
 		try {
+			inputStream = conn.getInputStream();
 			return getStringResult(inputStream);
 		} catch(Exception e){
 			return null;
 		}
 		finally {
-			inputStream.close();
+			if(inputStream != null){
+				inputStream.close();
+			}
 		}
 	}
 	
 	public boolean doesUrlExists(String serviceURL) {
 		try {
 			URL url = new URL(serviceURL);
-
-			HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-
-			huc.setRequestMethod("GET");
-			huc.setRequestProperty(
-					"User-Agent",
-					"Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 (.NET CLR 3.5.30729)");
-
+			HttpURLConnection huc = null;
 			try {
+				huc = (HttpURLConnection) url.openConnection();
+
+				huc.setRequestMethod("GET");
+				huc.setRequestProperty(
+						"User-Agent",
+						"Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 (.NET CLR 3.5.30729)");
 				huc.connect();
 			} catch (Exception e) {
 				return false;
@@ -192,38 +196,54 @@ public class HttpSender {
 
 	public String downloadFile(String fileUrl) throws Exception {
 		URL u = new URL(fileUrl);
-		URLConnection uc = u.openConnection();
-		int contentLength = uc.getContentLength();
-		InputStream raw = uc.getInputStream();
-		BufferedInputStream in = new BufferedInputStream(raw);
 
 		int offset = 0;
-		byte[] data = new byte[contentLength];
+		int contentLength = 0;
+		BufferedInputStream in = null;
+		byte[] data = null;
 		try {
+			URLConnection uc = u.openConnection();
+			contentLength = uc.getContentLength();
+			InputStream raw = uc.getInputStream();
+			in = new BufferedInputStream(raw);
+			data = new byte[contentLength];
 			int bytesRead = 0;
 			while (offset < contentLength && bytesRead != -1) {
 				bytesRead = in.read(data, offset, data.length - offset);
 				if (bytesRead != -1)
 					offset += bytesRead;
 			}
-		} finally {
-			in.close();
+		} catch(Exception e){
+			return null;
+		}
+		finally {
+			if (in != null) {
+				in.close();
+			}
 		}
 
 		if (offset != contentLength) {
-			throw new IOException("Only read " + offset + " bytes; Expected "
-					+ contentLength + " bytes");
+//			throw new IOException("Only read " + offset + " bytes; Expected "
+//					+ contentLength + " bytes");
+			return null;
 		}
 
-		String filename = u.getFile().substring(
-				u.getFile().lastIndexOf('/') + 1);
-		File file = File.createTempFile(filename, ".zip");
-		FileOutputStream out = new FileOutputStream(file);
+		FileOutputStream out = null;
+		File file = null;
 		try {
+			String filename = u.getFile().substring(
+					u.getFile().lastIndexOf('/') + 1);
+			file = File.createTempFile(filename, ".zip");
+			out = new FileOutputStream(file);
 			out.write(data);
 			out.flush();
-		} finally {
-			out.close();
+		} catch(Exception e){
+			return null;
+		}
+		finally {
+			if(out != null){
+				out.close();
+			}
 		}
 		return file.getAbsolutePath();
 	}
