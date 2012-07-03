@@ -1,21 +1,36 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>SosInjector</artifactId>
-  <version>0.2.7</version>
-  <packaging>jar</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.axiomalaska</groupId>
+	<artifactId>SosInjector</artifactId>
+	<version>0.2.8</version>
+	<packaging>jar</packaging>
 
-  <parent>
-    <groupId>com.axiomalaska</groupId>
-    <artifactId>rootpom</artifactId>
-    <version>0.4</version>
-  </parent>
-  
-  <name>SosInjector</name>
-  
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  
+	<distributionManagement>
+		<repository>
+			<id>axiom_public_releases</id>
+			<name>Axiom Releases</name>
+			<uniqueVersion>false</uniqueVersion>
+			<url>
+				http://nexus.axiomalaska.com/nexus/content/repositories/public-releases
+			</url>
+		</repository>
+		<snapshotRepository>
+			<id>axiom_public_snapshots</id>
+			<name>Axiom Snapshots</name>
+			<uniqueVersion>false</uniqueVersion>
+			<url>
+				http://nexus.axiomalaska.com/nexus/content/repositories/public-snapshots
+			</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<name>SosInjector</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -34,18 +49,18 @@
 			<version>1.2.16</version>
 		</dependency>
 	</dependencies>
-	
-  <build>
-  	  <finalName>SosInjector</finalName>
-	  <plugins>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<configuration>
-				<source>1.6</source>
-				<target>1.6</target>
-			</configuration>
-		</plugin>
-	  </plugins>
-  </build>
+
+	<build>
+		<finalName>SosInjector</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
