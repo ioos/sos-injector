@@ -44,11 +44,41 @@ public interface SosStation {
 	 * 
 	 * @return
 	 */
-	public String getSourceId();
+	public SosSource getSource();
 	
 	/**
 	 * A list of networks this station is associated to
 	 * @return
 	 */
 	public List<SosNetwork> getNetworks();
+
+	public String getDescription();
+
+	public String getName();
+
+	/**
+	    BUOY
+		WAVE BUOY
+		HF RADAR
+		DRIFTER
+		VESSEL
+		PIER
+		TOWER
+		AUV
+		ROV
+		GLIDER
+		ADCP (SELF-CONTAINED)
+		CABLED ARRAY
+		FIXED BOTTOM STATION
+		SUB-SURFACE MOORING
+		AIRCRAFT
+		SATELLITE IMAGERY DOWNLINK
+		WATER LEVEL STATION
+		FIXED SHORE STATION
+		FIXED MET STATION
+		FIXED WQ STATION
+		FIXED TIDE GAGE
+		OTHER
+	 */
+	public String getPlatformType();
 }

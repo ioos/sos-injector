@@ -11,8 +11,10 @@ import com.axiomalaska.sos.data.SosNetworkImp;
 import com.axiomalaska.sos.data.SosPhenomenon;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosSensorImp;
+import com.axiomalaska.sos.data.SosSourceImp;
 import com.axiomalaska.sos.data.SosStationImp;
 import com.axiomalaska.sos.data.SosStation;
+import com.axiomalaska.sos.data.SosSource;
 
 public class CnfaicStationRetriever implements StationRetriever {
 
@@ -22,13 +24,21 @@ public class CnfaicStationRetriever implements StationRetriever {
 
 	public List<SosStation> getStations() throws Exception {
 
+		SosSourceImp source = new SosSourceImp();
+		source.setCountry("USA");
+		source.setEmail("kevin@chugachavalanche.org");
+		source.setId("CNFAIC");
+		source.setName("Chugach Nation Forest Avalanche Information Center");
+		source.setWebAddress("www.cnfaic.org");
+		source.setOperatorSector("Non-Profit");
+		
 		List<SosStation> stations = new ArrayList<SosStation>();
 
-		stations.add(createSeattleRidge());
-		stations.add(createSunburstRidge());
-		stations.add(createFresnoRidge());
-		stations.add(createMarmotRidge());
-		stations.add(createArcticValley());
+		stations.add(createSeattleRidge(source));
+		stations.add(createSunburstRidge(source));
+		stations.add(createFresnoRidge(source));
+		stations.add(createMarmotRidge(source));
+		stations.add(createArcticValley(source));
 
 		return stations;
 	}
@@ -48,7 +58,8 @@ public class CnfaicStationRetriever implements StationRetriever {
 	
 	private List<SosSensor> getSensors(SosStation station) {
 		PhenomenaBuilder phenomenaBuilder = new PhenomenaBuilder();
-		SosNetwork airTemperatureNetwork = getAirTemperatureNetwork(station.getSourceId());
+		SosSource source = station.getSource();
+		SosNetwork airTemperatureNetwork = getAirTemperatureNetwork(source.getId());
 		
 		List<SosSensor> sensors = new ArrayList<SosSensor>();
 		
@@ -59,7 +70,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		airTemperatureSensor.setId("Air_Temperature");
 		airTemperatureSensor.setDescription("Air Temperature");
 		airTemperatureSensor.setStationId(station.getId());
-		airTemperatureSensor.setSourceId(station.getSourceId());
+		airTemperatureSensor.setSourceId(source.getId());
 		airTemperatureSensor.addNetwork(airTemperatureNetwork);
 		sensors.add(airTemperatureSensor);
 	
@@ -70,7 +81,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		relativeHumiditySensor.setId("Relative_Humidity");
 		relativeHumiditySensor.setDescription("Relative Humidity");
 		relativeHumiditySensor.setStationId(station.getId());
-		relativeHumiditySensor.setSourceId(station.getSourceId());
+		relativeHumiditySensor.setSourceId(source.getId());
 		sensors.add(relativeHumiditySensor);
 		
 		SosSensorImp windSensor = new SosSensorImp();
@@ -82,13 +93,13 @@ public class CnfaicStationRetriever implements StationRetriever {
 		windSensor.setId("Wind");
 		windSensor.setDescription("Wind");
 		windSensor.setStationId(station.getId());
-		windSensor.setSourceId(station.getSourceId());
+		windSensor.setSourceId(source.getId());
 		sensors.add(windSensor);
 
 		return sensors;
 	}
 	
-	private SosStation createArcticValley() {
+	private SosStation createArcticValley(SosSource source) {
 		SosStationImp arcticValley = new SosStationImp();
 
 		arcticValley.setFeatureOfInterestName("At station:Arctic Valley Ridge of source: CNFAIC");
@@ -96,13 +107,16 @@ public class CnfaicStationRetriever implements StationRetriever {
 		Location location = new Location(61.24, -149.51);
 		arcticValley.setLocation(location);
 		arcticValley.setMoving(false);
-		arcticValley.setSourceName("CNFAIC");
+		arcticValley.setSource(source);
 		arcticValley.setSensors(getSensors(arcticValley));
+		arcticValley.setDescription("http://www.cnfaic.org/wx/wx_arctic.php");
+		arcticValley.setName("Arctic Valley Ridge");
+		arcticValley.setPlatformType("FIXED MET STATION");
 
 		return arcticValley;
 	}
 
-	private SosStation createMarmotRidge() {
+	private SosStation createMarmotRidge(SosSource source) {
 		SosStationImp marmot = new SosStationImp();
 
 		marmot.setFeatureOfInterestName("At station: Marmot Ridge in Hatcher Pass of source: CNFAIC");
@@ -110,13 +124,16 @@ public class CnfaicStationRetriever implements StationRetriever {
 		Location location = new Location(61.7804, -149.2582);
 		marmot.setLocation(location);
 		marmot.setMoving(false);
-		marmot.setSourceName("CNFAIC");
+		marmot.setSource(source);
 		marmot.setSensors(getSensors(marmot));
+		marmot.setDescription("http://www.cnfaic.org/wx/wx_marmot.php");
+		marmot.setName("Marmot Ridge in Hatcher Pass");
+		marmot.setPlatformType("FIXED MET STATION");
 
 		return marmot;
 	}
 
-	private SosStation createFresnoRidge() {
+	private SosStation createFresnoRidge(SosSource source) {
 		SosStationImp fresnoRidge = new SosStationImp();
 
 		fresnoRidge
@@ -125,13 +142,16 @@ public class CnfaicStationRetriever implements StationRetriever {
 		Location location = new Location(60.6869, -149.5095);
 		fresnoRidge.setLocation(location);
 		fresnoRidge.setMoving(false);
-		fresnoRidge.setSourceName("CNFAIC");
+		fresnoRidge.setSource(source);
 		fresnoRidge.setSensors(getSensors(fresnoRidge));
-
+		fresnoRidge.setDescription("http://www.cnfaic.org/wx/wx_summit.php");
+		fresnoRidge.setName("Fresno Ridge (Near Summit Lake)");
+		fresnoRidge.setPlatformType("FIXED MET STATION");
+		
 		return fresnoRidge;
 	}
 
-	private SosStation createSunburstRidge() {
+	private SosStation createSunburstRidge(SosSource source) {
 		SosStationImp sunburstRidge = new SosStationImp();
 
 		sunburstRidge
@@ -140,13 +160,16 @@ public class CnfaicStationRetriever implements StationRetriever {
 		Location location = new Location(60.7559, -149.1772);
 		sunburstRidge.setLocation(location);
 		sunburstRidge.setMoving(false);
-		sunburstRidge.setSourceName("CNFAIC");
+		sunburstRidge.setSource(source);
 		sunburstRidge.setSensors(getSensors(sunburstRidge));
-
+		sunburstRidge.setDescription("http://www.cnfaic.org/wx/wx_sunburst.php");
+		sunburstRidge.setName("Sunburst Ridge");
+		sunburstRidge.setPlatformType("FIXED MET STATION");
+		
 		return sunburstRidge;
 	}
 
-	private SosStation createSeattleRidge() {
+	private SosStation createSeattleRidge(SosSource source) {
 		SosStationImp seattleRidge = new SosStationImp();
 
 		seattleRidge
@@ -155,9 +178,12 @@ public class CnfaicStationRetriever implements StationRetriever {
 		Location location = new Location(60.8338, -149.1593);
 		seattleRidge.setLocation(location);
 		seattleRidge.setMoving(false);
-		seattleRidge.setSourceName("CNFAIC");
+		seattleRidge.setSource(source);
 		seattleRidge.setSensors(getSensors(seattleRidge));
-
+		seattleRidge.setDescription("http://www.cnfaic.org/wx/wx_seattle.php");
+		seattleRidge.setName("Seattle Ridge");
+		seattleRidge.setPlatformType("FIXED MET STATION");
+		
 		return seattleRidge;
 	}
 }

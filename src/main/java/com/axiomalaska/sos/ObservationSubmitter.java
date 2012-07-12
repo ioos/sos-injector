@@ -19,6 +19,7 @@ import org.w3c.dom.NodeList;
 
 
 import com.axiomalaska.sos.data.ObservationCollection;
+import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.data.SosPhenomenon;
 import com.axiomalaska.sos.data.SosSensor;
@@ -129,12 +130,12 @@ public class ObservationSubmitter {
 	 * 
 	 * @param observationCollection - the data used to update the SOS
 	 */
-	public void update(ObservationCollection observationCollection) throws Exception {
+	public void update(ObservationCollection observationCollection, PublisherInfo publisherInfo) throws Exception {
 		if (isObservationCollectionValid(observationCollection)) {
 			SosStation station = observationCollection.getStation();
 			boolean isStationCreated = isStationCreated(station);
 			if (!isStationCreated) {
-				isStationCreated = createNewSosStation(station);
+				isStationCreated = createNewSosStation(station, publisherInfo);
 			}
 
 			if (isStationCreated) {
@@ -157,9 +158,9 @@ public class ObservationSubmitter {
 	 * pull observations from
 	 */
 	public void update(List<SosStation> stations, 
-			ObservationRetriever observationRetriever) throws Exception {
+			ObservationRetriever observationRetriever, PublisherInfo publisherInfo) throws Exception {
 		for (SosStation station : stations) {
-			update(station, observationRetriever);
+			update(station, observationRetriever, publisherInfo);
 		}
 	}
 
@@ -177,11 +178,11 @@ public class ObservationSubmitter {
 	 * pull observations from
 	 */
 	public void update(SosStation station,  
-			ObservationRetriever observationRetriever) throws Exception {
+			ObservationRetriever observationRetriever, PublisherInfo publisherInfo) throws Exception {
 		if (station.getSensors().size() > 0) {
 			boolean isStationCreated = isStationCreated(station);
 			if (!isStationCreated) {
-				isStationCreated = createNewSosStation(station);
+				isStationCreated = createNewSosStation(station, publisherInfo);
 			}
 
 			if (isStationCreated) {
@@ -501,7 +502,7 @@ public class ObservationSubmitter {
 	 * @param station - the station to be created
 	 * @return [true] if the station was create successfully [false] if else. 
 	 */
-	private boolean createNewSosStation(SosStation station) throws Exception {
+	private boolean createNewSosStation(SosStation station, PublisherInfo publisherInfo) throws Exception {
 		logger.info("Creating station: " + idCreator.createStationId(station));
 
 		for(SosNetwork network : station.getNetworks()){
@@ -511,7 +512,7 @@ public class ObservationSubmitter {
 		}
 		
 		StationRegisterSensorBuilder registerSensorBuilder = new StationRegisterSensorBuilder(
-				station, idCreator);
+				station, idCreator, publisherInfo);
 
 		String xml = registerSensorBuilder.build();
 

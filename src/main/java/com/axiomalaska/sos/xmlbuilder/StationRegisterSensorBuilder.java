@@ -5,11 +5,15 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosNetwork;
+import com.axiomalaska.sos.data.SosSensor;
+import com.axiomalaska.sos.data.SosSource;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.tools.IdCreator;
 
@@ -21,14 +25,17 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 
 	private SosStation station;
 	private IdCreator idCreator;
+	private PublisherInfo publisherInfo;
 	
   // ---------------------------------------------------------------------------
   // Constructor
   // ---------------------------------------------------------------------------
 
-	public StationRegisterSensorBuilder(SosStation station, IdCreator idCreator){
+	public StationRegisterSensorBuilder(SosStation station, IdCreator idCreator, 
+			PublisherInfo publisherInfo){
 		this.station = station;
 		this.idCreator = idCreator;
+		this.publisherInfo = publisherInfo;
 	}
 	
   // ---------------------------------------------------------------------------
@@ -53,60 +60,160 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		  http://www.opengis.net/om/1.0
 		  http://schemas.opengis.net/om/1.0.0/extensions/observationSpecialization_override.xsd">        
 		  <SensorDescription>
-		    <sml:SensorML version="1.0.1">
+		    <sml:SensorML xmlns:sml="http://www.opengis.net/sensorML/1.0.1" 
+		    			xmlns="http://www.opengis.net/sos/1.0" 
+		    			xmlns:gml="http://www.opengis.net/gml" 
+		    			xmlns:ogc="http://www.opengis.net/ogc" 
+		    			xmlns:om="http://www.opengis.net/om/1.0" 
+		    			xmlns:ows="http://www.opengeospatial.net/ows" 
+		    			xmlns:swe="http://www.opengis.net/swe/1.0.1" 
+		    			xmlns:xlink="http://www.w3.org/1999/xlink" 
+		    			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		    			version="1.0.1" xsi:schemaLocation="http://www.opengis.net/sensorML/1.0.1 http://schemas.opengis.net/sensorML/1.0.1/sensorML.xsd">
 		      <sml:member>
-		        <sml:System xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   >
-			  <sml:identification>
-			    <sml:IdentifierList>
-			      <sml:identifier>
-			        <sml:Term definition="urn:ogc:def:identifier:OGC:uniqueID">
-				  <sml:value>urn:ioos:station:wmo:41003</sml:value>
-				</sml:Term>
-			      </sml:identifier>
-			    </sml:IdentifierList>
-		      </sml:identification>
-			  <sml:position name="sensorPosition">
-			    <swe:Position referenceFrame="urn:ogc:def:crs:EPSG::4326">
-			      <swe:location>
-			        <swe:Vector gml:id="STATION_LOCATION">
-			          <swe:coordinate name="easting">
-			            <swe:Quantity>
-			              <swe:uom code="degree"/>
-			              <swe:value>7.52</swe:value>
-			            </swe:Quantity>
-				  </swe:coordinate>
-			          <swe:coordinate name="northing">
-			            <swe:Quantity>
-			              <swe:uom code="degree"/>
-			              <swe:value>52.90</swe:value>
-			            </swe:Quantity>
-			          </swe:coordinate>
-			          <swe:coordinate name="altitude">
-			            <swe:Quantity>
-			              <swe:uom code="m"/>
-			              <swe:value>52.0</swe:value>
-			            </swe:Quantity>
-			          </swe:coordinate>
-				</swe:Vector>
-		              </swe:location>
-		            </swe:Position>
-			  </sml:position>
-			  <sml:outputs>
-			    <sml:OutputList>
-			      <sml:output name="none">
-			        <swe:Quantity definition="none">
-				  <gml:metaDataProperty>
-				    <offering>
-				      <id>network-All</id>
-				      <name>Includes all the sensors in the network</name>
-				    </offering>
-			          </gml:metaDataProperty>
-			          <swe:uom code="none"/>
-			        </swe:Quantity>
-			      </sml:output>
-			    </sml:OutputList>
-			  </sml:outputs>
-			</sml:System>
+		        <sml:System>
+		           <gml:description/>
+                   <gml:name>urn:ioos:station:hads:172C7508</gml:name>
+                   <!-- ======= STATION IDENTIFIERS ======= -->
+				   <sml:identification>
+				      <sml:IdentifierList>
+					     <sml:identifier>
+					        <sml:Term definition="urn:ogc:def:identifier:OGC:uniqueID">
+					           <sml:value>urn:ioos:station:hads:172C7508</sml:value>
+					        </sml:Term>
+					     </sml:identifier>
+					     <sml:identifier name="shortName">
+					        <sml:Term definition="urn:ogc:def:identifier:OGC:shortName">
+					           <sml:value>172C7508</sml:value>
+					        </sml:Term>
+					     </sml:identifier>
+					     <sml:identifier name="longName">
+					        <sml:Term definition="urn:ogc:def:identifier:OGC:longName">
+					           <sml:value>BEAVER CREEK ABOVE VICTORIA CREEK NEAR BEAVER 43SE</sml:value>
+					        </sml:Term>
+					     </sml:identifier>
+					  </sml:IdentifierList>
+				   </sml:identification>
+				   <!-- ======= STATION CLASSIFIERS ======= -->
+                   <sml:classification>
+				      <sml:ClassifierList>
+					     <sml:classifier name="platformType">
+					        <sml:Term definition="urn:ioos:def:classifier:IOOS:platformType">
+					           <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/platform"/>
+					           <sml:value>FIXED MET STATION</sml:value>
+					        </sml:Term>
+					     </sml:classifier>
+					     <sml:classifier name="operatorSector">
+					        <sml:Term definition="urn:ioos:def:classifier:IOOS:operatorSector">
+					           <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/sector"/>
+					           <sml:value>Government–Federal</sml:value>
+					        </sml:Term>
+					     </sml:classifier>
+					     <sml:classifier name="publisher">
+					        <sml:Term definition="urn:ioos:def:classifier:IOOS:publisher">
+					           <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/organization"/>
+					           <sml:value>HADS</sml:value>
+					        </sml:Term>
+					     </sml:classifier>
+					     <sml:classifier name="ParentNetwork">
+					        <sml:Term definition="urn:ioos:def:classifier:IOOS:parentNetwork">
+					           <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/organization"/>
+					           <sml:value>AOOS</sml:value>
+					        </sml:Term>
+					     </sml:classifier>
+					  </sml:ClassifierList>
+				   </sml:classification>
+				   <!-- ======= CONTACTS ======= -->
+				   <sml:contact xlink:role="urn:ogc:def:classifier:OGC:contactType:operator">
+				      <sml:ResponsibleParty>
+				         <sml:organizationName>HADS</sml:organizationName>
+				         <sml:contactInfo>
+				            <sml:address>
+				               <sml:country>USA</sml:country>
+				               <sml:electronicMailAddress>HDSC.questions@noaa.gov</sml:electronicMailAddress>
+				            </sml:address>
+				            <sml:onlineResource xlink:href="http://dipper.nws.noaa.gov/hdsc/pfds/"/>
+				         </sml:contactInfo>
+				      </sml:ResponsibleParty>
+				   </sml:contact>
+				   <sml:contact xlink:role="urn:ogc:def:classifier:OGC:contactType:publisher">
+				      <sml:ResponsibleParty>
+				         <sml:organizationName>AOOS</sml:organizationName>
+				         <sml:contactInfo>
+				            <sml:address>
+				               <sml:country>USA</sml:country>
+				               <sml:electronicMailAddress>lance@axiomalaska.com</sml:electronicMailAddress>
+				            </sml:address>
+				            <sml:onlineResource xlink:href="http://www.aoos.org"/>
+				         </sml:contactInfo>
+				      </sml:ResponsibleParty>
+				   </sml:contact>
+				   <!-- ======= LOCATION ======= -->
+			       <sml:position name="sensorPosition">
+			          <swe:Position referenceFrame="urn:ogc:def:crs:EPSG::4326">
+			             <swe:location>
+			                <swe:Vector gml:id="STATION_LOCATION">
+			                   <swe:coordinate name="easting">
+			                      <swe:Quantity>
+			                         <swe:uom code="degree"/>
+			                         <swe:value>7.52</swe:value>
+			                      </swe:Quantity>
+				               </swe:coordinate>
+			                   <swe:coordinate name="northing">
+			                      <swe:Quantity>
+			                         <swe:uom code="degree"/>
+			                         <swe:value>52.90</swe:value>
+			                      </swe:Quantity>
+			                   </swe:coordinate>
+			                   <swe:coordinate name="altitude">
+			                      <swe:Quantity>
+			                         <swe:uom code="m"/>
+			                         <swe:value>52.0</swe:value>
+			                      </swe:Quantity>
+			                   </swe:coordinate>
+				            </swe:Vector>
+		                 </swe:location>
+		              </swe:Position>
+	               </sml:position>
+			       <sml:outputs>
+				      <sml:OutputList>
+				         <sml:output name="none">
+				            <swe:Quantity definition="none">
+					           <gml:metaDataProperty>
+							      <offering>
+							         <id>network-All</id>
+							         <name>Includes all the sensors in the network</name>
+							      </offering>
+				               </gml:metaDataProperty>
+				               <swe:uom code="none"/>
+				            </swe:Quantity>
+				         </sml:output>
+				      </sml:OutputList>
+			       </sml:outputs>
+			       <!-- ======= COMPONENTS ======= -->
+				   <sml:components>
+				      <sml:ComponentList>
+						<sml:component name="Sensor stream_gage_height">
+						   <sml:System gml:id="sensor-stream_gage_height">
+						      <gml:description>Stream Gage Height</gml:description>
+						      <sml:identification xlink:href="urn:ioos:sensor:hads:172C7508:stream_gage_height"/>
+						   </sml:System>
+						</sml:component>
+						<sml:component name="Sensor sea_water_temperature">
+						   <sml:System gml:id="sensor-sea_water_temperature">
+						      <gml:description>Sea Water Temperature</gml:description>
+						      <sml:identification xlink:href="urn:ioos:sensor:hads:172C7508:sea_water_temperature"/>
+						   </sml:System>
+						</sml:component>
+						<sml:component name="Sensor battery">
+						    <sml:System gml:id="sensor-battery">
+						       <gml:description>Battery</gml:description>
+						       <sml:identification xlink:href="urn:ioos:sensor:hads:172C7508:battery"/>
+						    </sml:System>
+						 </sml:component>
+				      </sml:ComponentList>
+				   </sml:components>
+			    </sml:System>
 		      </sml:member>
 		    </sml:SensorML>
 		  </SensorDescription>
@@ -147,6 +254,12 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 			registerSensor.appendChild(sensorDescription);
 			
 			Element sensorML = doc.createElement("sml:SensorML");
+			sensorML.setAttribute("xmlns:sml", "http://www.opengis.net/sensorML/1.0.1");
+			sensorML.setAttribute("xmlns:gml", "http://www.opengis.net/gml");
+			sensorML.setAttribute("xmlns:swe", "http://www.opengis.net/swe/1.0.1");
+			sensorML.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+			sensorML.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+			sensorML.setAttribute("xsi:schemaLocation", "http://www.opengis.net/sensorML/1.0.1 http://schemas.opengis.net/sensorML/1.0.1/sensorML.xsd");
 			sensorML.setAttribute("version", "1.0.1");
 			sensorDescription.appendChild(sensorML);
 			
@@ -154,18 +267,37 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 			sensorML.appendChild(member);
 			
 			Element system = doc.createElement("sml:System");
-			system.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 			member.appendChild(system);
 			
+			system.appendChild(createDescriptionNode(doc, station));
+			
+			system.appendChild(createNameNode(doc, station));
+			
+			system.appendChild(doc.createComment("======= STATION IDENTIFIERS ======="));
+			
 			system.appendChild(createIdentificationNode(doc, station));
+			
+			system.appendChild(doc.createComment("======= STATION CLASSIFIERS ======="));
+			system.appendChild(createClassificationNode(doc, station, station.getSource()));
 			
 			if(station.getNetworks().size() > 0){
 				system.appendChild(createParentProcedures(doc, station.getNetworks()));
 			}
 			
+			system.appendChild(doc.createComment("======= CONTACTS ======="));
+			system.appendChild(createContactOperatorNode(doc, station.getSource()));
+			
+			system.appendChild(createContactPublisherNode(doc));
+			
+			system.appendChild(doc.createComment("======= LOCATION ======="));
+			
 			system.appendChild(createPositionNode(doc, station));
 			
 			system.appendChild(createOutputsNode(doc));
+			
+			system.appendChild(doc.createComment("======= COMPONENTS ======="));
+			
+			system.appendChild(createComponentsNode(doc, station));
 			
 			registerSensor.appendChild(createObservationTemplate(doc));
 			
@@ -182,6 +314,278 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
   // Private Members
   // ---------------------------------------------------------------------------
 
+	/**
+      <sml:components>
+        <sml:ComponentList>
+          <sml:component name="Sensor watertemp1">
+            <sml:System gml:id="sensor-watertemp1">
+              <gml:description>Sensor description</gml:description>
+              <sml:identification xlink:href="urn:ioos:sensor:wmo:44029::watertemp1"/>
+           </sml:System>
+          </sml:component>
+          <sml:component name="Sensor ct1">
+            <sml:System gml:id="sensor-ct1">
+              <gml:description/>
+              <sml:identification xlink:href="urn:ioos:sensor:wmo:44029::ct1"/>
+           </sml:System>
+          </sml:component>
+          <sml:component name="Sensor summarywav1">
+            <sml:System gml:id="sensor-summarywav1">
+              <gml:description/>
+              <sml:identification xlink:href="urn:ioos:sensor:wmo:44029::summarywav1"/>
+            </sml:System>
+          </sml:component>
+          <sml:component name="Sensor baro1">
+            <sml:System>
+              <gml:description/>
+              <sml:identification xlink:href="urn:ioos:sensor:wmo:44029::baro1"/>
+            </sml:System>
+          </sml:component>
+          <sml:component name="Sensor airtemp1">
+            <sml:System gml:id="sensor-airtemp1">
+              <gml:description/>
+              <sml:identification xlink:href="urn:ioos:sensor:wmo:44029::airtemp1"/>
+            </sml:System>
+          </sml:component>
+        </sml:ComponentList>
+      </sml:components>
+	 */
+	private Node createComponentsNode(Document doc, SosStation station){
+		Element componentsNode = doc.createElement("sml:components");
+		
+		Element componentListNode = doc.createElement("sml:ComponentList");
+		componentsNode.appendChild(componentListNode);
+		
+		for(SosSensor sensor : station.getSensors()){
+			componentListNode.appendChild(createComponentNode(doc, sensor, station));
+		}
+		
+		return componentsNode;
+	}
+	
+	/**
+      <sml:component name="Sensor airtemp1">
+        <sml:System gml:id="sensor-airtemp1">
+          <gml:description>Sensor description</gml:description>
+          <sml:identification xlink:href="urn:ioos:sensor:wmo:44029::airtemp1"/>
+        </sml:System>
+      </sml:component>
+	 */
+	private Node createComponentNode(Document doc, SosSensor sensor, SosStation station){
+		Element componentNode = doc.createElement("sml:component");
+		componentNode.setAttribute("name", "Sensor " + sensor.getId());
+		
+		Element systemNode = doc.createElement("sml:System");
+		systemNode.setAttribute("gml:id", "sensor-" + sensor.getId());
+		componentNode.appendChild(systemNode);
+		
+		Element description = doc.createElement("gml:description");
+		description.appendChild(doc.createTextNode(sensor.getDescription()));
+		systemNode.appendChild(description);
+		
+		Element identification = doc.createElement("sml:identification");
+		identification.setAttribute("xlink:href", idCreator.createSensorId(station, sensor));
+		systemNode.appendChild(identification);
+		
+		return componentNode;
+	}
+	
+	/**
+	    <sml:contact xlink:role="urn:ogc:def:classifier:OGC:contactType:operator">
+		   <sml:ResponsibleParty>
+		      <sml:organizationName>OPERATOR ORGANIZATION</sml:organizationName>
+		      <sml:contactInfo>
+		         <sml:address>
+		            <sml:country>COUNTRY [USA, COUNTRY NAME, OR "NON-USA"]</sml:country>
+		            <sml:electronicMailAddress>EMAIL</sml:electronicMailAddress>
+		         </sml:address>
+		         <sml:onlineResource xlink:href="http://pnw.buoyoperator.org"/>
+		      </sml:contactInfo>
+		   </sml:ResponsibleParty>
+	    </sml:contact>
+	 */
+	private Node createContactOperatorNode(Document doc, SosSource source){
+		Element contact = doc.createElement("sml:contact");
+		contact.setAttribute("xlink:role", "urn:ogc:def:classifier:OGC:contactType:operator");
+
+		Element responsibleParty = doc.createElement("sml:ResponsibleParty");
+		contact.appendChild(responsibleParty);
+		
+		Element organizationName = doc.createElement("sml:organizationName");
+		responsibleParty.appendChild(organizationName);
+		organizationName.appendChild(doc.createTextNode(source.getName()));
+
+		Element contactInfo = doc.createElement("sml:contactInfo");
+		responsibleParty.appendChild(contactInfo);
+		
+		Element address = doc.createElement("sml:address");
+		contactInfo.appendChild(address);
+		
+		Element country = doc.createElement("sml:country");
+		country.appendChild(doc.createTextNode(source.getCountry()));
+		address.appendChild(country);
+		
+		Element electronicMailAddress = doc.createElement("sml:electronicMailAddress");
+		electronicMailAddress.appendChild(doc.createTextNode(source.getEmail()));
+		address.appendChild(electronicMailAddress);
+		
+		Element onlineResource = doc.createElement("sml:onlineResource");
+		onlineResource.setAttribute("xlink:href", source.getWebAddress());
+		contactInfo.appendChild(onlineResource);
+
+		return contact;
+	}
+	
+	/**
+    <sml:contact xlink:role="urn:ogc:def:classifier:OGC:contactType:publisher">
+	   <sml:ResponsibleParty>
+	      <sml:organizationName>NANOOS</sml:organizationName>
+	      <sml:contactInfo>
+	         <sml:address>
+	            <sml:country>USA</sml:country>
+	            <sml:electronicMailAddress>mayorga@apl.washington.edu</sml:electronicMailAddress>
+	         </sml:address>
+	         <sml:onlineResource xlink:href="http://nanoos.org"/>
+	      </sml:contactInfo>
+       </sml:ResponsibleParty>
+    </sml:contact>
+	 */
+	private Node createContactPublisherNode(Document doc){
+		Element contact = doc.createElement("sml:contact");
+		contact.setAttribute("xlink:role", "urn:ogc:def:classifier:OGC:contactType:publisher");
+
+		Element responsibleParty = doc.createElement("sml:ResponsibleParty");
+		contact.appendChild(responsibleParty);
+		
+		Element organizationName = doc.createElement("sml:organizationName");
+		responsibleParty.appendChild(organizationName);
+		organizationName.appendChild(doc.createTextNode(publisherInfo.getName()));
+
+		Element contactInfo = doc.createElement("sml:contactInfo");
+		responsibleParty.appendChild(contactInfo);
+		
+		Element address = doc.createElement("sml:address");
+		contactInfo.appendChild(address);
+		
+		Element country = doc.createElement("sml:country");
+		country.appendChild(doc.createTextNode(publisherInfo.getCountry()));
+		address.appendChild(country);
+		
+		Element electronicMailAddress = doc.createElement("sml:electronicMailAddress");
+		electronicMailAddress.appendChild(doc.createTextNode(publisherInfo.getEmail()));
+		address.appendChild(electronicMailAddress);
+		
+		Element onlineResource = doc.createElement("sml:onlineResource");
+		onlineResource.setAttribute("xlink:href", publisherInfo.getWebAddress());
+		contactInfo.appendChild(onlineResource);
+
+		return contact;
+	}
+	
+	/**
+	 * Produces the XML below
+		 <sml:classification>
+			<sml:ClassifierList>
+			  <sml:classifier name="platformType">
+			    <sml:Term definition="urn:ioos:def:classifier:IOOS:platformType">
+			      <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/platform"/>
+			      <sml:value>buoy</sml:value>
+			    </sml:Term>
+			  </sml:classifier>
+			  <sml:classifier name="operatorSector">
+			    <sml:Term definition="urn:ioos:def:classifier:IOOS:operatorSector">
+			      <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/sector"/>
+			      <sml:value>academic</sml:value>
+			    </sml:Term>
+			  </sml:classifier>
+			  <sml:classifier name="publisher">
+			    <sml:Term definition="urn:ioos:def:classifier:IOOS:publisher">
+			      <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/organization"/>
+			      <sml:value>RAWS</sml:value>
+			    </sml:Term>
+			  </sml:classifier>
+			  <sml:classifier name="ParentNetwork">
+			    <sml:Term definition="urn:ioos:def:classifier:IOOS:parentNetwork">
+			      <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/organization"/>
+			      <sml:value>AOOS</sml:value>
+			    </sml:Term>
+			  </sml:classifier>
+			</sml:ClassifierList>
+		 </sml:classification>
+	 */
+	private Node createClassificationNode(Document doc, SosStation station, SosSource source) {
+		Element classification = doc.createElement("sml:classification");
+	
+		Element classifierList = doc.createElement("sml:ClassifierList");
+		classification.appendChild(classifierList);
+		
+		classifierList.appendChild(createClassifierNode(doc, "platformType", 
+				"urn:ioos:def:classifier:IOOS:platformType", "http://mmisw.org/ont/ioos/platform",
+				station.getPlatformType()));
+		
+
+		classifierList.appendChild(createClassifierNode(doc, "operatorSector", 
+				"urn:ioos:def:classifier:IOOS:operatorSector", "http://mmisw.org/ont/ioos/sector",
+				source.getOperatorSector()));
+		
+		classifierList.appendChild(createClassifierNode(doc, "publisher", 
+				"urn:ioos:def:classifier:IOOS:publisher", "http://mmisw.org/ont/ioos/organization",
+				source.getName()));
+		
+		classifierList.appendChild(createClassifierNode(doc, "ParentNetwork", 
+				"urn:ioos:def:classifier:IOOS:parentNetwork", "http://mmisw.org/ont/ioos/organization",
+				publisherInfo.getName()));
+		
+		return classification;
+	}
+	
+	/**
+	  <sml:classifier name="platformType">
+	    <sml:Term definition="urn:ioos:def:classifier:IOOS:platformType">
+	      <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/platform"/>
+	      <sml:value>buoy</sml:value>
+	    </sml:Term>
+	  </sml:classifier>
+	 */
+	private Node createClassifierNode(Document doc, String name,
+			String definition, String codeSpaceXlinkHref, String value) {
+		Element classifier = doc.createElement("sml:classifier");
+
+		classifier.setAttribute("name", name);
+
+		Element term = doc.createElement("sml:Term");
+		term.setAttribute("definition", definition);
+		classifier.appendChild(term);
+
+		Element codeSpace = doc.createElement("sml:codeSpace");
+		codeSpace.setAttribute("xlink:href", codeSpaceXlinkHref);
+		term.appendChild(codeSpace);
+		
+		Element valueElement = doc.createElement("sml:value");
+		valueElement.appendChild(doc.createTextNode(value));
+		term.appendChild(valueElement);
+
+		return classifier;
+	}
+	
+	/**
+	 * <gml:description>STATION DESCRIPTION</gml:description>
+	 */
+	private Node createDescriptionNode(Document doc, SosStation station) {
+		Element description = doc.createElement("gml:description");
+		description.appendChild(doc.createTextNode(station.getDescription()));
+		return description;
+	}
+	
+	/**
+	 * <gml:name>urn:ogc:object:feature:Sensor:IFGI:ifgi-sensor-90</gml:name>
+	 */
+	private Node createNameNode(Document doc, SosStation station) {
+		Element name = doc.createElement("gml:name");
+		name.appendChild(doc.createTextNode(idCreator.createStationId(station)));
+		return name;
+	}
+	
 	/**
 	 *  <ObservationTemplate>
           <om:Measurement>
@@ -367,15 +771,25 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 
 	/**
 	 * Produces the XML below
-          <sml:identification>
-               <sml:IdentifierList>
-                    <sml:identifier>
-                         <sml:Term definition="urn:ogc:def:identifier:OGC:uniqueID">
-                              <sml:value>urn:ogc:object:feature:Sensor:global_hawk_24</sml:value>
-                         </sml:Term>
-                    </sml:identifier>
-               </sml:IdentifierList>
-          </sml:identification>
+        <sml:identification>
+           <sml:IdentifierList>
+                <sml:identifier>
+                   <sml:Term definition="urn:ogc:def:identifier:OGC:uniqueID">
+                     <sml:value>urn:ogc:object:feature:Sensor:global_hawk_24</sml:value>
+                   </sml:Term>
+                </sml:identifier>
+			    <sml:identifier name="shortName">
+			       <sml:Term definition="urn:ogc:def:identifier:OGC:shortName">
+			         <sml:value>shortName</sml:value>
+			       </sml:Term>
+			    </sml:identifier>
+			    <sml:identifier name="longName">
+			       <sml:Term definition="urn:ogc:def:identifier:OGC:longName">
+			         <sml:value>longName</sml:value>
+			       </sml:Term>
+			    </sml:identifier>
+           </sml:IdentifierList>
+        </sml:identification>
 	 */
 	private Node createIdentificationNode(Document doc, SosStation station) {
 		Element identification = doc.createElement("sml:identification");
@@ -383,19 +797,44 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		Element identifierList = doc.createElement("sml:IdentifierList");
 		identification.appendChild(identifierList);
 		
-		Element identifier = doc.createElement("sml:identifier");
-		identifierList.appendChild(identifier);
+		identifierList.appendChild(createIdentifierNode(doc, "", 
+				"urn:ogc:def:identifier:OGC:uniqueID", 
+				idCreator.createStationId(station)));
 		
-		Element term = doc.createElement("sml:Term");
-		term.setAttribute("definition", "urn:ogc:def:identifier:OGC:uniqueID");
-		identifier.appendChild(term);
+		identifierList.appendChild(createIdentifierNode(doc, "shortName", 
+				"urn:ogc:def:identifier:OGC:shortName", 
+				station.getId()));
 		
-		Element value = doc.createElement("sml:value");
-		String procedureId = idCreator.createStationId(station);
-		value.appendChild(doc.createTextNode(procedureId));
-		term.appendChild(value);
+		identifierList.appendChild(createIdentifierNode(doc, "longName", 
+				"urn:ogc:def:identifier:OGC:longName", 
+				station.getName()));
 		
 		return identification;
+	}
+	
+	/**
+	    <sml:identifier name="shortName">
+	       <sml:Term definition="urn:ogc:def:identifier:OGC:shortName">
+	         <sml:value>shortName</sml:value>
+	       </sml:Term>
+	    </sml:identifier>
+	 */
+	private Node createIdentifierNode(Document doc, String name, String definition, String value){
+		Element identifier = doc.createElement("sml:identifier");
+		
+		if(name != null && name.length() != 0){
+			identifier.setAttribute("name", name);
+		}
+		
+		Element term = doc.createElement("sml:Term");
+		term.setAttribute("definition", definition);
+		identifier.appendChild(term);
+		
+		Element valueElement = doc.createElement("sml:value");
+		valueElement.appendChild(doc.createTextNode(value));
+		term.appendChild(valueElement);
+		
+		return identifier;
 	}
 	
 	/**

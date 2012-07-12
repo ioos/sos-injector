@@ -8,7 +8,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.axiomalaska.sos.cnfaic.CnfaicObservationUpdaterFactory;
 import com.axiomalaska.sos.data.Location;
+import com.axiomalaska.sos.data.PublisherInfo;
+import com.axiomalaska.sos.data.PublisherInfoImp;
 import com.axiomalaska.sos.data.SosPhenomenon;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosPhenomenonImp;
@@ -23,94 +26,18 @@ public class AppTest {
 	public void test() {
 		assertTrue(true);
 	}
-	
+
 //	@Test
-//	public void testCnfaic2() throws Exception{
-//		ObservationUpdaterFactory factory = new ObservationUpdaterFactory();
+//	public void testCnfaic() throws Exception{
+//		PublisherInfo publisherInfo = new PublisherInfoImp();
+//		CnfaicObservationUpdaterFactory factory = 
+//				new CnfaicObservationUpdaterFactory();
 //		
-//		ObservationUpdater observationUpdater = 
-//				factory.buildCnfaicObservationUpdater("http://192.168.8.15:8080/sos/sos");
+//		ObservationUpdater observationUpdater = factory.buildCnfaicObservationUpdater(
+//				"http://192.168.8.15:8080/sos/sos", publisherInfo);
 //		
 //		observationUpdater.update();
 //	}
-//	
-//	@Test
-//	public void testCnfaic(){
-//		PhenomenaBuilder phenomenaBuilder = new PhenomenaBuilder();
-//		CnfaicObservationRetriever observationRetriever = 
-//				new CnfaicObservationRetriever();
-//		
-//		SosStation seattle = createSeattleRidge();
-//		SosPhenomenon airTemperature = phenomenaBuilder.createAirTemperature();
-//		
-//		Calendar startDate = Calendar.getInstance();
-//		startDate.add(Calendar.DAY_OF_MONTH, -1);
-//		
-//		SosSensorImp sensor = new SosSensorImp();
-//		List<SosPhenomenon> phenomena = new ArrayList<SosPhenomenon>();
-//		phenomena.add(airTemperature);
-//		sensor.setPhenomena(phenomena);
-//		
-//		observationRetriever.getObservationCollection(
-//				seattle, sensor, airTemperature, startDate);
-//	}
-	
-	private List<SosSensor> getSensors() {
-		PhenomenaBuilder phenomenaBuilder = new PhenomenaBuilder();
-		List<SosSensor> sensors = new ArrayList<SosSensor>();
-		
-		SosSensorImp airTemperatureSensor = new SosSensorImp();
-		List<SosPhenomenon> phenomena = new ArrayList<SosPhenomenon>();
-		phenomena.add(phenomenaBuilder.createAirTemperature());
-		airTemperatureSensor.setPhenomena(phenomena);
-		airTemperatureSensor.setId("Air Temperature");
-		sensors.add(airTemperatureSensor);
-	
-		SosSensorImp relativeHumiditySensor = new SosSensorImp();
-		phenomena = new ArrayList<SosPhenomenon>();
-		phenomena.add(phenomenaBuilder.createRelativeHumidity());
-		relativeHumiditySensor.setPhenomena(phenomena);
-		relativeHumiditySensor.setId("Relative Humidity");
-		sensors.add(relativeHumiditySensor);
-		
-		SosSensorImp windSpeedSensor = new SosSensorImp();
-		phenomena = new ArrayList<SosPhenomenon>();
-		phenomena.add(phenomenaBuilder.createWindSpeed());
-		windSpeedSensor.setPhenomena(phenomena);
-		windSpeedSensor.setId("Speed Speed");
-		sensors.add(windSpeedSensor);
-		
-		SosSensorImp windDirectionSensor = new SosSensorImp();
-		phenomena = new ArrayList<SosPhenomenon>();
-		phenomena.add(phenomenaBuilder.createWindfromDirection());
-		windDirectionSensor.setPhenomena(phenomena);
-		windDirectionSensor.setId("Wind Direction");
-		sensors.add(windDirectionSensor);
-		
-		SosSensorImp windGustSensor = new SosSensorImp();
-		phenomena = new ArrayList<SosPhenomenon>();
-		phenomena.add(phenomenaBuilder.createWindSpeedofGust());
-		windGustSensor.setPhenomena(phenomena);
-		windGustSensor.setId("Wind Gust");
-		sensors.add(windGustSensor);
-
-		return sensors;
-	}
-	
-	private SosStation createSeattleRidge() {
-		SosStationImp seattleRidge = new SosStationImp();
-
-		seattleRidge
-				.setFeatureOfInterestName("At station: Seattle Ridge of source: CNFAIC");
-		seattleRidge.setId("seattle");
-		Location location = new Location(60.8338, -149.1593);
-		seattleRidge.setLocation(location);
-		seattleRidge.setMoving(false);
-		seattleRidge.setSourceName("CNFAIC");
-		seattleRidge.setSensors(getSensors());
-
-		return seattleRidge;
-	}
 	
 	@Test
 	public void test3() throws Exception {

@@ -3,6 +3,7 @@ package com.axiomalaska.sos.cnfaic;
 import org.apache.log4j.Logger;
 
 import com.axiomalaska.sos.ObservationUpdater;
+import com.axiomalaska.sos.data.PublisherInfo;
 
 public class CnfaicObservationUpdaterFactory {
 
@@ -11,14 +12,14 @@ public class CnfaicObservationUpdaterFactory {
 	// -------------------------------------------------------------------------
 	
 	public ObservationUpdater buildCnfaicObservationUpdater(
-			String sosUrl){
+			String sosUrl, PublisherInfo publisherInfo){
 		Logger logger = Logger.getRootLogger();
 		
-		return buildCnfaicObservationUpdater(sosUrl, logger);
+		return buildCnfaicObservationUpdater(sosUrl, publisherInfo, logger);
 	}
 	
 	public ObservationUpdater buildCnfaicObservationUpdater(
-			String sosUrl, Logger logger){
+			String sosUrl, PublisherInfo publisherInfo, Logger logger){
 
 		CnfaicStationRetriever stationRetriever = 
 				new CnfaicStationRetriever();
@@ -26,7 +27,8 @@ public class CnfaicObservationUpdaterFactory {
 				new CnfaicObservationRetriever();
 		
 		ObservationUpdater observationUpdater = new ObservationUpdater(sosUrl, 
-				logger, stationRetriever, observationRetriever, "CNFAIC Observation Updater");
+				logger, stationRetriever, publisherInfo, 
+				observationRetriever, "CNFAIC Observation Updater");
 		
 		return observationUpdater;
 	}

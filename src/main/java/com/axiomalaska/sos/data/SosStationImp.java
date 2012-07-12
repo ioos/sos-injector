@@ -10,8 +10,11 @@ public class SosStationImp implements SosStation {
 	
 	private Location location;
 	private String featureOfInterestName = "";
-	private String sourceName = "";
 	private String id = "";
+	private String name = "";
+	private String description = "";
+	private SosSource source;
+	private String platformType;
 	private boolean isMoving = false;
 	private List<SosSensor> sensors = new ArrayList<SosSensor>();
 	private List<SosNetwork> networks = new ArrayList<SosNetwork>();
@@ -60,21 +63,8 @@ public class SosStationImp implements SosStation {
 		return location;
 	}
 	
-	/**
-	 * Name of the source for the station. 
-	 * 
-	 * @return
-	 */
-	public String getSourceId() {
-		return sourceName;
-	}
-	
 	public void setMoving(boolean isMoving) {
 		this.isMoving = isMoving;
-	}
-	
-	public void setSourceName(String sourceName){
-		this.sourceName = sourceName;
 	}
 
 	public void setLocation(Location location) {
@@ -107,5 +97,40 @@ public class SosStationImp implements SosStation {
 	
 	public void setNetworks(List<SosNetwork> networks){
 		this.networks = networks;
+	}
+
+	@Override
+	public SosSource getSource() {
+		return source;
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+	
+	public void setSource(SosSource source) {
+		this.source = source;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getPlatformType(){
+		return platformType;
+	}
+	
+	public void setPlatformType(String platformType){
+		this.platformType = platformType;
 	}
 }
