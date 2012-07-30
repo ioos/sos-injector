@@ -296,7 +296,7 @@ public class ObservationSubmitter {
 
 			String response = httpSender.sendPostMessage(sosUrl, insertXml);
 
-			if (response.contains("Exception")) {
+			if (response == null || response.contains("Exception")) {
 				logger.error("Trying to input "
 						+ observationCollection.getObservationDates().size()
 						+ " observations from sensor: " + idCreator.createSensorId(station, sensor)
@@ -428,50 +428,52 @@ public class ObservationSubmitter {
 	 */
 	private Calendar getNewestObservationDate(SosStation station,
 			SosSensor sensor, SosPhenomenon phenomenon) throws Exception {
-		GetNewestObservationBuilder getObservationLatestBuilder = 
-				new GetNewestObservationBuilder(station, sensor, phenomenon, idCreator);
+		GetNewestObservationBuilder getObservationLatestBuilder = new GetNewestObservationBuilder(
+				station, sensor, phenomenon, idCreator);
 
 		String getObservationXml = getObservationLatestBuilder.build();
 
 		String response = httpSender.sendPostMessage(sosUrl, getObservationXml);
 
-		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
-				.newInstance();
-		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-		Document doc = docBuilder.parse(new ByteArrayInputStream(response
-				.getBytes()));
+		if (response != null) {
+			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+			Document doc = docBuilder.parse(new ByteArrayInputStream(response
+					.getBytes()));
 
-		doc.normalize();
+			doc.normalize();
 
-		/*
-      <om:samplingTime>
-        <gml:TimeInstant xsi:type="gml:TimeInstantType">
-          <gml:timePosition>2012-05-01T07:00:00.000Z</gml:timePosition>
-        </gml:TimeInstant>
-      </om:samplingTime>
-		 */
-		NodeList nodeList = doc.getElementsByTagName("gml:timePosition");
+			/*
+			 * <om:samplingTime> <gml:TimeInstant
+			 * xsi:type="gml:TimeInstantType">
+			 * <gml:timePosition>2012-05-01T07:00:00.000Z</gml:timePosition>
+			 * </gml:TimeInstant> </om:samplingTime>
+			 */
+			NodeList nodeList = doc.getElementsByTagName("gml:timePosition");
 
-		if (nodeList.getLength() == 1) {
+			if (nodeList.getLength() == 1) {
 
-			Element timePosition = (Element) nodeList.item(0);
+				Element timePosition = (Element) nodeList.item(0);
 
-			Calendar date = createDate(timePosition.getTextContent());
-			
-			date.add(Calendar.MINUTE, 1);
+				Calendar date = createDate(timePosition.getTextContent());
 
-			return date;
-		} else {
-			logger.debug("No observations found in SOS for Sensor: " + idCreator.createSensorId(station, sensor) + 
-					" phenomonon: " + phenomenon.getId() );
-			Calendar defaultDate = Calendar.getInstance();
+				date.add(Calendar.MINUTE, 1);
 
-			defaultDate.set(1970, Calendar.JANUARY, 1);
-
-			defaultDate.getTime();
-
-			return defaultDate;
+				return date;
+			}
 		}
+		
+		logger.debug("No observations found in SOS for Sensor: "
+				+ idCreator.createSensorId(station, sensor) + " phenomonon: "
+				+ phenomenon.getId());
+		Calendar defaultDate = Calendar.getInstance();
+
+		defaultDate.set(1970, Calendar.JANUARY, 1);
+
+		defaultDate.getTime();
+
+		return defaultDate;
 	}
 
 	/**
@@ -518,7 +520,7 @@ public class ObservationSubmitter {
 
 		String response = httpSender.sendPostMessage(sosUrl, xml);
 
-		if (response.contains("Exception")) {
+		if (response == null || response.contains("Exception")) {
 			logger.error("station: " + idCreator.createStationId(station) + " = " + response);
 			return false;
 		} else {
@@ -543,7 +545,7 @@ public class ObservationSubmitter {
 
 		String response = httpSender.sendPostMessage(sosUrl, xml);
 
-		if (response.contains("Exception")) {
+		if (response == null || response.contains("Exception")) {
 			logger.error("sensor: " + 
 					idCreator.createSensorId(station, sensor) + " = " + response);
 			return false;
@@ -571,7 +573,7 @@ public class ObservationSubmitter {
 
 		String response = httpSender.sendPostMessage(sosUrl, xml);
 
-		if (response.contains("Exception")) {
+		if (response == null || response.contains("Exception")) {
 			logger.error("network: " + idCreator.createNetworkId(network) + " = " + response);
 			return false;
 		} else {
@@ -589,7 +591,7 @@ public class ObservationSubmitter {
 
 		String output = httpSender.sendPostMessage(sosUrl, text);
 
-		return output.contains("sml:SensorML");
+		return output != null && output.contains("sml:SensorML");
 	}
 	
 	private Boolean isSensorCreated(SosStation station, SosSensor sensor) throws Exception {
@@ -601,7 +603,7 @@ public class ObservationSubmitter {
 
 		String output = httpSender.sendPostMessage(sosUrl, text);
 
-		return output.contains("SensorML");
+		return output != null && output.contains("SensorML");
 	}
 
 	/**
@@ -621,6 +623,6 @@ public class ObservationSubmitter {
 
 		String output = httpSender.sendPostMessage(sosUrl, text);
 
-		return output.contains("sml:SensorML");
+		return output != null && output.contains("sml:SensorML");
 	}
 }
