@@ -5,14 +5,7 @@
 ###PLEASE DO NOT INTERPRET THE CURRENT CODE AS AN INDICATION OF FINAL INTENDED###
 ###FORMATS OR DATA STRUCTURES.###
 
-The SOS Observation Injector is used to enter sensor observations into a SOS. 
-This code is an adaptor from the model of how most groups store their data 
-(Source/Station/Sensor) to allow observations to be placed in an SOS. 
-The model I am referring to is one where there is a Source that contains many 
-Stations. An example source would be NOAA. Each of those Stations contain one 
-or more Sensors. And each of those Sensors reads one or more Phenomena. This 
-code allows one to inject data into a SOS by implementing some interfaces that 
-are geared towards the common Source/Station/Sensor model. 
+The SOS Observation Injector is used to enter sensor observations into a SOS. This project takes as input Source, Station, Sensor, and Phenomenon objects and adds the needed XML formating to allow the data to be placed in an SOS. 
 
 Example
 -------
@@ -43,7 +36,7 @@ This example contains 5 stations with 3 sensors each. One of the sensor contains
 time, 5 stations, 15 sensors, 5 phenomena, 1 network, and around 10,000 observations 
 will be added to the SOS.
 
-This example will be referenced below in explaining to to use this project. 
+This example will be referenced below in explaining how to use the project. 
 
 Open up the CnfaicObservationUpdaterFactory.java file and look at the buildCnfaicObservationUpdater method. This method builds an ObservationUpdater object with a CnfaicStationRetriever (StationRetriever)  and a CnfaicObservationRetriever (ObservationRetriever) object. 
 
