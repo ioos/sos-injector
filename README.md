@@ -25,17 +25,18 @@ import com.axiomalaska.sos.cnfaic.CnfaicObservationUpdaterFactory;
 import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.PublisherInfoImp;
 
-public class Main{
-	public static void main(String[] args){
-		CnfaicObservationUpdaterFactory factory = new CnfaicObservationUpdaterFactory();
+		public class Main{
+			public static void main(String[] args){
 
-		PublisherInfo publisherInfo = new PublisherInfoImp();
+				CnfaicObservationUpdaterFactory factory = new CnfaicObservationUpdaterFactory();
 
-		ObservationUpdater observationUpdater = factory.buildCnfaicObservationUpdater(“http://localhost/sos/sos”, publisherInfo);
+				PublisherInfo publisherInfo = new PublisherInfoImp();
 
-		observationUpdater.update();
-	}
-}
+				ObservationUpdater observationUpdater = factory.buildCnfaicObservationUpdater(“http://localhost/sos/sos”, publisherInfo);
+
+				observationUpdater.update();
+			}
+		}
 
 This example contains 5 stations with 3 sensors each. One of the sensor contains 
 3 phenomena, while the other only have one. When running this code for the first 
