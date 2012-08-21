@@ -69,8 +69,6 @@ public class CnfaicStationRetriever implements StationRetriever {
 		airTemperatureSensor.setPhenomena(phenomena);
 		airTemperatureSensor.setId("Air_Temperature");
 		airTemperatureSensor.setDescription("Air Temperature");
-		airTemperatureSensor.setStationId(station.getId());
-		airTemperatureSensor.setSourceId(source.getId());
 		airTemperatureSensor.addNetwork(airTemperatureNetwork);
 		sensors.add(airTemperatureSensor);
 	
@@ -80,8 +78,6 @@ public class CnfaicStationRetriever implements StationRetriever {
 		relativeHumiditySensor.setPhenomena(phenomena);
 		relativeHumiditySensor.setId("Relative_Humidity");
 		relativeHumiditySensor.setDescription("Relative Humidity");
-		relativeHumiditySensor.setStationId(station.getId());
-		relativeHumiditySensor.setSourceId(source.getId());
 		sensors.add(relativeHumiditySensor);
 		
 		SosSensorImp windSensor = new SosSensorImp();
@@ -92,8 +88,6 @@ public class CnfaicStationRetriever implements StationRetriever {
 		windSensor.setPhenomena(phenomena);
 		windSensor.setId("Wind");
 		windSensor.setDescription("Wind");
-		windSensor.setStationId(station.getId());
-		windSensor.setSourceId(source.getId());
 		sensors.add(windSensor);
 
 		return sensors;

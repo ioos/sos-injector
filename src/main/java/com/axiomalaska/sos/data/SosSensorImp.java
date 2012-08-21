@@ -12,8 +12,6 @@ public class SosSensorImp implements SosSensor{
 	private String description = "";
 	private String id = "";
 	private List<SosNetwork> networks = new ArrayList<SosNetwork>();
-	private String stationId = "";
-	private String sourceId = "";
 
 	// -------------------------------------------------------------------------
 	// Public Members
@@ -23,24 +21,8 @@ public class SosSensorImp implements SosSensor{
 		return id;
 	}
 
-	public String getSourceId() {
-		return sourceId;
-	}
-
-	public void setSourceId(String sourceId) {
-		this.sourceId = sourceId;
-	}
-
 	public void setId(String id) {
 		this.id = id;
-	}
-	
-	public String getStationId(){
-		return stationId;
-	}
-	
-	public void setStationId(String stationId){
-		this.stationId = stationId;
 	}
 	
 	public String getDescription() {

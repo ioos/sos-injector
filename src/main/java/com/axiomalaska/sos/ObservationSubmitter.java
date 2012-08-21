@@ -287,33 +287,39 @@ public class ObservationSubmitter {
 		ObservationCollection filteredObservationCollection = removeOlderObservations(
 				newestObservationInSosDate, observationCollection);
 
-		try {
-			InsertObservationBuilder insertObservationBuilder = 
-				new InsertObservationBuilder(station, sensor, phenomenon,
+		if (filteredObservationCollection.getObservationDates().size() > 0) {
+			try {
+				InsertObservationBuilder insertObservationBuilder = 
+						new InsertObservationBuilder(
+						station, sensor, phenomenon,
 						filteredObservationCollection, idCreator);
 
-			String insertXml = insertObservationBuilder.build();
+				String insertXml = insertObservationBuilder.build();
 
-			String response = httpSender.sendPostMessage(sosUrl, insertXml);
+				String response = httpSender.sendPostMessage(sosUrl, insertXml);
 
-			if (response == null || response.contains("Exception")) {
-				logger.error("Trying to input "
+				if (response == null || response.contains("Exception")) {
+					logger.error("Trying to input "
+							+ observationCollection.getObservationDates()
+									.size() + " observations from sensor: "
+							+ idCreator.createSensorId(station, sensor)
+							+ " phenomenon: " + phenomenon.getId() + " from: "
+							+ " response: \n" + response);
+				} else {
+					logger.info("Inputed "
+							+ observationCollection.getObservationDates()
+									.size() + " observations from sensor: "
+							+ idCreator.createSensorId(station, sensor)
+							+ " phenomenon: " + phenomenon.getId());
+				}
+			} catch (Exception e) {
+				logger.error("Trying to inputk "
 						+ observationCollection.getObservationDates().size()
-						+ " observations from sensor: " + idCreator.createSensorId(station, sensor)
-						+ " phenomenon: " + phenomenon.getId()
-						+ " from: " + " response: \n" + response);
-			} else {
-				logger.info("Inputed "
-						+ observationCollection.getObservationDates().size()
-						+ " observations from sensor: " + idCreator.createSensorId(station, sensor)
-						+ " phenomenon: " + phenomenon.getId());
+						+ " observations from sensor: "
+						+ idCreator.createSensorId(station, sensor)
+						+ " phenomenon: " + phenomenon.getId() + " message: \n"
+						+ e.getMessage());
 			}
-		} catch (Exception e) {
-			logger.error("Trying to inputk "
-					+ observationCollection.getObservationDates().size()
-					+ " observations from sensor: " + idCreator.createSensorId(station, sensor)
-					+ " phenomenon: " + phenomenon.getId()
-					+ " message: \n" + e.getMessage());
 		}
 	}
 
