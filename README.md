@@ -20,10 +20,10 @@ There is a provided example in the source code that shows how to perform a pull 
 What the users needs to provides is an SOS of their own. This example is 
 located in the source at com.axiomalaska.sos.cnfaic. To run the example use the below code:
 
-import com.axiomalaska.sos.ObservationUpdater;
-import com.axiomalaska.sos.cnfaic.CnfaicObservationUpdaterFactory;
-import com.axiomalaska.sos.data.PublisherInfo;
-import com.axiomalaska.sos.data.PublisherInfoImp;
+		import com.axiomalaska.sos.ObservationUpdater;
+		import com.axiomalaska.sos.cnfaic.CnfaicObservationUpdaterFactory;
+		import com.axiomalaska.sos.data.PublisherInfo;
+		import com.axiomalaska.sos.data.PublisherInfoImp;
 
 		public class Main{
 			public static void main(String[] args){
