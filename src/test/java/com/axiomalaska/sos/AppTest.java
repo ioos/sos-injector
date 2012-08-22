@@ -8,10 +8,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.axiomalaska.sos.cnfaic.CnfaicObservationUpdaterFactory;
 import com.axiomalaska.sos.data.Location;
-import com.axiomalaska.sos.data.PublisherInfo;
-import com.axiomalaska.sos.data.PublisherInfoImp;
 import com.axiomalaska.sos.data.SosPhenomenon;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosPhenomenonImp;
@@ -39,8 +36,8 @@ public class AppTest {
 //		observationUpdater.update();
 //	}
 	
-	@Test
-	public void test3() throws Exception {
+//	@Test
+//	public void test3() throws Exception {
 //		ObservationRetriever observationRetriever = createObservationRetriever();
 //		
 //		ObservationUpdater sosSensorBuilder = 
@@ -48,7 +45,7 @@ public class AppTest {
 //		
 //		Station station = createStation();
 //		sosSensorBuilder.update(station, observationRetriever);
-	}
+//	}
 	
 	private String formatDate(Calendar date) {
 		Calendar localDate = (Calendar) date.clone();

@@ -5,13 +5,37 @@
 ###PLEASE DO NOT INTERPRET THE CURRENT CODE AS AN INDICATION OF FINAL INTENDED###
 ###FORMATS OR DATA STRUCTURES.###
 
-The SOS Observation Injector is used to enter sensor observations into a SOS. This project takes as input Source, Station, Sensor, and Phenomenon objects and adds the needed XML formating to allow the data to be placed in an SOS. 
+The SOS Observation Injector is used to enter sensor observations into a SOS. This project takes as input Source, Station, Sensor, and Phenomenon objects and places the data into the proper SOS XML and submits the data into a 52 North SOS. 
+
+Installation
+------------
+The only requirement for this project is that Java 1.6 is installed. 
+
+Maven Projects
+--------------
+To add this project to a Maven project insert the below code into your pom.xml file. 
+
+		  <repositories>
+		    <repository>
+		      <id>axiom_public_releases</id>
+		      <name>Axiom Releases</name>
+		      <url>http://nexus.axiomalaska.com/nexus/content/repositories/public/</url>
+		    </repository>
+		  </repositories>
+		  ....
+		  <dependencies>
+			.....
+				<dependency>
+					<groupId>com.axiomalaska</groupId>
+					<artifactId>SosInjector</artifactId>
+					<version>0.2.11</version>
+				</dependency>
+			.....
+		  </dependencies>
 
 Example
 -------
-There is a provided example in the source code that shows how to perform a pull update to an SOS. 
-What the users needs to provides is an SOS of their own. This example is 
-located in the source at com.axiomalaska.sos.cnfaic. To run the example use the below code:
+There is a provided example in the source code that shows how to perform a pull update to an SOS. What the users needs to provides is an SOS of their own. This example is located in the source at com.axiomalaska.sos.cnfaic. To run the example use the below code:
 
 		import com.axiomalaska.sos.ObservationUpdater;
 		import com.axiomalaska.sos.cnfaic.CnfaicObservationUpdaterFactory;
