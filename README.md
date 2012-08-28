@@ -15,7 +15,7 @@ Maven Projects
 --------------
 To add this project to a Maven project insert the below code into your pom.xml file. 
 
-                          ….
+                  ....
 		  <repositories>
 		    <repository>
 		      <id>axiom_public_releases</id>
@@ -35,7 +35,7 @@ To add this project to a Maven project insert the below code into your pom.xml f
 		  </dependencies>
 
 Creating a Custom Source SOS Injector
---------------------------------------------
+-------------------------------------
 The source code provides an example (referenced below) to explain how to implement a custom source SOS injector. The user needs to provide the URL for their own 52 North SOS. This example is located in the source at com.axiomalaska.sos.cnfaic. To run the example use the following code:
 
 		import com.axiomalaska.sos.ObservationUpdater;
@@ -101,5 +101,5 @@ or the method update(Station station, ObservationRetriever observationRetriever,
 
 
 PublisherInfo
-----------
+-------------
 The PublisherInfo interface contains information about the organization that is hosting the SOS. This includes the organization’s name, country of origin, email address, and web address. 

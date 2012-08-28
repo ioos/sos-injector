@@ -1,4 +1,4 @@
-package com.axiomalaska.sos.cnfaic;
+package com.axiomalaska.sos.example;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
