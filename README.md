@@ -1,15 +1,13 @@
 #SOS Observation Injector#
 ===========
 
-###NOTE: THIS SOFTWARE IS IN A DRAFT STATE AND SUBJECT TO SIGNIFICANT CHANGE.###
-###PLEASE DO NOT INTERPRET THE CURRENT CODE AS AN INDICATION OF FINAL INTENDED###
-###FORMATS OR DATA STRUCTURES.###
+The SOS Observation Injector is a Java toolkit that can be used to enter sensor observations into an SOS.
 
-The SOS Observation Injector is used to enter sensor observations into a SOS. This project takes as input: source, station, sensor, and phenomenon objects and places the data into the proper SOS XML. It then submits the data into a 52 North SOS. 
+This project takes as input: source, station, sensor, and phenomenon objects and places the data into the proper SOS XML. It then submits the data into a 52 North SOS. 
 
 Installation
 ------------
-The only requirements for this project are that Java 1.6 is installed and Maven is used to build the project.
+The only requirements for this project are that Java 1.6 or greater is installed and Maven is used to build the project.
 
 Maven Projects
 --------------
