@@ -78,14 +78,15 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			sensorML.appendChild(member);
 			
 			Element system = doc.createElement("sml:System");
-			system.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 			member.appendChild(system);
+			
+			system.appendChild(createDescriptionNode(doc, station, sensor));
+			
+			system.appendChild(createNameNode(doc, station, sensor));
 			
 			system.appendChild(createIdentificationNode(doc));
 			
 			system.appendChild(createParentProcedures(doc));
-			
-			system.appendChild(createPositionNode(doc));
 			
 			List<SosPhenomenon> phenomena = sensor.getPhenomena();
 			
@@ -172,11 +173,10 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 	<sml:outputs>
 		<sml:OutputList>
 			<sml:output name="Air Temperature">
-				<swe:Quantity definition="urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature">
+				<swe:Quantity definition="http://mmisw.org/ont/cf/parameter/air_temperature">
 					<gml:metaDataProperty>
 						<offering>
-							<id>network-All</id>
-							<name>Includes all the sensors in the network</name>
+							<id>network-all</id>
 						</offering>
 					</gml:metaDataProperty>
 					<swe:uom code="C"/>
@@ -209,7 +209,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			metaDataProperty.appendChild(offering);
 			
 			Element id = doc.createElement("id");
-			id.appendChild(doc.createTextNode("network-All"));
+			id.appendChild(doc.createTextNode("network-all"));
 			offering.appendChild(id);
 			
 			Element name = doc.createElement("name");
@@ -234,7 +234,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 	<sml:inputs>
 		<sml:InputList>
 			<sml:input name="Air Temperature">
-			<	swe:ObservableProperty definition="urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature"/>
+			<swe:ObservableProperty definition="http://mmisw.org/ont/cf/parameter/air_temperature"/>
 			</sml:input>
 		</sml:InputList>
 	</sml:inputs>
@@ -260,106 +260,15 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 	}
 
 	/**
-	<sml:position name="sensorPosition">
-		<swe:Position referenceFrame="urn:ogc:def:crs:EPSG::4326">
-			<swe:location>
-				<swe:Vector gml:id="STATION_LOCATION">
-					<swe:coordinate name="easting">
-						<swe:Quantity>
-							<swe:uom code="degree"/>
-							<swe:value>-143.0</swe:value>
-						</swe:Quantity>
-					</swe:coordinate>
-					<swe:coordinate name="northing">
-						<swe:Quantity>
-							<swe:uom code="degree"/>
-							<swe:value>63.0</swe:value>
-						</swe:Quantity>
-					</swe:coordinate>
-					<swe:coordinate name="altitude">
-						<swe:Quantity>
-							<swe:uom code="m"/>
-							<swe:value>0.0</swe:value>
-						</swe:Quantity>
-					</swe:coordinate>
-				</swe:Vector>
-			</swe:location>
-		</swe:Position>
-	</sml:position>
-	 */
-	private Node createPositionNode(Document doc) {
-		Element position = doc.createElement("sml:position");
-		position.setAttribute("name", "sensorPosition");
-		
-		Element swePosition = doc.createElement("swe:Position");
-		swePosition.setAttribute("referenceFrame", "urn:ogc:def:crs:EPSG::4326");
-		position.appendChild(swePosition);
-		
-		Element location = doc.createElement("swe:location");
-		swePosition.appendChild(location);
-		
-		Element vector = doc.createElement("swe:Vector");
-		vector.setAttribute("gml:id", "STATION_LOCATION");
-		location.appendChild(vector);
-		
-		Element eastingCoordinate = doc.createElement("swe:coordinate");
-		eastingCoordinate.setAttribute("name", "easting");
-		vector.appendChild(eastingCoordinate);
-		
-		Element eastingQuantity = doc.createElement("swe:Quantity");
-		eastingCoordinate.appendChild(eastingQuantity);
-		
-		Element eastingUom = doc.createElement("swe:uom");
-		eastingUom.setAttribute("code", "degree");
-		eastingQuantity.appendChild(eastingUom);
-		
-		Element eastingValue = doc.createElement("swe:value");
-		eastingValue.appendChild(doc.createTextNode(station.getLocation().getLongitude() + ""));
-		eastingQuantity.appendChild(eastingValue);
-		
-		Element northingCoordinate = doc.createElement("swe:coordinate");
-		northingCoordinate.setAttribute("name", "northing");
-		vector.appendChild(northingCoordinate);
-		
-		Element northingQuantity = doc.createElement("swe:Quantity");
-		northingCoordinate.appendChild(northingQuantity);
-		
-		Element northingUom = doc.createElement("swe:uom");
-		northingUom.setAttribute("code", "degree");
-		northingQuantity.appendChild(northingUom);
-		
-		Element northingValue = doc.createElement("swe:value");
-		northingValue.appendChild(doc.createTextNode(station.getLocation().getLatitude() + ""));
-		northingQuantity.appendChild(northingValue);
-		
-		Element altitudeCoordinate = doc.createElement("swe:coordinate");
-		altitudeCoordinate.setAttribute("name", "altitude");
-		vector.appendChild(altitudeCoordinate);
-		
-		Element altitudeQuantity = doc.createElement("swe:Quantity");
-		altitudeCoordinate.appendChild(altitudeQuantity);
-		
-		Element altitudeUom = doc.createElement("swe:uom");
-		altitudeUom.setAttribute("code", "m");
-		altitudeQuantity.appendChild(altitudeUom);
-		
-		Element altitudeValue = doc.createElement("swe:value");
-		altitudeValue.appendChild(doc.createTextNode("0.0"));
-		altitudeQuantity.appendChild(altitudeValue);
-		
-		return position;
-	}
-
-	/**
 	 * Produces the XML below
           <sml:identification>
-               <sml:IdentifierList>
-                    <sml:identifier>
-                         <sml:Term definition="urn:ogc:def:identifier:OGC:uniqueID">
-                              <sml:value>urn:ogc:object:feature:Sensor:global_hawk_24</sml:value>
-                         </sml:Term>
-                    </sml:identifier>
-               </sml:IdentifierList>
+            <sml:IdentifierList>
+              <sml:identifier name="sensorID">
+                <sml:Term definition="http://mmisw.org/ont/ioos/definition/sensorID">
+                  <sml:value>urn:ioos:sensor:aoos:pilotrock:airtemp</sml:value>
+                </sml:Term>
+              </sml:identifier>
+            </sml:IdentifierList>
           </sml:identification>
 	 */
 	private Node createIdentificationNode(Document doc) {
@@ -369,10 +278,11 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		identification.appendChild(identifierList);
 		
 		Element identifier = doc.createElement("sml:identifier");
+		identifier.setAttribute("name", "sensorID");
 		identifierList.appendChild(identifier);
 		
 		Element term = doc.createElement("sml:Term");
-		term.setAttribute("definition", "urn:ogc:def:identifier:OGC:uniqueID");
+		term.setAttribute("definition", "http://mmisw.org/ont/ioos/definition/sensorID");
 		identifier.appendChild(term);
 		
 		Element value = doc.createElement("sml:value");
@@ -381,6 +291,24 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		term.appendChild(value);
 		
 		return identification;
+	}
+	
+	/**
+	 * <gml:description>STATION DESCRIPTION</gml:description>
+	 */
+	private Node createDescriptionNode(Document doc, SosStation station, SosSensor sensor) {
+		Element description = doc.createElement("gml:description");
+		description.appendChild(doc.createTextNode(station.getDescription() + ", " + sensor.getDescription()));
+		return description;
+	}
+	
+	/**
+	 * <gml:name>urn:ogc:object:feature:Sensor:IFGI:ifgi-sensor-90</gml:name>
+	 */
+	private Node createNameNode(Document doc, SosStation station, SosSensor sensor) {
+		Element name = doc.createElement("gml:name");
+		name.appendChild(doc.createTextNode(idCreator.createSensorId(station, sensor)));
+		return name;
 	}
 	
 	/**

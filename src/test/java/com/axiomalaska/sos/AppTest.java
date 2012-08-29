@@ -9,6 +9,8 @@ import java.util.List;
 import org.junit.Test;
 
 import com.axiomalaska.sos.data.Location;
+import com.axiomalaska.sos.data.PublisherInfo;
+import com.axiomalaska.sos.data.PublisherInfoImp;
 import com.axiomalaska.sos.data.SosPhenomenon;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosPhenomenonImp;
@@ -16,6 +18,7 @@ import com.axiomalaska.sos.data.SosSensorImp;
 import com.axiomalaska.sos.data.SosStationImp;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.data.ObservationCollection;
+import com.axiomalaska.sos.example.CnfaicObservationUpdaterFactory;
 
 public class AppTest {
 
@@ -26,12 +29,17 @@ public class AppTest {
 
 //	@Test
 //	public void testCnfaic() throws Exception{
-//		PublisherInfo publisherInfo = new PublisherInfoImp();
+//		PublisherInfoImp publisherInfo = new PublisherInfoImp();
+//		publisherInfo.setCountry("USA");
+//		publisherInfo.setEmail("john.doe@gmail.com");
+//		publisherInfo.setName("NOAA");
+//		publisherInfo.setWebAddress("www.noaa.gov");
+//		
 //		CnfaicObservationUpdaterFactory factory = 
 //				new CnfaicObservationUpdaterFactory();
 //		
 //		ObservationUpdater observationUpdater = factory.buildCnfaicObservationUpdater(
-//				"http://192.168.8.15:8080/sos/sos", publisherInfo);
+//				"http://staging1.axiom:8080/52n-sos-ioos-dev/sos", publisherInfo);
 //		
 //		observationUpdater.update();
 //	}

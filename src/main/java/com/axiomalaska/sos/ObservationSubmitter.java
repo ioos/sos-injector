@@ -440,7 +440,7 @@ public class ObservationSubmitter {
 		String getObservationXml = getObservationLatestBuilder.build();
 
 		String response = httpSender.sendPostMessage(sosUrl, getObservationXml);
-
+		
 		if (response != null) {
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
 					.newInstance();
@@ -456,7 +456,7 @@ public class ObservationSubmitter {
 			 * <gml:timePosition>2012-05-01T07:00:00.000Z</gml:timePosition>
 			 * </gml:TimeInstant> </om:samplingTime>
 			 */
-			NodeList nodeList = doc.getElementsByTagName("gml:timePosition");
+			NodeList nodeList = doc.getElementsByTagName("gml:beginPosition");
 
 			if (nodeList.getLength() == 1) {
 

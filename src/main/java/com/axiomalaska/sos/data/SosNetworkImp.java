@@ -4,6 +4,7 @@ public class SosNetworkImp implements SosNetwork {
 
 	private String id = "";
 	private String sourceId = "";
+	private String description = "";
 	
 	@Override
 	public String getId() {
@@ -14,6 +15,11 @@ public class SosNetworkImp implements SosNetwork {
 	public String getSourceId() {
 		return sourceId;
 	}
+	
+	@Override
+	public String getDescription(){
+		return description;
+	}
 
 	public void setId(String id) {
 		this.id = id;
@@ -21,5 +27,9 @@ public class SosNetworkImp implements SosNetwork {
 
 	public void setSourceId(String sourceId) {
 		this.sourceId = sourceId;
+	}
+	
+	public void setDescription(String description){
+		this.description = description;
 	}
 }

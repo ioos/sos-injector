@@ -17,6 +17,8 @@ public interface SosNetwork {
 	 */
 	public String getId();
 	
+	public String getDescription();
+	
 	/**
 	 * The ID of the Network's source
 	 * example "nanoos"

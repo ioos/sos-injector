@@ -55,7 +55,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 * Create InsertObservation XML
 	 * example:
 	 * <InsertObservation service="SOS" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/sos/1.0 http://schemas.opengis.net/sos/1.0.0/sosInsert.xsd http://www.opengis.net/sampling/1.0 http://schemas.opengis.net/sampling/1.0.0/sampling.xsd http://www.opengis.net/om/1.0 http://schemas.opengis.net/om/1.0.0/extensions/observationSpecialization_override.xsd">
-	 * 	<AssignedSensorId>urn:ogc:object:feature:Sensor:3234</AssignedSensorId>
+	 * 	<AssignedSensorId>urn:ioos:sensor:aoos:pilotrock:airtemp</AssignedSensorId>
 	 * 	<om:Observation>
 	 * 		<om:samplingTime>
 	 * 			<gml:TimePeriod xsi:type="gml:TimePeriodType">
@@ -515,11 +515,6 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 */
 	private Node createFeatureOfInterest(Document doc) {
 		Element featureOfInterest = doc.createElement("om:featureOfInterest");
-		Element featureCollection = doc.createElement("gml:FeatureCollection");
-		featureOfInterest.appendChild(featureCollection);
-		
-		Element featureMember = doc.createElement("gml:featureMember");
-		featureCollection.appendChild(featureMember);
 		
 		Element samplingPoint = doc.createElement("sa:SamplingPoint");
 
@@ -527,17 +522,20 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 				idCreator.createFeatureOfInterestId(station, sensor);
 
 		samplingPoint.setAttribute("gml:id", featureOfInterestId);
-		featureMember.appendChild(samplingPoint);
+		featureOfInterest.appendChild(samplingPoint);
 		
 		String featureOfInterestDescription = 
 				idCreator.createFeatureOfInterestName(station, sensor);
+		
+		Element description = doc.createElement("gml:description");
+		description.appendChild(doc.createTextNode(featureOfInterestDescription));
+		samplingPoint.appendChild(description);
 		
 		Element gmlName = doc.createElement("gml:name");
 		gmlName.appendChild(doc.createTextNode(featureOfInterestDescription));
 		samplingPoint.appendChild(gmlName);
 		
 		Element sampledFeature = doc.createElement("sa:sampledFeature");
-		sampledFeature.setAttribute("xlink:href", "");
 		samplingPoint.appendChild(sampledFeature);
 		
 		Element position = doc.createElement("sa:position");
@@ -547,7 +545,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		position.appendChild(point);
 		
 		Element pos = doc.createElement("gml:pos");
-		pos.setAttribute("srsName", "urn:ogc:def:crs:EPSG::4326");
+		pos.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4326");
 		pos.appendChild(doc.createTextNode(station.getLocation().getLongitude() 
 				+ " " + station.getLocation().getLatitude()));
 		point.appendChild(pos);

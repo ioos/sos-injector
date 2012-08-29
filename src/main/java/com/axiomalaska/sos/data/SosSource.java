@@ -17,15 +17,23 @@ public interface SosSource {
 	public String getWebAddress();
 
 	/**
-		Government–Federal
-		Government–State
-		Government–Municipal
-		Tribal
-		Academic
-		Industry
-		Non-Profit
-		Other
-		Unknown
+		gov_federal
+		gov_state
+		gov_municipal
+		tribal
+		academic
+		industry
+		nonprofit
+		other
+		unknown
 	 */
 	public String getOperatorSector();
+	
+	public String getAddress();
+	
+	public String getCity();
+	
+	public String getState();
+	
+	public String getZipcode();
 }

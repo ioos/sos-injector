@@ -11,7 +11,6 @@ import org.w3c.dom.Node;
 
 import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosNetwork;
-import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosSource;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.tools.IdCreator;
@@ -53,6 +52,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		  xmlns:ogc="http://www.opengis.net/ogc"
 		  xmlns:om="http://www.opengis.net/om/1.0"
 		  xmlns:sml="http://www.opengis.net/sensorML/1.0.1"
+		  xmlns:sa="http://www.opengis.net/sampling/1.0"
 		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		  xsi:schemaLocation="http://www.opengis.net/sos/1.0
 		  http://schemas.opengis.net/sos/1.0.0/sosRegisterSensor.xsd
@@ -76,7 +76,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
                    <!-- ======= STATION IDENTIFIERS ======= -->
 				   <sml:identification>
 				      <sml:IdentifierList>
-					     <sml:identifier>
+					     <sml:identifier name="stationID">
 					        <sml:Term definition="urn:ogc:def:identifier:OGC:uniqueID">
 					           <sml:value>urn:ioos:station:hads:172C7508</sml:value>
 					        </sml:Term>
@@ -114,7 +114,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 					           <sml:value>HADS</sml:value>
 					        </sml:Term>
 					     </sml:classifier>
-					     <sml:classifier name="ParentNetwork">
+					     <sml:classifier name="parentNetwork">
 					        <sml:Term definition="urn:ioos:def:classifier:IOOS:parentNetwork">
 					           <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/organization"/>
 					           <sml:value>AOOS</sml:value>
@@ -148,81 +148,49 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 				      </sml:ResponsibleParty>
 				   </sml:contact>
 				   <!-- ======= LOCATION ======= -->
-			       <sml:position name="sensorPosition">
-			          <swe:Position referenceFrame="urn:ogc:def:crs:EPSG::4326">
-			             <swe:location>
-			                <swe:Vector gml:id="STATION_LOCATION">
-			                   <swe:coordinate name="easting">
-			                      <swe:Quantity>
-			                         <swe:uom code="degree"/>
-			                         <swe:value>7.52</swe:value>
-			                      </swe:Quantity>
-				               </swe:coordinate>
-			                   <swe:coordinate name="northing">
-			                      <swe:Quantity>
-			                         <swe:uom code="degree"/>
-			                         <swe:value>52.90</swe:value>
-			                      </swe:Quantity>
-			                   </swe:coordinate>
-			                   <swe:coordinate name="altitude">
-			                      <swe:Quantity>
-			                         <swe:uom code="m"/>
-			                         <swe:value>52.0</swe:value>
-			                      </swe:Quantity>
-			                   </swe:coordinate>
-				            </swe:Vector>
-		                 </swe:location>
-		              </swe:Position>
-	               </sml:position>
-			       <sml:outputs>
-				      <sml:OutputList>
-				         <sml:output name="none">
-				            <swe:Quantity definition="none">
-					           <gml:metaDataProperty>
-							      <offering>
-							         <id>network-All</id>
-							         <name>Includes all the sensors in the network</name>
-							      </offering>
-				               </gml:metaDataProperty>
-				               <swe:uom code="none"/>
-				            </swe:Quantity>
-				         </sml:output>
-				      </sml:OutputList>
-			       </sml:outputs>
-			       <!-- ======= COMPONENTS ======= -->
-				   <sml:components>
-				      <sml:ComponentList>
-						<sml:component name="Sensor stream_gage_height">
-						   <sml:System gml:id="sensor-stream_gage_height">
-						      <gml:description>Stream Gage Height</gml:description>
-						      <sml:identification xlink:href="urn:ioos:sensor:hads:172C7508:stream_gage_height"/>
-						   </sml:System>
-						</sml:component>
-						<sml:component name="Sensor sea_water_temperature">
-						   <sml:System gml:id="sensor-sea_water_temperature">
-						      <gml:description>Sea Water Temperature</gml:description>
-						      <sml:identification xlink:href="urn:ioos:sensor:hads:172C7508:sea_water_temperature"/>
-						   </sml:System>
-						</sml:component>
-						<sml:component name="Sensor battery">
-						    <sml:System gml:id="sensor-battery">
-						       <gml:description>Battery</gml:description>
-						       <sml:identification xlink:href="urn:ioos:sensor:hads:172C7508:battery"/>
-						    </sml:System>
-						 </sml:component>
-				      </sml:ComponentList>
-				   </sml:components>
+		          <sml:position name="sensorLocation">
+		            <swe:Position referenceFrame="http://www.opengis.net/def/crs/EPSG/0/4326">
+		              <swe:location>
+		                <swe:Vector>
+		                  <swe:coordinate name="easting">
+		                    <swe:Quantity>
+		                      <swe:uom code="degree" />
+		                      <swe:value>-149.470</swe:value>
+		                    </swe:Quantity>                
+		                  </swe:coordinate>
+		                  <swe:coordinate name="northing">
+		                    <swe:Quantity>
+		                      <swe:uom code="degree" />
+		                      <swe:value>59.742</swe:value>
+		                    </swe:Quantity>                
+		                  </swe:coordinate>              
+		                </swe:Vector>
+		              </swe:location>
+		            </swe:Position>
+		          </sml:position>
 			    </sml:System>
 		      </sml:member>
 		    </sml:SensorML>
 		  </SensorDescription>
+		  <!-- ObservationTemplate parameter; this has to be an empty measurement at the moment, as the 52N SOS only supports Measurements to be inserted -->
 		  <ObservationTemplate>
 		    <om:Measurement>
 		      <om:samplingTime/>
 		      <om:procedure/>
 		      <om:observedProperty/>
-		      <om:featureOfInterest></om:featureOfInterest>
-		      <om:result xsi:type="gml:MeasureType" uom="" >0.0</om:result>
+		      <om:featureOfInterest>
+		        <sa:SamplingPoint gml:id="foi-pilot-rock">
+		          <gml:description>Pilot Rock Station, AK</gml:description>
+		          <gml:name>Pilot Rock, AK</gml:name>
+		          <sa:sampledFeature/>
+		          <sa:position>
+		            <gml:Point>
+		              <gml:pos srsName="http://www.opengis.net/def/crs/EPSG/0/4326">59.742 -149.470</gml:pos>
+		            </gml:Point>
+		          </sa:position>
+		        </sa:SamplingPoint>
+		      </om:featureOfInterest>
+		      <om:result xsi:type="gml:MeasureType" uom="">0.0</om:result>
 		    </om:Measurement>
 		  </ObservationTemplate>
 		</RegisterSensor>
@@ -245,6 +213,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 			registerSensor.setAttribute("xmlns:ogc", "http://www.opengis.net/ogc");
 			registerSensor.setAttribute("xmlns:om", "http://www.opengis.net/om/1.0");
 			registerSensor.setAttribute("xmlns:sml", "http://www.opengis.net/sensorML/1.0.1");
+			registerSensor.setAttribute("xmlns:sa", "http://www.opengis.net/sampling/1.0");
 			registerSensor.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 			registerSensor.setAttribute("xsi:schemaLocation", "http://www.opengis.net/sos/1.0 http://schemas.opengis.net/sos/1.0.0/sosRegisterSensor.xsd http://www.opengis.net/om/1.0 http://schemas.opengis.net/om/1.0.0/extensions/observationSpecialization_override.xsd");
 			doc.appendChild(registerSensor);
@@ -292,13 +261,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 			
 			system.appendChild(createPositionNode(doc, station));
 			
-			system.appendChild(createOutputsNode(doc));
-			
-			system.appendChild(doc.createComment("======= COMPONENTS ======="));
-			
-			system.appendChild(createComponentsNode(doc, station));
-			
-			registerSensor.appendChild(createObservationTemplate(doc));
+			registerSensor.appendChild(createObservationTemplate(doc, station));
 			
 			String xmlString = getString(doc);
 			
@@ -312,85 +275,9 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
   // ---------------------------------------------------------------------------
   // Private Members
   // ---------------------------------------------------------------------------
-
-	/**
-      <sml:components>
-        <sml:ComponentList>
-          <sml:component name="Sensor watertemp1">
-            <sml:System gml:id="sensor-watertemp1">
-              <gml:description>Sensor description</gml:description>
-              <sml:identification xlink:href="urn:ioos:sensor:wmo:44029::watertemp1"/>
-           </sml:System>
-          </sml:component>
-          <sml:component name="Sensor ct1">
-            <sml:System gml:id="sensor-ct1">
-              <gml:description/>
-              <sml:identification xlink:href="urn:ioos:sensor:wmo:44029::ct1"/>
-           </sml:System>
-          </sml:component>
-          <sml:component name="Sensor summarywav1">
-            <sml:System gml:id="sensor-summarywav1">
-              <gml:description/>
-              <sml:identification xlink:href="urn:ioos:sensor:wmo:44029::summarywav1"/>
-            </sml:System>
-          </sml:component>
-          <sml:component name="Sensor baro1">
-            <sml:System>
-              <gml:description/>
-              <sml:identification xlink:href="urn:ioos:sensor:wmo:44029::baro1"/>
-            </sml:System>
-          </sml:component>
-          <sml:component name="Sensor airtemp1">
-            <sml:System gml:id="sensor-airtemp1">
-              <gml:description/>
-              <sml:identification xlink:href="urn:ioos:sensor:wmo:44029::airtemp1"/>
-            </sml:System>
-          </sml:component>
-        </sml:ComponentList>
-      </sml:components>
-	 */
-	private Node createComponentsNode(Document doc, SosStation station){
-		Element componentsNode = doc.createElement("sml:components");
-		
-		Element componentListNode = doc.createElement("sml:ComponentList");
-		componentsNode.appendChild(componentListNode);
-		
-		for(SosSensor sensor : station.getSensors()){
-			componentListNode.appendChild(createComponentNode(doc, sensor, station));
-		}
-		
-		return componentsNode;
-	}
 	
 	/**
-      <sml:component name="Sensor airtemp1">
-        <sml:System gml:id="sensor-airtemp1">
-          <gml:description>Sensor description</gml:description>
-          <sml:identification xlink:href="urn:ioos:sensor:wmo:44029::airtemp1"/>
-        </sml:System>
-      </sml:component>
-	 */
-	private Node createComponentNode(Document doc, SosSensor sensor, SosStation station){
-		Element componentNode = doc.createElement("sml:component");
-		componentNode.setAttribute("name", "Sensor " + sensor.getId());
-		
-		Element systemNode = doc.createElement("sml:System");
-		systemNode.setAttribute("gml:id", "sensor-" + sensor.getId());
-		componentNode.appendChild(systemNode);
-		
-		Element description = doc.createElement("gml:description");
-		description.appendChild(doc.createTextNode(sensor.getDescription()));
-		systemNode.appendChild(description);
-		
-		Element identification = doc.createElement("sml:identification");
-		identification.setAttribute("xlink:href", idCreator.createSensorId(station, sensor));
-		systemNode.appendChild(identification);
-		
-		return componentNode;
-	}
-	
-	/**
-	    <sml:contact xlink:role="urn:ogc:def:classifier:OGC:contactType:operator">
+	    <sml:contact xlink:role="http://mmisw.org/ont/ioos/definition/operator">
 		   <sml:ResponsibleParty>
 		      <sml:organizationName>OPERATOR ORGANIZATION</sml:organizationName>
 		      <sml:contactInfo>
@@ -405,7 +292,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 	 */
 	private Node createContactOperatorNode(Document doc, SosSource source){
 		Element contact = doc.createElement("sml:contact");
-		contact.setAttribute("xlink:role", "urn:ogc:def:classifier:OGC:contactType:operator");
+		contact.setAttribute("xlink:role", "http://mmisw.org/ont/ioos/definition/operator");
 
 		Element responsibleParty = doc.createElement("sml:ResponsibleParty");
 		contact.appendChild(responsibleParty);
@@ -419,6 +306,22 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		
 		Element address = doc.createElement("sml:address");
 		contactInfo.appendChild(address);
+		
+		Element deliveryPoint = doc.createElement("sml:deliveryPoint");
+		deliveryPoint.appendChild(doc.createTextNode(source.getAddress()));
+		address.appendChild(deliveryPoint);
+		
+		Element city = doc.createElement("sml:city");
+		city.appendChild(doc.createTextNode(source.getCity()));
+		address.appendChild(city);
+		
+		Element state = doc.createElement("sml:administrativeArea");
+		state.appendChild(doc.createTextNode(source.getState()));
+		address.appendChild(state);
+		
+		Element zipcode = doc.createElement("sml:postalCode");
+		zipcode.appendChild(doc.createTextNode(source.getZipcode()));
+		address.appendChild(zipcode);
 		
 		Element country = doc.createElement("sml:country");
 		country.appendChild(doc.createTextNode(source.getCountry()));
@@ -436,7 +339,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 	}
 	
 	/**
-    <sml:contact xlink:role="urn:ogc:def:classifier:OGC:contactType:publisher">
+    <sml:contact xlink:role="http://mmisw.org/ont/ioos/definition/publisher">
 	   <sml:ResponsibleParty>
 	      <sml:organizationName>NANOOS</sml:organizationName>
 	      <sml:contactInfo>
@@ -451,7 +354,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 	 */
 	private Node createContactPublisherNode(Document doc){
 		Element contact = doc.createElement("sml:contact");
-		contact.setAttribute("xlink:role", "urn:ogc:def:classifier:OGC:contactType:publisher");
+		contact.setAttribute("xlink:role", "http://mmisw.org/ont/ioos/definition/publisher");
 
 		Element responsibleParty = doc.createElement("sml:ResponsibleParty");
 		contact.appendChild(responsibleParty);
@@ -486,25 +389,25 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		 <sml:classification>
 			<sml:ClassifierList>
 			  <sml:classifier name="platformType">
-			    <sml:Term definition="urn:ioos:def:classifier:IOOS:platformType">
+			    <sml:Term definition="http://mmisw.org/ont/ioos/definition/platformType">
 			      <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/platform"/>
 			      <sml:value>buoy</sml:value>
 			    </sml:Term>
 			  </sml:classifier>
 			  <sml:classifier name="operatorSector">
-			    <sml:Term definition="urn:ioos:def:classifier:IOOS:operatorSector">
+			    <sml:Term definition="http://mmisw.org/ont/ioos/definition/operatorSector">
 			      <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/sector"/>
 			      <sml:value>academic</sml:value>
 			    </sml:Term>
 			  </sml:classifier>
 			  <sml:classifier name="publisher">
-			    <sml:Term definition="urn:ioos:def:classifier:IOOS:publisher">
-			      <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/organization"/>
+			    <sml:Term definition="http://mmisw.org/ont/ioos/definition/publisher">
+			      <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/organizationm"/>
 			      <sml:value>RAWS</sml:value>
 			    </sml:Term>
 			  </sml:classifier>
-			  <sml:classifier name="ParentNetwork">
-			    <sml:Term definition="urn:ioos:def:classifier:IOOS:parentNetwork">
+			  <sml:classifier name="parentNetwork">
+			    <sml:Term definition="http://mmisw.org/ont/ioos/definition/parentNetwork">
 			      <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/organization"/>
 			      <sml:value>AOOS</sml:value>
 			    </sml:Term>
@@ -519,20 +422,20 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		classification.appendChild(classifierList);
 		
 		classifierList.appendChild(createClassifierNode(doc, "platformType", 
-				"urn:ioos:def:classifier:IOOS:platformType", "http://mmisw.org/ont/ioos/platform",
+				"http://mmisw.org/ont/ioos/definition/platformType", "http://mmisw.org/ont/ioos/platform",
 				station.getPlatformType()));
 		
 
 		classifierList.appendChild(createClassifierNode(doc, "operatorSector", 
-				"urn:ioos:def:classifier:IOOS:operatorSector", "http://mmisw.org/ont/ioos/sector",
+				"http://mmisw.org/ont/ioos/definition/operatorSector", "http://mmisw.org/ont/ioos/sector",
 				source.getOperatorSector()));
 		
 		classifierList.appendChild(createClassifierNode(doc, "publisher", 
-				"urn:ioos:def:classifier:IOOS:publisher", "http://mmisw.org/ont/ioos/organization",
+				"http://mmisw.org/ont/ioos/definition/publisher", "http://mmisw.org/ont/ioos/organization",
 				source.getName()));
 		
-		classifierList.appendChild(createClassifierNode(doc, "ParentNetwork", 
-				"urn:ioos:def:classifier:IOOS:parentNetwork", "http://mmisw.org/ont/ioos/organization",
+		classifierList.appendChild(createClassifierNode(doc, "parentNetwork", 
+				"http://mmisw.org/ont/ioos/definition/parentNetwork", "http://mmisw.org/ont/ioos/organization",
 				publisherInfo.getName()));
 		
 		return classification;
@@ -540,7 +443,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 	
 	/**
 	  <sml:classifier name="platformType">
-	    <sml:Term definition="urn:ioos:def:classifier:IOOS:platformType">
+	    <sml:Term definition="http://mmisw.org/ont/ioos/definition/platformType">
 	      <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/platform"/>
 	      <sml:value>buoy</sml:value>
 	    </sml:Term>
@@ -586,17 +489,29 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 	}
 	
 	/**
-	 *  <ObservationTemplate>
-          <om:Measurement>
-            <om:samplingTime/>
-            <om:procedure/>
-            <om:observedProperty/>
-            <om:featureOfInterest></om:featureOfInterest>
-            <om:result xsi:type="gml:MeasureType" uom="" >0.0</om:result>
-          </om:Measurement>
-        </ObservationTemplate>
+	  <!-- ObservationTemplate parameter; this has to be an empty measurement at the moment, as the 52N SOS only supports Measurements to be inserted -->
+	  <ObservationTemplate>
+	    <om:Measurement>
+	      <om:samplingTime/>
+	      <om:procedure/>
+	      <om:observedProperty/>
+	      <om:featureOfInterest>
+	        <sa:SamplingPoint gml:id="foi-pilot-rock">
+	          <gml:description>Pilot Rock Station, AK</gml:description>
+	          <gml:name>Pilot Rock, AK</gml:name>
+	          <sa:sampledFeature/>
+	          <sa:position>
+	            <gml:Point>
+	              <gml:pos srsName="http://www.opengis.net/def/crs/EPSG/0/4326">59.742 -149.470</gml:pos>
+	            </gml:Point>
+	          </sa:position>
+	        </sa:SamplingPoint>
+	      </om:featureOfInterest>
+	      <om:result xsi:type="gml:MeasureType" uom="">0.0</om:result>
+	    </om:Measurement>
+	  </ObservationTemplate>
 	 */
-	private Node createObservationTemplate(Document doc) {
+	private Node createObservationTemplate(Document doc, SosStation station) {
 		Element observationTemplate = doc.createElement("ObservationTemplate");
 		
 		Element measurement = doc.createElement("om:Measurement");
@@ -614,6 +529,32 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		Element featureOfInterest = doc.createElement("om:featureOfInterest");
 		measurement.appendChild(featureOfInterest);
 		
+		Element samplingPoint = doc.createElement("sa:SamplingPoint");
+		samplingPoint.setAttribute("gml:id", "foi-pilot-rock");
+		featureOfInterest.appendChild(samplingPoint);
+		
+		Element description = doc.createElement("gml:description");
+		description.appendChild(doc.createTextNode(station.getDescription()));
+		samplingPoint.appendChild(description);
+		
+		Element name = doc.createElement("gml:name");
+		name.appendChild(doc.createTextNode(station.getName()));
+		samplingPoint.appendChild(name);
+		
+		Element sampledFeature = doc.createElement("sa:sampledFeature");
+		samplingPoint.appendChild(sampledFeature);
+		
+		Element position = doc.createElement("sa:position");
+		samplingPoint.appendChild(position);
+		
+		Element point = doc.createElement("gml:Point");
+		position.appendChild(point);
+		
+		Element pos = doc.createElement("gml:pos");
+		pos.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4326");
+		pos.appendChild(doc.createTextNode(station.getLocation().getLatitude() + " " + station.getLocation().getLongitude()));
+		point.appendChild(pos);
+		
 		Element result = doc.createElement("om:result");
 		result.setAttribute("uom", "");
 		result.setAttribute("xsi:type", "gml:MeasureType");
@@ -622,61 +563,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		
 		return observationTemplate;
 	}
-	/**
-      <sml:outputs>
-           <sml:OutputList>
-                <sml:output name="none">
-                     <swe:Quantity definition="none">
-			<gml:metaDataProperty>
-				<offering>
-					<id>network-All</id>
-					<name>Includes all the sensors in the network</name>
-				</offering>
-			</gml:metaDataProperty>
-                          <swe:uom code="none"/>
-                     </swe:Quantity>
-                </sml:output>
-           </sml:OutputList>
-      </sml:outputs>
-	 */
-	private Node createOutputsNode(Document doc) {
-		Element outputs = doc.createElement("sml:outputs");
-
-		Element outputList = doc.createElement("sml:OutputList");
-		outputs.appendChild(outputList);
-
-		Element output = doc.createElement("sml:output");
-		output.setAttribute("name", "none");
-		outputList.appendChild(output);
-
-		Element quantity = doc.createElement("swe:Quantity");
-
-		quantity.setAttribute("definition", "none");
-
-		output.appendChild(quantity);
-
-		Element metaDataProperty = doc.createElement("gml:metaDataProperty");
-		quantity.appendChild(metaDataProperty);
-
-		Element offering = doc.createElement("offering");
-		metaDataProperty.appendChild(offering);
-
-		Element id = doc.createElement("id");
-		id.appendChild(doc.createTextNode("network-All"));
-		offering.appendChild(id);
-
-		Element name = doc.createElement("name");
-		name.appendChild(doc
-				.createTextNode("Includes all the sensors in the network"));
-		offering.appendChild(name);
-
-		Element uom = doc.createElement("swe:uom");
-		uom.setAttribute("code", "none");
-		quantity.appendChild(uom);
-
-		return outputs;
-	}
-
+	
 	/**
 	<sml:position name="sensorPosition">
 		<swe:Position referenceFrame="urn:ogc:def:crs:EPSG::4326">
@@ -772,8 +659,8 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 	 * Produces the XML below
         <sml:identification>
            <sml:IdentifierList>
-                <sml:identifier>
-                   <sml:Term definition="urn:ogc:def:identifier:OGC:uniqueID">
+                <sml:identifier name="stationID">
+                   <sml:Term definition="http://mmisw.org/ont/ioos/definition/stationID">
                      <sml:value>urn:ogc:object:feature:Sensor:global_hawk_24</sml:value>
                    </sml:Term>
                 </sml:identifier>
@@ -796,16 +683,16 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		Element identifierList = doc.createElement("sml:IdentifierList");
 		identification.appendChild(identifierList);
 		
-		identifierList.appendChild(createIdentifierNode(doc, "", 
-				"urn:ogc:def:identifier:OGC:uniqueID", 
+		identifierList.appendChild(createIdentifierNode(doc, "stationID", 
+				"http://mmisw.org/ont/ioos/definition/stationID", 
 				idCreator.createStationId(station)));
 		
 		identifierList.appendChild(createIdentifierNode(doc, "shortName", 
-				"urn:ogc:def:identifier:OGC:shortName", 
+				"http://mmisw.org/ont/ioos/definition/shortName", 
 				station.getId()));
 		
 		identifierList.appendChild(createIdentifierNode(doc, "longName", 
-				"urn:ogc:def:identifier:OGC:longName", 
+				"http://mmisw.org/ont/ioos/definition/longName", 
 				station.getName()));
 		
 		return identification;

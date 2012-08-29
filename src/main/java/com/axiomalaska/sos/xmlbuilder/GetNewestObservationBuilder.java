@@ -58,7 +58,7 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	  http://schemas.opengis.net/sos/1.0.0/sosGetObservation.xsd"
 	  service="SOS" version="1.0.0" srsName="urn:ogc:def:crs:EPSG::4326">
 
-	  <offering>network-All</offering>
+	  <offering>network-all</offering>
 
 	  <eventTime>
 	    <ogc:TM_Equals>
@@ -155,17 +155,17 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 				"http://www.opengis.net/sos/1.0 http://schemas.opengis.net/sos/1.0.0/sosGetObservation.xsd");
 		getObservation.setAttribute("service", "SOS");
 		getObservation.setAttribute("version", "1.0.0");
-		getObservation.setAttribute("srsName", "urn:ogc:def:crs:EPSG::4326");
+		getObservation.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4326");
 		
 		return getObservation;
 	}
 
 	/**
-	 * <offering>network-All</offering>
+	 * <offering>network-all</offering>
 	 */
 	private Node createOffering(Document doc) {
 		Element offering = doc.createElement("offering");
-		offering.appendChild(doc.createTextNode("network-All"));
+		offering.appendChild(doc.createTextNode("network-all"));
 		
 		return offering;
 	}

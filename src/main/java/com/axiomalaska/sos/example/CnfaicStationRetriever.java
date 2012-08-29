@@ -30,7 +30,12 @@ public class CnfaicStationRetriever implements StationRetriever {
 		source.setId("CNFAIC");
 		source.setName("Chugach Nation Forest Avalanche Information Center");
 		source.setWebAddress("www.cnfaic.org");
-		source.setOperatorSector("Non-Profit");
+		source.setOperatorSector("nonprofit");
+		source.setAddress("P.O. Box 129");
+		source.setCity("Girdwood");
+		source.setState("AK");
+		source.setZipcode("99587");
+		
 		
 		List<SosStation> stations = new ArrayList<SosStation>();
 
@@ -51,6 +56,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		SosNetworkImp network = new SosNetworkImp();
 		
 		network.setId("air_temperature");
+		network.setDescription("All Air Temperature Sensors");
 		network.setSourceId(sourceId);
 		
 		return network;
