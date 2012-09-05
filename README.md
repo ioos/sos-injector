@@ -27,7 +27,7 @@ To add this project to a Maven project insert the below code into your pom.xml f
       <dependency>
         <groupId>com.axiomalaska</groupId>
         <artifactId>sos-injection</artifactId>
-        <version>0.3.0</version>
+        <version>0.3.1</version>
       </dependency>
       ....
     </dependencies>
