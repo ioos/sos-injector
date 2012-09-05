@@ -563,10 +563,10 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		gmlPoint.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4326");
 		smlLocation.appendChild(gmlPoint);
 		
-		Element gmlPos = doc.createElement("gml:Pos");
+		Element gmlPos = doc.createElement("gml:pos");
 		gmlPoint.appendChild(gmlPos);
 		
-		gmlPos.setTextContent( station.getLocation().getLongitude() + " " + station.getLocation().getLatitude() );
+		gmlPos.setTextContent( station.getLocation().getLatitude() + " " + station.getLocation().getLongitude() );
 		
 		return smlLocation;
 	}
