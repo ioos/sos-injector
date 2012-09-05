@@ -66,8 +66,8 @@
   </build>
 
   <scm>
-    <connection>scm:git:git@github.com:axiomalaska/sos-injection.git</connection>
-    <url>scm:git:git@github.com:axiomalaska/sos-injection.git</url>
-    <developerConnection>scm:git:git@github.com:axiomalaska/sos-injection.git</developerConnection>
+    <connection>scm:git:git://github.com:axiomalaska/sos-injection.git</connection>
+    <url>scm:git:git://github.com:axiomalaska/sos-injection.git</url>
+    <developerConnection>scm:git:git://github.com:axiomalaska/sos-injection.git</developerConnection>
   </scm>  
 </project>
