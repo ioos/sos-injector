@@ -3,8 +3,8 @@ package com.axiomalaska.sos.example;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.axiomalaska.phenomena.Phenomena;
 import com.axiomalaska.phenomena.Phenomenon;
-import com.axiomalaska.sos.PhenomenaBuilder;
 import com.axiomalaska.sos.StationRetriever;
 import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.SosNetwork;
@@ -63,7 +63,6 @@ public class CnfaicStationRetriever implements StationRetriever {
 	}
 	
 	private List<SosSensor> getSensors(SosStation station) {
-		PhenomenaBuilder phenomenaBuilder = new PhenomenaBuilder();
 		SosSource source = station.getSource();
 		SosNetwork airTemperatureNetwork = getAirTemperatureNetwork(source.getId());
 		
@@ -71,7 +70,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		
 		SosSensorImp airTemperatureSensor = new SosSensorImp();
 		List<Phenomenon> phenomena = new ArrayList<Phenomenon>();
-		phenomena.add(phenomenaBuilder.createAirTemperature());
+		phenomena.add(Phenomena.AIR_TEMPERATURE);
 		airTemperatureSensor.setPhenomena(phenomena);
 		airTemperatureSensor.setId("Air_Temperature");
 		airTemperatureSensor.setDescription("Air Temperature");
@@ -80,7 +79,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 	
 		SosSensorImp relativeHumiditySensor = new SosSensorImp();
 		phenomena = new ArrayList<Phenomenon>();
-		phenomena.add(phenomenaBuilder.createRelativeHumidity());
+		phenomena.add(Phenomena.RELATIVE_HUMIDITY);
 		relativeHumiditySensor.setPhenomena(phenomena);
 		relativeHumiditySensor.setId("Relative_Humidity");
 		relativeHumiditySensor.setDescription("Relative Humidity");
@@ -88,9 +87,9 @@ public class CnfaicStationRetriever implements StationRetriever {
 		
 		SosSensorImp windSensor = new SosSensorImp();
 		phenomena = new ArrayList<Phenomenon>();
-		phenomena.add(phenomenaBuilder.createWindSpeed());
-		phenomena.add(phenomenaBuilder.createWindfromDirection());
-		phenomena.add(phenomenaBuilder.createWindSpeedofGust());
+		phenomena.add(Phenomena.WIND_SPEED);
+		phenomena.add(Phenomena.WIND_FROM_DIRECTION);
+		phenomena.add(Phenomena.WIND_SPEED_OF_GUST);
 		windSensor.setPhenomena(phenomena);
 		windSensor.setId("Wind");
 		windSensor.setDescription("Wind");
