@@ -3,12 +3,14 @@ package com.axiomalaska.sos.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.axiomalaska.phenomena.Phenomenon;
+
 public class SosSensorImp implements SosSensor{
 	// -------------------------------------------------------------------------
 	// Private Data
 	// -------------------------------------------------------------------------
 
-	private List<SosPhenomenon> phenomena = new ArrayList<SosPhenomenon>();
+	private List<Phenomenon> phenomena = new ArrayList<Phenomenon>();
 	private String description = "";
 	private String id = "";
 	private List<SosNetwork> networks = new ArrayList<SosNetwork>();
@@ -33,11 +35,11 @@ public class SosSensorImp implements SosSensor{
 		this.description = description;
 	}
 
-	public List<SosPhenomenon> getPhenomena() {
+	public List<Phenomenon> getPhenomena() {
 		return phenomena;
 	}
 
-	public void setPhenomena(List<SosPhenomenon> phenomena) {
+	public void setPhenomena(List<Phenomenon> phenomena) {
 		this.phenomena = phenomena;
 	}
 	

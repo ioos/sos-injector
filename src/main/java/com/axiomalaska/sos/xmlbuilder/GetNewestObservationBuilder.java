@@ -7,7 +7,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.axiomalaska.sos.data.SosPhenomenon;
+import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.tools.IdCreator;
@@ -27,14 +27,14 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	private SosStation station;
 	private SosSensor sensor;
 	private IdCreator idCreator;
-	private SosPhenomenon phenomenon;
+	private Phenomenon phenomenon;
 	
 	// -------------------------------------------------------------------------
 	// Constructor
 	// -------------------------------------------------------------------------
 
 	public GetNewestObservationBuilder(SosStation station, SosSensor sensor, 
-			SosPhenomenon phenomenon, IdCreator idCreator) {
+			Phenomenon phenomenon, IdCreator idCreator) {
 		this.station = station;
 		this.sensor = sensor;
 		this.phenomenon = phenomenon;

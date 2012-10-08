@@ -17,14 +17,14 @@ import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 import org.junit.Test;
 
+import com.axiomalaska.phenomena.Phenomenon;
+import com.axiomalaska.phenomena.PhenomenonImp;
 import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.ObservationCollection;
 import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.PublisherInfoImp;
 import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.data.SosNetworkImp;
-import com.axiomalaska.sos.data.SosPhenomenon;
-import com.axiomalaska.sos.data.SosPhenomenonImp;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosSensorImp;
 import com.axiomalaska.sos.data.SosSource;
@@ -58,7 +58,7 @@ public class XmlBuildersTest {
     private String TEST_ZIPCODE = "99999";
     private SosSource TEST_SOURCE = buildTestSource();
     private SosNetwork TEST_NETWORK = buildTestNetwork();
-    private SosPhenomenon TEST_PHENOMENON = buildTestPhenomenon();    
+    private Phenomenon TEST_PHENOMENON = buildTestPhenomenon();    
     private SosSensor TEST_SENSOR = buildTestSensor();    
     private SosStation TEST_STATION = buildTestStation();
     private ObservationCollection TEST_OBSERVATION_COLLECTION = buildTestObservationCollection();
@@ -113,14 +113,14 @@ public class XmlBuildersTest {
         List<SosNetwork> networks = new ArrayList<SosNetwork>();
         networks.add( TEST_NETWORK );        
         testSensor.setNetworks( networks );
-        List<SosPhenomenon> phenomena = new ArrayList<SosPhenomenon>();
+        List<Phenomenon> phenomena = new ArrayList<Phenomenon>();
         phenomena.add( TEST_PHENOMENON );                
         testSensor.setPhenomena( phenomena );
         return testSensor;
     }
     
-    private SosPhenomenon buildTestPhenomenon(){
-        SosPhenomenonImp testPhenomenon = new SosPhenomenonImp();
+    private Phenomenon buildTestPhenomenon(){
+        PhenomenonImp testPhenomenon = new PhenomenonImp();
         testPhenomenon.setId( TEST_PHENOMENON_ID );
         testPhenomenon.setName( TEST_PHENOMENON_NAME );
         testPhenomenon.setUnits( TEST_PHENOMENON_UNITS );

@@ -18,10 +18,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 
+import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.data.ObservationCollection;
 import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosNetwork;
-import com.axiomalaska.sos.data.SosPhenomenon;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.tools.HttpSender;
@@ -217,7 +217,7 @@ public class ObservationSubmitter {
 			}
 
 			if (isSensorCreated) {
-				for(SosPhenomenon phenomenon : sensor.getPhenomena()){
+				for(Phenomenon phenomenon : sensor.getPhenomena()){
 					update(station, sensor, phenomenon, observationRetriever);
 				}
 			}
@@ -239,7 +239,7 @@ public class ObservationSubmitter {
 	 * @param observationRetriever - the data store of observations used to 
 	 * pull observations from
 	 */
-	public void update(SosStation station, SosSensor sensor, SosPhenomenon phenomenon,
+	public void update(SosStation station, SosSensor sensor, Phenomenon phenomenon,
 			ObservationRetriever observationRetriever) throws Exception {
 		Calendar startDate = getNewestObservationDate(station, sensor, phenomenon);
 
@@ -282,7 +282,7 @@ public class ObservationSubmitter {
 			Calendar newestObservationInSosDate) throws Exception {
 		SosStation station = observationCollection.getStation();
 		SosSensor sensor = observationCollection.getSensor();
-		SosPhenomenon phenomenon = observationCollection.getPhenomenon();
+		Phenomenon phenomenon = observationCollection.getPhenomenon();
 
 		ObservationCollection filteredObservationCollection = removeOlderObservations(
 				newestObservationInSosDate, observationCollection);
@@ -389,7 +389,7 @@ public class ObservationSubmitter {
 		}
 		
 		SosStation station = observationCollection.getStation();
-		SosPhenomenon phenomenon = observationCollection.getPhenomenon();
+		Phenomenon phenomenon = observationCollection.getPhenomenon();
 		SosSensor sensor = observationCollection.getSensor();
 		
 	    if (observationCollection.getObservationDates().size() != observationCollection.getObservationValues().size()){
@@ -433,7 +433,7 @@ public class ObservationSubmitter {
 	 * the SOS it returns a date from the first century.
 	 */
 	private Calendar getNewestObservationDate(SosStation station,
-			SosSensor sensor, SosPhenomenon phenomenon) throws Exception {
+			SosSensor sensor, Phenomenon phenomenon) throws Exception {
 		GetNewestObservationBuilder getObservationLatestBuilder = new GetNewestObservationBuilder(
 				station, sensor, phenomenon, idCreator);
 

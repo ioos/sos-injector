@@ -3,12 +3,12 @@ package com.axiomalaska.sos.example;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.PhenomenaBuilder;
 import com.axiomalaska.sos.StationRetriever;
 import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.data.SosNetworkImp;
-import com.axiomalaska.sos.data.SosPhenomenon;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosSensorImp;
 import com.axiomalaska.sos.data.SosSourceImp;
@@ -70,7 +70,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		List<SosSensor> sensors = new ArrayList<SosSensor>();
 		
 		SosSensorImp airTemperatureSensor = new SosSensorImp();
-		List<SosPhenomenon> phenomena = new ArrayList<SosPhenomenon>();
+		List<Phenomenon> phenomena = new ArrayList<Phenomenon>();
 		phenomena.add(phenomenaBuilder.createAirTemperature());
 		airTemperatureSensor.setPhenomena(phenomena);
 		airTemperatureSensor.setId("Air_Temperature");
@@ -79,7 +79,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		sensors.add(airTemperatureSensor);
 	
 		SosSensorImp relativeHumiditySensor = new SosSensorImp();
-		phenomena = new ArrayList<SosPhenomenon>();
+		phenomena = new ArrayList<Phenomenon>();
 		phenomena.add(phenomenaBuilder.createRelativeHumidity());
 		relativeHumiditySensor.setPhenomena(phenomena);
 		relativeHumiditySensor.setId("Relative_Humidity");
@@ -87,7 +87,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		sensors.add(relativeHumiditySensor);
 		
 		SosSensorImp windSensor = new SosSensorImp();
-		phenomena = new ArrayList<SosPhenomenon>();
+		phenomena = new ArrayList<Phenomenon>();
 		phenomena.add(phenomenaBuilder.createWindSpeed());
 		phenomena.add(phenomenaBuilder.createWindfromDirection());
 		phenomena.add(phenomenaBuilder.createWindSpeedofGust());

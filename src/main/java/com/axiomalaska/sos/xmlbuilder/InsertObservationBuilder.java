@@ -10,8 +10,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.data.Location;
-import com.axiomalaska.sos.data.SosPhenomenon;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.data.ObservationCollection;
@@ -32,14 +32,14 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	private SosSensor sensor;
 	private ObservationCollection observationCollection;
 	private IdCreator idCreator;
-	private SosPhenomenon phenomenon;
+	private Phenomenon phenomenon;
 	
 	// -------------------------------------------------------------------------
 	// Constructor
 	// -------------------------------------------------------------------------
 	
 	public InsertObservationBuilder(SosStation station, SosSensor sensor, 
-			SosPhenomenon phenomenon, ObservationCollection observationCollection, IdCreator idCreator){
+			Phenomenon phenomenon, ObservationCollection observationCollection, IdCreator idCreator){
 		this.station = station;
 		this.sensor = sensor;
 		this.phenomenon = phenomenon;

@@ -10,10 +10,10 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.ObservationRetriever;
 import com.axiomalaska.sos.PhenomenaBuilder;
 import com.axiomalaska.sos.data.ObservationCollection;
-import com.axiomalaska.sos.data.SosPhenomenon;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.tools.HttpSender;
@@ -41,18 +41,18 @@ public class CnfaicObservationRetriever implements ObservationRetriever {
 
 	@Override
 	public ObservationCollection getObservationCollection(SosStation station,
-			SosSensor sensor, SosPhenomenon phenomenon, Calendar startDate) {
+			SosSensor sensor, Phenomenon phenomenon, Calendar startDate) {
 		String hoursText = calculatedDifferenceFromNow(startDate);
 		
 		try {
 			String rawObservationData = httpSender.sendGetMessage(
 					"http://www.cnfaic.org/library/grabbers/nws_feed.php?hours=" + hoursText);
 			
-			SosPhenomenon airTemperaturePhenomenon = phenomenaBuilder.createAirTemperature();
-			SosPhenomenon relativeHumidityPhenomenon = phenomenaBuilder.createRelativeHumidity();
-			SosPhenomenon windSpeedPhenomenon = phenomenaBuilder.createWindSpeed();
-			SosPhenomenon windfromDirectionPhenomenon = phenomenaBuilder.createWindfromDirection();
-			SosPhenomenon windSpeedofGustPhenomenon = phenomenaBuilder.createWindSpeedofGust();
+			Phenomenon airTemperaturePhenomenon = phenomenaBuilder.createAirTemperature();
+			Phenomenon relativeHumidityPhenomenon = phenomenaBuilder.createRelativeHumidity();
+			Phenomenon windSpeedPhenomenon = phenomenaBuilder.createWindSpeed();
+			Phenomenon windfromDirectionPhenomenon = phenomenaBuilder.createWindfromDirection();
+			Phenomenon windSpeedofGustPhenomenon = phenomenaBuilder.createWindSpeedofGust();
 			
 			Pattern observationParser = 
 					Pattern.compile(station.getId() + 

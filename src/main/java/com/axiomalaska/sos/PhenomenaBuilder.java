@@ -1,7 +1,7 @@
 package com.axiomalaska.sos;
 
-import com.axiomalaska.sos.data.SosPhenomenon;
-import com.axiomalaska.sos.data.SosPhenomenonImp;
+import com.axiomalaska.phenomena.Phenomena;
+import com.axiomalaska.phenomena.Phenomenon;
 
 /**
  * This class builds the default Phenomena
@@ -9,932 +9,452 @@ import com.axiomalaska.sos.data.SosPhenomenonImp;
  * @author Lance Finfrock
  */
 public class PhenomenaBuilder {
+    public @interface UnitsChanged {
+        String newUnit();
+        String oldUnit();
+    }
 
-	public SosPhenomenon createSeaWaterTemperature() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_water_temperature");
-		phenomenon.setUnits("C");
-		phenomenon.setName("Sea Water Temperature");
-
-		return phenomenon;
-	}
-
-	public SosPhenomenon createSeaSurfaceWaveSignificantHeight() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wave_significant_height");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Sea Surface Wave Significat Height");
-
-		return phenomenon;
-	}
-
-	public SosPhenomenon createDominantWavePeriod() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_dominant_wave_period");
-		phenomenon.setUnits("s");
-		phenomenon.setName("Sea Surface Dominant Wave Period");
-
-		return phenomenon;
-	}
-
-	public SosPhenomenon createAverageWavePeriod() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wave_mean_period");
-		phenomenon.setUnits("s");
-		phenomenon.setName("Sea Surface Wave Mean Period");
-
-		return phenomenon;
-	}
-
-	public SosPhenomenon createseaSurfaceSwellWaveHeight() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_swell_wave_height");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Sea Surface Swell Wave Height");
-
-		return phenomenon;
-	}
-
-	public SosPhenomenon createseaseaSurfaceSwellWavePeriod() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_swell_wave_period");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Sea Surface Swel Wave Period");
-
-		return phenomenon;
-	}
-
-	public SosPhenomenon createElevationofReservoirWaterSurfaceaboveDatum() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/elevation_of_reservoir_water_surface_above_datum");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Elevation of Reservoir Water Surface above Datum");
-
-		return phenomenon;
-	}
-
-	public SosPhenomenon createWebcam() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/webcam");
-		phenomenon.setUnits("image");
-		phenomenon.setName("Webcam");
-
-		return phenomenon;
-	}
-
-	public SosPhenomenon createReflectedShortwaveRadiation() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/reflected_shortwave_radiation");
-		phenomenon.setUnits("W/m2");
-		phenomenon.setName("Reflected Shortwave Radiation");
-
-		return phenomenon;
-	}
-
-	public SosPhenomenon createIncomingShortwaveRadiation() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/incoming_shortwave_radiation");
-		phenomenon.setUnits("W/m2");
-		phenomenon.setName("Incoming Shortwave Radiation");
-
-		return phenomenon;
-	}
-
-	public SosPhenomenon createPhotosyntheticallyActiveRadiation() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/photosynthetically_active_radiation");
-		phenomenon.setUnits("W/m2");
-		phenomenon.setName("Photosynthetically Active Radiation");
-
-		return phenomenon;
-	}
-
-	public SosPhenomenon createWindGeneratorCurrent() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/wind_generator_current");
-		phenomenon.setUnits("A/hour");
-		phenomenon.setName("Wind Generator Current");
-
-		return phenomenon;
+	@Deprecated
+	public Phenomenon createAirPressure() {
+        return Phenomena.AIR_PRESSURE;
 	}
 
-	public SosPhenomenon createPanelTemperature() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
+	@Deprecated
+	public Phenomenon createAirTemperature() {
+        return Phenomena.AIR_TEMPERATURE;
+    }
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/panel_temperature");
-		phenomenon.setUnits("C");
-		phenomenon.setName("Panel Temperature");
-
-		return phenomenon;
-	}
-
-	public SosPhenomenon createRealDielectricconstant() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/real_dielectric_constant");
-		phenomenon.setUnits("uints");
-		phenomenon.setName("Real Dielectric constant");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createAirVisibility() {
+        return Phenomena.VISIBILITY_IN_AIR;
 	}
-
-	public SosPhenomenon createFuelMoisture() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/fuel_moisture");
-		phenomenon.setUnits("%");
-		phenomenon.setName("Fuel Moisture");
-
-		return phenomenon;
-	}
-
-	public SosPhenomenon createFuelTemperature() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/fuel_temperature");
-		phenomenon.setUnits("C");
-		phenomenon.setName("Fuel Temperature");
 
-		return phenomenon;
+	@Deprecated
+	public Phenomenon createAltitude() {
+        return Phenomena.ALTITUDE;
 	}
 
-	public SosPhenomenon createStreamflow() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/streamflow");
-		phenomenon.setUnits("cfs");
-		phenomenon.setName("Streamflow");
-
-		return phenomenon;
+	@Deprecated
+	public Phenomenon createAverageAirTemperature() {
+        return Phenomena.AIR_TEMPERATURE_AVERAGE;
 	}
-
-	public SosPhenomenon createSoilMoisturePercent() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/soil_moisture_percent");
-		phenomenon.setUnits("%");
-		phenomenon.setName("Soil Moisture Percent");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createAverageRelativeHumidity() {
+        return Phenomena.RELATIVE_HUMIDITY_AVERAGE;
 	}
-
-	public SosPhenomenon createGroundTemperature() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/ground_temperature");
-		phenomenon.setUnits("C");
-		phenomenon.setName("Ground Temperature");
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createAverageSolarRadiation() {
+        return Phenomena.SOLAR_RADIATION_AVERAGE;
 	}
 
-	public SosPhenomenon createDepthtoWaterLevel() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/depth_to_water_level");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Depth to Water Level");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createAverageWavePeriod() {
+	    return Phenomena.SEA_SURFACE_WAVE_MEAN_PERIOD;
 	}
-
-	public SosPhenomenon createStreamGageHeight() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/stream_gage_height");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Stream Gage Height");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createBattery() {
+        return Phenomena.BATTERY_VOLTAGE;
 	}
-
-	public SosPhenomenon createAirPressure() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/air_pressure");
-		phenomenon.setUnits("Pa");
-		phenomenon.setName("Air Pressure");
 
-		return phenomenon;
+    @Deprecated
+    @UnitsChanged(oldUnit="mg/L",newUnit="kg/m³")
+	public Phenomenon createCarbonDioxideConcentrationinAir() {
+        return Phenomena.MASS_CONCENTRATION_OF_CARBON_DIOXIDE_IN_AIR;
 	}
 
-	public SosPhenomenon createAirTemperature() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/air_temperature");
-		phenomenon.setUnits("C");
-		phenomenon.setName("Air Temperature");
-
-		return phenomenon;
+    @Deprecated
+    @UnitsChanged(oldUnit="mg/L",newUnit="kg/m³")
+	public Phenomenon createCarbonDioxideConcentrationinSeaWater() {
+        return Phenomena.MASS_CONCENTRATION_OF_CARBON_DIOXIDE_IN_SEA_WATER;
 	}
 
-	public SosPhenomenon createAltitude() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
+    @Deprecated
+    @UnitsChanged(oldUnit="µg/L",newUnit="kg/m³")
+	public Phenomenon createConcentrationofChlorophyllinSeaWater() {
+        return Phenomena.MASS_CONCENTRATION_OF_CHLOROPHYLL_IN_SEA_WATER;
+    }
 
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/altitude");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Altitude");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createConcentrationofOxygeninSeaWater() {
+        return Phenomena.MASS_CONCENTRATION_OF_OXYGEN_IN_SEA_WATER;
 	}
-
-	public SosPhenomenon createConcentrationofChlorophyllinSeaWater() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/mass_concentration_of_chlorophyll_in_sea_water");
-		phenomenon.setUnits("µg/L");
-		phenomenon.setName("Concentration of Chlorophyll in Sea Water");
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createDepthtoWaterLevel() {
+        return Phenomena.DEPTH_TO_WATER_LEVEL;
 	}
 
-	public SosPhenomenon createSeaWaterElectricalConductivity() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_water_electrical_conductivity");
-		phenomenon.setUnits("mS/m");
-		phenomenon.setName("Sea Water Electrical Conductivity");
-
-		return phenomenon;
+    @Deprecated
+    public Phenomenon createDewPointTemperature() {
+        return Phenomena.DEW_POINT_TEMPERATURE;
 	}
-
-	public SosPhenomenon createRadialSeaWaterVelocityAwayFromInstrument() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/radial_sea_water_velocity_away_from_instrument");
-		phenomenon.setUnits("cm/s");
-		phenomenon.setName("Radial Sea Water Velocity Away From Instrument");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createDirectionofSeaWaterVelocity() {
+        return Phenomena.DIRECTION_OF_SEA_WATER_VELOCITY;
 	}
-
-	public SosPhenomenon createDirectionofSeaWaterVelocity() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/direction_of_sea_water_velocity");
-		phenomenon.setUnits("degree");
-		phenomenon.setName("Direction of Sea Water Velocity");
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createDominantWavePeriod() {
+		return Phenomena.DOMINANT_WAVE_PERIOD;
 	}
 
-	public SosPhenomenon createSeaWaterspeed() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/sea_water_speed");
-		phenomenon.setUnits("cm/s");
-		phenomenon.setName("Sea Water speed");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createElevationofReservoirWaterSurfaceaboveDatum() {
+        return Phenomena.WATER_SURFACE_HEIGHT_ABOVE_REFERENCE_DATUM;
 	}
-
-	public SosPhenomenon createDewPointTemperature() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/dew_point_temperature");
-		phenomenon.setUnits("C");
-		phenomenon.setName("Dew Point Temperature");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createFuelMoisture() {
+        return Phenomena.FUEL_MOISTURE;
 	}
-
-	public SosPhenomenon createWaterVolumeTransportintoSeaWaterfromRivers() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/water_volume_transport_into_sea_water_from_rivers");
-		phenomenon.setUnits("m3/s");
-		phenomenon.setName("Water Volume Transport into Sea Water from Rivers");
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createFuelTemperature() {
+        return Phenomena.FUEL_TEMPERATURE;
 	}
 
-	public SosPhenomenon createGridLatitude() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/grid_latitude");
-		phenomenon.setUnits("degree");
-		phenomenon.setName("Grid Latitude");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createGrideLongitude() {
+        return Phenomena.GRID_LONGITUDE;
 	}
-
-	public SosPhenomenon createGrideLongitude() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/grid_longitude");
-		phenomenon.setUnits("degree");
-		phenomenon.setName("Gride Longitude");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createGridLatitude() {
+        return Phenomena.GRID_LATITUDE;
 	}
-
-	public SosPhenomenon createPhycoerythrin() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/phycoerythrin");
-		phenomenon.setUnits("RFU");
-		phenomenon.setName("Phycoerythrin");
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createGroundTemperature() {
+        return Phenomena.SOIL_TEMPERATURE;
 	}
 
-	public SosPhenomenon createPrecipitation() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/precipitation");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Precipitation");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createIncomingShortwaveRadiation() {
+        return Phenomena.TOA_INCOMING_SHORTWAVE_FLUX;
 	}
 
-	public SosPhenomenon createRelativeHumidity() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/relative_humidity");
-		phenomenon.setUnits("%");
-		phenomenon.setName("Relative Humidity");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createMaximumAirTemperature() {
+        return Phenomena.AIR_TEMPERATURE_MAXIMUM;
 	}
-
-	public SosPhenomenon createSeaWaterSalinity() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_water_salinity");
-		phenomenon.setUnits("PSU");
-		phenomenon.setName("Sea Water Salinity");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createMaximumBattery() {
+        return Phenomena.BATTERY_VOLTAGE_MAXIMUM;
 	}
-
-	public SosPhenomenon createSimpleTurbidity() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/simple_turbidity");
-		phenomenon.setUnits("NTU");
-		phenomenon.setName("Simple Turbidity");
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createMaximumRelativeHumidity() {
+        return Phenomena.RELATIVE_HUMIDITY_MAXIMUM;
 	}
 
-	public SosPhenomenon createAirVisibility() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/visibility_in_air");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Air Visibility");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createMaximumSolarRadiation() {
+        return Phenomena.SOLAR_RADIATION_MAXIMUM;
 	}
-
-	public SosPhenomenon createSeaFloorDepthBelowSeaSurface() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_floor_depth_below_sea_surface");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Sea Floor Depth Below Sea Surface");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createMinimumAirTemperature() {
+        return Phenomena.AIR_TEMPERATURE_MINIMUM;
 	}
-
-	public SosPhenomenon createWindfromDirection() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/wind_from_direction");
-		phenomenon.setUnits("degree");
-		phenomenon.setName("Wind from Direction");
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createMinimumBattery() {
+        return Phenomena.BATTERY_VOLTAGE_MINIMUM;
 	}
 
-	public SosPhenomenon createWindSpeed() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/wind_speed");
-		phenomenon.setUnits("cm/s");
-		phenomenon.setName("Wind Speed");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createMinimumRelativeHumidity() {
+        return Phenomena.RELATIVE_HUMIDITY_MINIMUM;
 	}
-
-	public SosPhenomenon createSeaSurfaceWindWavePeriod() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wind_wave_period");
-		phenomenon.setUnits("s");
-		phenomenon.setName("Sea Surface Wind Wave Period");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createMinimumSolarRadiation() {
+        return Phenomena.SOLAR_RADIATION_MINIMUM;
 	}
-
-	public SosPhenomenon createSeaSurfaceSwelWavePeriod() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_swell_wave_period");
-		phenomenon.setUnits("s");
-		phenomenon.setName("Sea Surface Swel Wave Period");
 
-		return phenomenon;
+    @Deprecated
+    @UnitsChanged(oldUnit="%",newUnit="") //dimensionless (fraction)
+	public Phenomenon createOxygenSaturationinSeaWater() {
+        return Phenomena.FRACTIONAL_SATURATION_OF_OXYGEN_IN_SEA_WATER;
 	}
 
-	public SosPhenomenon createSeaSurfaceWaveSignificatHeight() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wave_significant_height");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Sea Surface Wave Significat Height");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createPanelTemperature() {
+        return Phenomena.PANEL_TEMPERATURE;
 	}
-
-	public SosPhenomenon createSeaSurfaceWaveMeanHeight() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wave_mean_height");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Sea Surface Wave Mean Height");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createPhotosyntheticallyActiveRadiation() {
+        return Phenomena.DOWNWELLING_PHOTOSYNTHETIC_RADIATIVE_FLUX_IN_SEA_WATER;
 	}
-
-	public SosPhenomenon createSeaSurfaceMaximumWaveHeight() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_maximum_wave_height");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Sea Surface Maximum Wave Height");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createPhycoerythrin() {
+        return Phenomena.PHYCOERYTHRIN;
 	}
-
-	public SosPhenomenon createSeaSurfaceWaveFromDirection() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wave_from_direction");
-		phenomenon.setUnits("degree");
-		phenomenon.setName("Sea Surface Wave From Direction");
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createPrecipitation() {
+        return Phenomena.LWE_THICKNESS_OF_PRECIPITATION_AMOUNT;
 	}
 
-	public SosPhenomenon createWaveDirectionSpread() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/wave_direction_spread");
-		phenomenon.setUnits("degree");
-		phenomenon.setName("Wave Direction Spread");
-
-		return phenomenon;
+    @Deprecated
+    @UnitsChanged(oldUnit="m",newUnit="mm")
+	public Phenomenon createPrecipitationAccumulation() {
+	    return Phenomena.PRECIPITATION_ACCUMULATED;
 	}
-
-	public SosPhenomenon createProductofAirTemperatureandSpecificHumidity() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/product_of_air_temperature_and_specific_humidity");
-		phenomenon.setUnits("C");
-		phenomenon.setName("Product of Air Temperature and Specific Humidity");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createPrecipitationIncrement() {
+        return Phenomena.PRECIPITATION_INCREMENT;
 	}
 
-	public SosPhenomenon createSeaSurfaceHeightaboveSeaLevel() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
+    @Deprecated
+	public Phenomenon createProductofAirTemperatureandSpecificHumidity() {
+        return Phenomena.PRODUCT_OF_AIR_TEMPERATURE_AND_SPECIFIC_HUMIDITY;
+    }
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_height_above_sea_level");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Sea Surface Height above Sea Level");
-
-		return phenomenon;
+    @Deprecated
+    @UnitsChanged(oldUnit="cm/s",newUnit="m/s")    
+	public Phenomenon createRadialSeaWaterVelocityAwayFromInstrument() {
+        return Phenomena.RADIAL_SEA_WATER_VELOCITY_AWAY_FROM_INSTRUMENT;
 	}
-
-	public SosPhenomenon createSeaWaterAcidity() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_water_acidity");
-		phenomenon.setUnits("pH");
-		phenomenon.setName("Sea Water Acidity");
+    @Deprecated
+	public Phenomenon createRealDielectricconstant() {
+        return Phenomena.RELATIVE_PERMITTIVITY;
+    }
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createReflectedShortwaveRadiation() {
+	    return Phenomena.TOA_OUTGOING_SHORTWAVE_FLUX;
 	}
 
-	public SosPhenomenon createConcentrationofOxygeninSeaWater() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/mass_concentration_of_oxygen_in_sea_water ");
-		phenomenon.setUnits("mg/L");
-		phenomenon.setName("Concentration of Oxygen in Sea Water");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createRelativeHumidity() {
+        return Phenomena.RELATIVE_HUMIDITY;
 	}
-
-	public SosPhenomenon createAverageAirTemperature() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/air_temperature_average");
-		phenomenon.setUnits("C");
-		phenomenon.setName("Average Air Temperature");
+    @Deprecated
+	public Phenomenon createSeaFloorDepthBelowSeaSurface() {
+        return Phenomena.SEA_FLOOR_DEPTH_BELOW_SEA_SURFACE;
+    }
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createseaseaSurfaceSwellWavePeriod() {
+        return Phenomena.SEA_SURFACE_SWELL_WAVE_PERIOD;
 	}
 
-	public SosPhenomenon createMaximumAirTemperature() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/air_temperature_maximum");
-		phenomenon.setUnits("C");
-		phenomenon.setName("Maximum Air Temperature");
-
-		return phenomenon;
+    @Deprecated
+    @UnitsChanged(oldUnit="degree (from)",newUnit="degree (to)")  
+	public Phenomenon createSeaSurfaceDominantWaveFromDirection() {
+        return Phenomena.PEAK_WAVE_DIRECTION;
 	}
-
-	public SosPhenomenon createMinimumAirTemperature() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/air_temperature_minimum");
-		phenomenon.setUnits("C");
-		phenomenon.setName("Minimum Air Temperature");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSeaSurfaceDominantWavePeriod() {
+        return Phenomena.PEAK_WAVE_PERIOD;
 	}
 
-	public SosPhenomenon createPrecipitationIncrement() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
+    @Deprecated
+	public Phenomenon createSeaSurfaceHeightaboveSeaLevel() {
+        return Phenomena.SEA_SURFACE_HEIGHT_ABOVE_SEA_LEVEL;
+    }
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/precipitation_increment");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Precipitation Increment");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSeaSurfaceHeightaboveSeaLevelPredictions() {        
+        return Phenomena.SEA_SURFACE_HEIGHT_ABOVE_SEA_LEVEL_PREDICTIONS;
 	}
-
-	public SosPhenomenon createPrecipitationAccumulation() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/precipitation_accumulation");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Precipitation Accumulation");
+    @Deprecated
+	public Phenomenon createSeaSurfaceMaximumWaveHeight() {
+        return Phenomena.SEA_SURFACE_MAXIMUM_WAVE_HEIGHT;
+    }
 
-		return phenomenon;
+    @Deprecated
+    @UnitsChanged(oldUnit="degree (from)",newUnit="degree (to)")    
+	public Phenomenon createSeaSurfaceSwellWaveFromDirection() {
+        return Phenomena.SEA_SURFACE_SWELL_WAVE_TO_DIRECTION;
 	}
 
-	public SosPhenomenon createMaximumRelativeHumidity() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/relative_humidity_maximum");
-		phenomenon.setUnits("%");
-		phenomenon.setName("Maximum Relative Humidity");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createseaSurfaceSwellWaveHeight() {
+        return Phenomena.SEA_SURFACE_SWELL_WAVE_SIGNIFICANT_HEIGHT;
 	}
-
-	public SosPhenomenon createMinimumRelativeHumidity() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/relative_humidity_minimum");
-		phenomenon.setUnits("%");
-		phenomenon.setName("Minimum Relative Humidity");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSeaSurfaceSwellWaveHeight() {
+        return Phenomena.SEA_SURFACE_SWELL_WAVE_SIGNIFICANT_HEIGHT;
 	}
-
-	public SosPhenomenon createAverageRelativeHumidity() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/relative_humidity_average");
-		phenomenon.setUnits("%");
-		phenomenon.setName("Average Relative Humidity");
+    @Deprecated
+    public Phenomenon createSeaSurfaceSwelWavePeriod() {
+        return Phenomena.SEA_SURFACE_SWELL_WAVE_PERIOD;
+    }
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSeaSurfaceWaveFromDirection() {
+        return Phenomena.SEA_SURFACE_WAVE_FROM_DIRECTION;
 	}
 
-	public SosPhenomenon createSeaSurfaceHeightaboveSeaLevelPredictions() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
+    @Deprecated
+	public Phenomenon createSeaSurfaceWaveMeanHeight() {
+        return Phenomena.SEA_SURFACE_WAVE_MEAN_HEIGHT;
+    }
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_height_above_sea_level_predictions");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Sea Surface Height above Sea Level Predictions");
-
-		return phenomenon;
+    @Deprecated
+    public Phenomenon createSeaSurfaceWaveMeanPeriod() {
+	    return Phenomena.SEA_SURFACE_WAVE_MEAN_PERIOD;
 	}
-
-	public SosPhenomenon createWaterTemperatureIntragravel() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/water_temperature_intragravel");
-		phenomenon.setUnits("C");
-		phenomenon.setName("Water Temperature Intragravel");
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSeaSurfaceWaveSignificantHeight() {
+		return Phenomena.SEA_SURFACE_WAVE_SIGNIFICANT_HEIGHT;
 	}
 
-	public SosPhenomenon createWindVerticalVelocity() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
+    @Deprecated
+    public Phenomenon createSeaSurfaceWaveSignificatHeight() {
+        return Phenomena.SEA_SURFACE_WAVE_SIGNIFICANT_HEIGHT;
+    }
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/wind_vertical_velocity");
-		phenomenon.setUnits("cm/s");
-		phenomenon.setName("Wind Vertical Velocity");
-
-		return phenomenon;
+    @Deprecated
+    @UnitsChanged(oldUnit="degree (from)",newUnit="degree (to)")
+	public Phenomenon createSeaSurfaceWindWaveDirection() {
+        return Phenomena.SEA_SURFACE_WIND_WAVE_TO_DIRECTION;
 	}
-
-	public SosPhenomenon createWindGustfromDirection() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/wind_gust_from_direction");
-		phenomenon.setUnits("degree");
-		phenomenon.setName("Wind Gust from Direction");
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSeaSurfaceWindWaveHeight() {
+        return Phenomena.SEA_SURFACE_WIND_WAVE_SIGNIFICANT_HEIGHT;
 	}
 
-	public SosPhenomenon createSeaSurfaceWaveMeanPeriod() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wave_mean_period");
-		phenomenon.setUnits("s");
-		phenomenon.setName("Sea Surface Wave Mean Period");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSeaSurfaceWindWavePeriod() {
+        return Phenomena.SEA_SURFACE_WIND_WAVE_PERIOD;
 	}
-
-	public SosPhenomenon createSeaSurfaceSwellWaveHeight() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_swell_wave_height");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Sea Surface Swell Wave Height");
+    @Deprecated
+	public Phenomenon createSeaWaterAcidity() {
+        return Phenomena.SEA_WATER_PH_REPORTED_ON_TOTAL_SCALE;
+    }
 
-		return phenomenon;
+    @Deprecated
+    @UnitsChanged(oldUnit="mS/s",newUnit="S/m")
+	public Phenomenon createSeaWaterElectricalConductivity() {
+        return Phenomena.SEA_WATER_ELECTRICAL_CONDUCTIVITY;
 	}
 
-	public SosPhenomenon createSeaSurfaceWindWaveHeight() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wind_wave_height");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Sea Surface Wind Wave Height");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSeaWaterSalinity() {
+        return Phenomena.SEA_WATER_PRACTICAL_SALINITY;
 	}
-
-	public SosPhenomenon createSeaSurfaceWindWaveDirection() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_wind_wave_from_direction");
-		phenomenon.setUnits("degree");
-		phenomenon.setName("Sea Surface Wind Wave Direction");
-
-		return phenomenon;
+    @Deprecated
+    @UnitsChanged(oldUnit="cm/s",newUnit="m/s")        
+	public Phenomenon createSeaWaterspeed() {
+        return Phenomena.SEA_WATER_SPEED;
 	}
-
-	public SosPhenomenon createSeaSurfaceSwellWaveFromDirection() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_swell_wave_from_direction");
-		phenomenon.setUnits("degree");
-		phenomenon.setName("Sea Surface Swell Wave From Direction");
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSeaWaterTemperature() {
+		return Phenomena.SEA_WATER_TEMPERATURE;
 	}
 
-	public SosPhenomenon createSeaSurfaceDominantWaveFromDirection() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_dominant_wave_from_direction");
-		phenomenon.setUnits("degree");
-		phenomenon.setName("Sea Surface Dominant Wave From Direction");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSimpleTurbidity() {
+        return Phenomena.TURBIDITY;
 	}
-
-	public SosPhenomenon createSeaSurfaceDominantWavePeriod() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/sea_surface_dominant_wave_period");
-		phenomenon.setUnits("s");
-		phenomenon.setName("Sea Surface Dominant Wave Period");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSnowdepth() {
+        return Phenomena.SNOW_DEPTH;
 	}
-
-	public SosPhenomenon createBattery() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/battery");
-		phenomenon.setUnits("V");
-		phenomenon.setName("Battery");
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSnowPillow() {
+        return Phenomena.SNOW_PILLOW;
 	}
 
-	public SosPhenomenon createMaximumBattery() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/battery_maximum");
-		phenomenon.setUnits("V");
-		phenomenon.setName("Maximum Battery");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSnowWaterEquivalent() {
+        return Phenomena.SNOW_WATER_EQUIVALENT;
 	}
-
-	public SosPhenomenon createMinimumBattery() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/battery_minimum");
-		phenomenon.setUnits("V");
-		phenomenon.setName("Minimum Battery");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSoilMoisturePercent() {
+        return Phenomena.SOIL_MOISTURE_PERCENT;
 	}
-
-	public SosPhenomenon createAverageSolarRadiation() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/solar_radiation_average");
-		phenomenon.setUnits("W/m2");
-		phenomenon.setName("Average Solar Radiation");
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createSolarRadiation() {
+        return Phenomena.SOLAR_RADIATION;
 	}
 
-	public SosPhenomenon createSolarRadiation() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/solar_radiation");
-		phenomenon.setUnits("W/m2");
-		phenomenon.setName("Solar Radiation");
-
-		return phenomenon;
+    @Deprecated
+    public Phenomenon createStreamflow() {
+        return Phenomena.RIVER_DISCHARGE;
 	}
-
-	public SosPhenomenon createMaximumSolarRadiation() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/solar_radiation_maximum");
-		phenomenon.setUnits("W/m2");
-		phenomenon.setName("Maximum Solar Radiation");
+    @Deprecated
+    public Phenomenon createStreamGageHeight() {
+        return Phenomena.HEIGHT;
+    }
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createWaterTemperatureIntragravel() {
+        return Phenomena.WATER_TEMPERATURE_INTRAGRAVEL;
 	}
 
-	public SosPhenomenon createMinimumSolarRadiation() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/solar_radiation_minimum");
-		phenomenon.setUnits("W/m2");
-		phenomenon.setName("Minimum Solar Radiation");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createWaterVolumeTransportintoSeaWaterfromRivers() {
+        return Phenomena.WATER_VOLUME_TRANSPORT_INTO_SEA_WATER_FROM_RIVERS;
 	}
-
-	public SosPhenomenon createOxygenSaturationinSeaWater() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/saturation_of_oxygen_in_sea_water");
-		phenomenon.setUnits("%");
-		phenomenon.setName("Oxygen Saturation in Sea Water");
+    @Deprecated
+	public Phenomenon createWaveDirectionSpread() {
+        return Phenomena.WAVE_DIRECTIONAL_SPREAD;
+    }
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createWebcam() {
+	    return Phenomena.WEBCAM;
 	}
 
-	public SosPhenomenon createCarbonDioxideConcentrationinSeaWater() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/mass_concentration_of_carbon_dioxide_in_sea_water");
-		phenomenon.setUnits("mg/L");
-		phenomenon.setName("Carbon Dioxide Concentration in Sea Water");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createWindfromDirection() {
+        return Phenomena.WIND_FROM_DIRECTION;
 	}
-
-	public SosPhenomenon createCarbonDioxideConcentrationinAir() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/mass_concentration_of_carbon_dioxide_in_air");
-		phenomenon.setUnits("mg/L");
-		phenomenon.setName("Carbon Dioxide Concentration in Air");
-
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createWindGeneratorCurrent() {
+        return Phenomena.WIND_GENERATOR_CURRENT;
 	}
-
-	public SosPhenomenon createSnowPillow() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/snow_pillow");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Snow Pillow");
 
-		return phenomenon;
+    @Deprecated
+	public Phenomenon createWindGustfromDirection() {
+        return Phenomena.WIND_GUST_FROM_DIRECTION;
 	}
 
-	public SosPhenomenon createSnowdepth() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon.setId("http://mmisw.org/ont/ioos/parameter/snow_depth");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Snow depth");
-
-		return phenomenon;
+    @Deprecated
+    @UnitsChanged(oldUnit="cm/s",newUnit="m/s")
+	public Phenomenon createWindSpeed() {
+        return Phenomena.WIND_SPEED;
 	}
-
-	public SosPhenomenon createSnowWaterEquivalent() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
 
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/snow_water_equivalent");
-		phenomenon.setUnits("m");
-		phenomenon.setName("Snow Water Equivalent");
-
-		return phenomenon;
+    @Deprecated
+    @UnitsChanged(oldUnit="cm/s",newUnit="m/s")
+	public Phenomenon createWindSpeedofGust() {
+        return Phenomena.WIND_SPEED_OF_GUST;
 	}
-
-	public SosPhenomenon createWindSpeedofGust() {
-		SosPhenomenonImp phenomenon = new SosPhenomenonImp();
-
-		phenomenon
-				.setId("http://mmisw.org/ont/ioos/parameter/wind_speed_of_gust");
-		phenomenon.setUnits("cm/s");
-		phenomenon.setName("Wind Speed of Gust");
 
-		return phenomenon;
+    @Deprecated
+    @UnitsChanged(oldUnit="cm/s",newUnit="m/s")
+	public Phenomenon createWindVerticalVelocity() {
+        return Phenomena.WIND_VERTICAL_VELOCITY;
 	}
 }
