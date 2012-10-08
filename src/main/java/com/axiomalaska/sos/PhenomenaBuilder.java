@@ -14,283 +14,283 @@ public class PhenomenaBuilder {
         String oldUnit();
     }
 
-	@Deprecated
-	public Phenomenon createAirPressure() {
+    @Deprecated
+    public Phenomenon createAirPressure() {
         return Phenomena.AIR_PRESSURE;
-	}
+    }
 
-	@Deprecated
-	public Phenomenon createAirTemperature() {
+    @Deprecated
+    public Phenomenon createAirTemperature() {
         return Phenomena.AIR_TEMPERATURE;
     }
 
     @Deprecated
-	public Phenomenon createAirVisibility() {
+    public Phenomenon createAirVisibility() {
         return Phenomena.VISIBILITY_IN_AIR;
-	}
+    }
 
-	@Deprecated
-	public Phenomenon createAltitude() {
+    @Deprecated
+    public Phenomenon createAltitude() {
         return Phenomena.ALTITUDE;
-	}
+    }
 
-	@Deprecated
-	public Phenomenon createAverageAirTemperature() {
+    @Deprecated
+    public Phenomenon createAverageAirTemperature() {
         return Phenomena.AIR_TEMPERATURE_AVERAGE;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createAverageRelativeHumidity() {
+    public Phenomenon createAverageRelativeHumidity() {
         return Phenomena.RELATIVE_HUMIDITY_AVERAGE;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createAverageSolarRadiation() {
+    public Phenomenon createAverageSolarRadiation() {
         return Phenomena.SOLAR_RADIATION_AVERAGE;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createAverageWavePeriod() {
-	    return Phenomena.SEA_SURFACE_WAVE_MEAN_PERIOD;
-	}
+    public Phenomenon createAverageWavePeriod() {
+        return Phenomena.SEA_SURFACE_WAVE_MEAN_PERIOD;
+    }
 
     @Deprecated
-	public Phenomenon createBattery() {
+    public Phenomenon createBattery() {
         return Phenomena.BATTERY_VOLTAGE;
-	}
+    }
 
     @Deprecated
     @UnitsChanged(oldUnit="mg/L",newUnit="kg/m³")
-	public Phenomenon createCarbonDioxideConcentrationinAir() {
+    public Phenomenon createCarbonDioxideConcentrationinAir() {
         return Phenomena.MASS_CONCENTRATION_OF_CARBON_DIOXIDE_IN_AIR;
-	}
+    }
 
     @Deprecated
     @UnitsChanged(oldUnit="mg/L",newUnit="kg/m³")
-	public Phenomenon createCarbonDioxideConcentrationinSeaWater() {
+    public Phenomenon createCarbonDioxideConcentrationinSeaWater() {
         return Phenomena.MASS_CONCENTRATION_OF_CARBON_DIOXIDE_IN_SEA_WATER;
-	}
+    }
 
     @Deprecated
     @UnitsChanged(oldUnit="µg/L",newUnit="kg/m³")
-	public Phenomenon createConcentrationofChlorophyllinSeaWater() {
+    public Phenomenon createConcentrationofChlorophyllinSeaWater() {
         return Phenomena.MASS_CONCENTRATION_OF_CHLOROPHYLL_IN_SEA_WATER;
     }
 
     @Deprecated
-	public Phenomenon createConcentrationofOxygeninSeaWater() {
+    public Phenomenon createConcentrationofOxygeninSeaWater() {
         return Phenomena.MASS_CONCENTRATION_OF_OXYGEN_IN_SEA_WATER;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createDepthtoWaterLevel() {
+    public Phenomenon createDepthtoWaterLevel() {
         return Phenomena.DEPTH_TO_WATER_LEVEL;
-	}
+    }
 
     @Deprecated
     public Phenomenon createDewPointTemperature() {
         return Phenomena.DEW_POINT_TEMPERATURE;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createDirectionofSeaWaterVelocity() {
+    public Phenomenon createDirectionofSeaWaterVelocity() {
         return Phenomena.DIRECTION_OF_SEA_WATER_VELOCITY;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createDominantWavePeriod() {
-		return Phenomena.DOMINANT_WAVE_PERIOD;
-	}
+    public Phenomenon createDominantWavePeriod() {
+        return Phenomena.DOMINANT_WAVE_PERIOD;
+    }
 
     @Deprecated
-	public Phenomenon createElevationofReservoirWaterSurfaceaboveDatum() {
+    public Phenomenon createElevationofReservoirWaterSurfaceaboveDatum() {
         return Phenomena.WATER_SURFACE_HEIGHT_ABOVE_REFERENCE_DATUM;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createFuelMoisture() {
+    public Phenomenon createFuelMoisture() {
         return Phenomena.FUEL_MOISTURE;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createFuelTemperature() {
+    public Phenomenon createFuelTemperature() {
         return Phenomena.FUEL_TEMPERATURE;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createGrideLongitude() {
+    public Phenomenon createGrideLongitude() {
         return Phenomena.GRID_LONGITUDE;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createGridLatitude() {
+    public Phenomenon createGridLatitude() {
         return Phenomena.GRID_LATITUDE;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createGroundTemperature() {
+    public Phenomenon createGroundTemperature() {
         return Phenomena.SOIL_TEMPERATURE;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createIncomingShortwaveRadiation() {
+    public Phenomenon createIncomingShortwaveRadiation() {
         return Phenomena.TOA_INCOMING_SHORTWAVE_FLUX;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createMaximumAirTemperature() {
+    public Phenomenon createMaximumAirTemperature() {
         return Phenomena.AIR_TEMPERATURE_MAXIMUM;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createMaximumBattery() {
+    public Phenomenon createMaximumBattery() {
         return Phenomena.BATTERY_VOLTAGE_MAXIMUM;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createMaximumRelativeHumidity() {
+    public Phenomenon createMaximumRelativeHumidity() {
         return Phenomena.RELATIVE_HUMIDITY_MAXIMUM;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createMaximumSolarRadiation() {
+    public Phenomenon createMaximumSolarRadiation() {
         return Phenomena.SOLAR_RADIATION_MAXIMUM;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createMinimumAirTemperature() {
+    public Phenomenon createMinimumAirTemperature() {
         return Phenomena.AIR_TEMPERATURE_MINIMUM;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createMinimumBattery() {
+    public Phenomenon createMinimumBattery() {
         return Phenomena.BATTERY_VOLTAGE_MINIMUM;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createMinimumRelativeHumidity() {
+    public Phenomenon createMinimumRelativeHumidity() {
         return Phenomena.RELATIVE_HUMIDITY_MINIMUM;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createMinimumSolarRadiation() {
+    public Phenomenon createMinimumSolarRadiation() {
         return Phenomena.SOLAR_RADIATION_MINIMUM;
-	}
+    }
 
     @Deprecated
     @UnitsChanged(oldUnit="%",newUnit="") //dimensionless (fraction)
-	public Phenomenon createOxygenSaturationinSeaWater() {
+    public Phenomenon createOxygenSaturationinSeaWater() {
         return Phenomena.FRACTIONAL_SATURATION_OF_OXYGEN_IN_SEA_WATER;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createPanelTemperature() {
+    public Phenomenon createPanelTemperature() {
         return Phenomena.PANEL_TEMPERATURE;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createPhotosyntheticallyActiveRadiation() {
+    public Phenomenon createPhotosyntheticallyActiveRadiation() {
         return Phenomena.DOWNWELLING_PHOTOSYNTHETIC_RADIATIVE_FLUX_IN_SEA_WATER;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createPhycoerythrin() {
+    public Phenomenon createPhycoerythrin() {
         return Phenomena.PHYCOERYTHRIN;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createPrecipitation() {
+    public Phenomenon createPrecipitation() {
         return Phenomena.LWE_THICKNESS_OF_PRECIPITATION_AMOUNT;
-	}
+    }
 
     @Deprecated
     @UnitsChanged(oldUnit="m",newUnit="mm")
-	public Phenomenon createPrecipitationAccumulation() {
-	    return Phenomena.PRECIPITATION_ACCUMULATED;
-	}
+    public Phenomenon createPrecipitationAccumulation() {
+        return Phenomena.PRECIPITATION_ACCUMULATED;
+    }
 
     @Deprecated
-	public Phenomenon createPrecipitationIncrement() {
+    public Phenomenon createPrecipitationIncrement() {
         return Phenomena.PRECIPITATION_INCREMENT;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createProductofAirTemperatureandSpecificHumidity() {
+    public Phenomenon createProductofAirTemperatureandSpecificHumidity() {
         return Phenomena.PRODUCT_OF_AIR_TEMPERATURE_AND_SPECIFIC_HUMIDITY;
     }
 
     @Deprecated
     @UnitsChanged(oldUnit="cm/s",newUnit="m/s")    
-	public Phenomenon createRadialSeaWaterVelocityAwayFromInstrument() {
+    public Phenomenon createRadialSeaWaterVelocityAwayFromInstrument() {
         return Phenomena.RADIAL_SEA_WATER_VELOCITY_AWAY_FROM_INSTRUMENT;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createRealDielectricconstant() {
+    public Phenomenon createRealDielectricconstant() {
         return Phenomena.RELATIVE_PERMITTIVITY;
     }
 
     @Deprecated
-	public Phenomenon createReflectedShortwaveRadiation() {
-	    return Phenomena.TOA_OUTGOING_SHORTWAVE_FLUX;
-	}
+    public Phenomenon createReflectedShortwaveRadiation() {
+        return Phenomena.TOA_OUTGOING_SHORTWAVE_FLUX;
+    }
 
     @Deprecated
-	public Phenomenon createRelativeHumidity() {
+    public Phenomenon createRelativeHumidity() {
         return Phenomena.RELATIVE_HUMIDITY;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSeaFloorDepthBelowSeaSurface() {
+    public Phenomenon createSeaFloorDepthBelowSeaSurface() {
         return Phenomena.SEA_FLOOR_DEPTH_BELOW_SEA_SURFACE;
     }
 
     @Deprecated
-	public Phenomenon createseaseaSurfaceSwellWavePeriod() {
+    public Phenomenon createseaseaSurfaceSwellWavePeriod() {
         return Phenomena.SEA_SURFACE_SWELL_WAVE_PERIOD;
-	}
+    }
 
     @Deprecated
     @UnitsChanged(oldUnit="degree (from)",newUnit="degree (to)")  
-	public Phenomenon createSeaSurfaceDominantWaveFromDirection() {
+    public Phenomenon createSeaSurfaceDominantWaveFromDirection() {
         return Phenomena.PEAK_WAVE_DIRECTION;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSeaSurfaceDominantWavePeriod() {
+    public Phenomenon createSeaSurfaceDominantWavePeriod() {
         return Phenomena.PEAK_WAVE_PERIOD;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSeaSurfaceHeightaboveSeaLevel() {
+    public Phenomenon createSeaSurfaceHeightaboveSeaLevel() {
         return Phenomena.SEA_SURFACE_HEIGHT_ABOVE_SEA_LEVEL;
     }
 
     @Deprecated
-	public Phenomenon createSeaSurfaceHeightaboveSeaLevelPredictions() {        
+    public Phenomenon createSeaSurfaceHeightaboveSeaLevelPredictions() {        
         return Phenomena.SEA_SURFACE_HEIGHT_ABOVE_SEA_LEVEL_PREDICTIONS;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSeaSurfaceMaximumWaveHeight() {
+    public Phenomenon createSeaSurfaceMaximumWaveHeight() {
         return Phenomena.SEA_SURFACE_MAXIMUM_WAVE_HEIGHT;
     }
 
     @Deprecated
     @UnitsChanged(oldUnit="degree (from)",newUnit="degree (to)")    
-	public Phenomenon createSeaSurfaceSwellWaveFromDirection() {
+    public Phenomenon createSeaSurfaceSwellWaveFromDirection() {
         return Phenomena.SEA_SURFACE_SWELL_WAVE_TO_DIRECTION;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createseaSurfaceSwellWaveHeight() {
+    public Phenomenon createseaSurfaceSwellWaveHeight() {
         return Phenomena.SEA_SURFACE_SWELL_WAVE_SIGNIFICANT_HEIGHT;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSeaSurfaceSwellWaveHeight() {
+    public Phenomenon createSeaSurfaceSwellWaveHeight() {
         return Phenomena.SEA_SURFACE_SWELL_WAVE_SIGNIFICANT_HEIGHT;
-	}
+    }
 
     @Deprecated
     public Phenomenon createSeaSurfaceSwelWavePeriod() {
@@ -298,24 +298,24 @@ public class PhenomenaBuilder {
     }
 
     @Deprecated
-	public Phenomenon createSeaSurfaceWaveFromDirection() {
+    public Phenomenon createSeaSurfaceWaveFromDirection() {
         return Phenomena.SEA_SURFACE_WAVE_FROM_DIRECTION;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSeaSurfaceWaveMeanHeight() {
+    public Phenomenon createSeaSurfaceWaveMeanHeight() {
         return Phenomena.SEA_SURFACE_WAVE_MEAN_HEIGHT;
     }
 
     @Deprecated
     public Phenomenon createSeaSurfaceWaveMeanPeriod() {
-	    return Phenomena.SEA_SURFACE_WAVE_MEAN_PERIOD;
-	}
+        return Phenomena.SEA_SURFACE_WAVE_MEAN_PERIOD;
+    }
 
     @Deprecated
-	public Phenomenon createSeaSurfaceWaveSignificantHeight() {
-		return Phenomena.SEA_SURFACE_WAVE_SIGNIFICANT_HEIGHT;
-	}
+    public Phenomenon createSeaSurfaceWaveSignificantHeight() {
+        return Phenomena.SEA_SURFACE_WAVE_SIGNIFICANT_HEIGHT;
+    }
 
     @Deprecated
     public Phenomenon createSeaSurfaceWaveSignificatHeight() {
@@ -324,81 +324,81 @@ public class PhenomenaBuilder {
 
     @Deprecated
     @UnitsChanged(oldUnit="degree (from)",newUnit="degree (to)")
-	public Phenomenon createSeaSurfaceWindWaveDirection() {
+    public Phenomenon createSeaSurfaceWindWaveDirection() {
         return Phenomena.SEA_SURFACE_WIND_WAVE_TO_DIRECTION;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSeaSurfaceWindWaveHeight() {
+    public Phenomenon createSeaSurfaceWindWaveHeight() {
         return Phenomena.SEA_SURFACE_WIND_WAVE_SIGNIFICANT_HEIGHT;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSeaSurfaceWindWavePeriod() {
+    public Phenomenon createSeaSurfaceWindWavePeriod() {
         return Phenomena.SEA_SURFACE_WIND_WAVE_PERIOD;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSeaWaterAcidity() {
+    public Phenomenon createSeaWaterAcidity() {
         return Phenomena.SEA_WATER_PH_REPORTED_ON_TOTAL_SCALE;
     }
 
     @Deprecated
     @UnitsChanged(oldUnit="mS/s",newUnit="S/m")
-	public Phenomenon createSeaWaterElectricalConductivity() {
+    public Phenomenon createSeaWaterElectricalConductivity() {
         return Phenomena.SEA_WATER_ELECTRICAL_CONDUCTIVITY;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSeaWaterSalinity() {
+    public Phenomenon createSeaWaterSalinity() {
         return Phenomena.SEA_WATER_PRACTICAL_SALINITY;
-	}
+    }
 
     @Deprecated
     @UnitsChanged(oldUnit="cm/s",newUnit="m/s")        
-	public Phenomenon createSeaWaterspeed() {
+    public Phenomenon createSeaWaterspeed() {
         return Phenomena.SEA_WATER_SPEED;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSeaWaterTemperature() {
-		return Phenomena.SEA_WATER_TEMPERATURE;
-	}
+    public Phenomenon createSeaWaterTemperature() {
+        return Phenomena.SEA_WATER_TEMPERATURE;
+    }
 
     @Deprecated
-	public Phenomenon createSimpleTurbidity() {
+    public Phenomenon createSimpleTurbidity() {
         return Phenomena.TURBIDITY;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSnowdepth() {
+    public Phenomenon createSnowdepth() {
         return Phenomena.SNOW_DEPTH;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSnowPillow() {
+    public Phenomenon createSnowPillow() {
         return Phenomena.SNOW_PILLOW;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSnowWaterEquivalent() {
+    public Phenomenon createSnowWaterEquivalent() {
         return Phenomena.SNOW_WATER_EQUIVALENT;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSoilMoisturePercent() {
+    public Phenomenon createSoilMoisturePercent() {
         return Phenomena.SOIL_MOISTURE_PERCENT;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createSolarRadiation() {
+    public Phenomenon createSolarRadiation() {
         return Phenomena.SOLAR_RADIATION;
-	}
+    }
 
     @Deprecated
     public Phenomenon createStreamflow() {
         return Phenomena.RIVER_DISCHARGE;
-	}
+    }
 
     @Deprecated
     public Phenomenon createStreamGageHeight() {
@@ -406,55 +406,55 @@ public class PhenomenaBuilder {
     }
 
     @Deprecated
-	public Phenomenon createWaterTemperatureIntragravel() {
+    public Phenomenon createWaterTemperatureIntragravel() {
         return Phenomena.WATER_TEMPERATURE_INTRAGRAVEL;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createWaterVolumeTransportintoSeaWaterfromRivers() {
+    public Phenomenon createWaterVolumeTransportintoSeaWaterfromRivers() {
         return Phenomena.WATER_VOLUME_TRANSPORT_INTO_SEA_WATER_FROM_RIVERS;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createWaveDirectionSpread() {
+    public Phenomenon createWaveDirectionSpread() {
         return Phenomena.WAVE_DIRECTIONAL_SPREAD;
     }
 
     @Deprecated
-	public Phenomenon createWebcam() {
-	    return Phenomena.WEBCAM;
-	}
+    public Phenomenon createWebcam() {
+        return Phenomena.WEBCAM;
+    }
 
     @Deprecated
-	public Phenomenon createWindfromDirection() {
+    public Phenomenon createWindfromDirection() {
         return Phenomena.WIND_FROM_DIRECTION;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createWindGeneratorCurrent() {
+    public Phenomenon createWindGeneratorCurrent() {
         return Phenomena.WIND_GENERATOR_CURRENT;
-	}
+    }
 
     @Deprecated
-	public Phenomenon createWindGustfromDirection() {
+    public Phenomenon createWindGustfromDirection() {
         return Phenomena.WIND_GUST_FROM_DIRECTION;
-	}
+    }
 
     @Deprecated
     @UnitsChanged(oldUnit="cm/s",newUnit="m/s")
-	public Phenomenon createWindSpeed() {
+    public Phenomenon createWindSpeed() {
         return Phenomena.WIND_SPEED;
-	}
+    }
 
     @Deprecated
     @UnitsChanged(oldUnit="cm/s",newUnit="m/s")
-	public Phenomenon createWindSpeedofGust() {
+    public Phenomenon createWindSpeedofGust() {
         return Phenomena.WIND_SPEED_OF_GUST;
-	}
+    }
 
     @Deprecated
     @UnitsChanged(oldUnit="cm/s",newUnit="m/s")
-	public Phenomenon createWindVerticalVelocity() {
+    public Phenomenon createWindVerticalVelocity() {
         return Phenomena.WIND_VERTICAL_VELOCITY;
-	}
+    }
 }
