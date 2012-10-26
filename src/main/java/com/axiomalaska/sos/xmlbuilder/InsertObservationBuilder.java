@@ -400,8 +400,13 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		quantity.setAttribute("definition", phenomenon.getId());
 		field.appendChild(quantity);
 
+		String unitString = "";
+		if(phenomenon.getUnit() != null){
+			unitString = phenomenon.getUnit().toString();
+		}
+		
 		Element uom = doc.createElement("swe:uom");
-		uom.setAttribute("code", phenomenon.getUnits());
+		uom.setAttribute("code", unitString);
 		quantity.appendChild(uom);
 		
 		return elementType;

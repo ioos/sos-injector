@@ -10,18 +10,16 @@ import org.junit.Test;
 
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.phenomena.PhenomenonImp;
+import com.axiomalaska.phenomena.UnitCreationException;
+import com.axiomalaska.phenomena.UnitResolver;
 import com.axiomalaska.sos.data.Location;
-import com.axiomalaska.sos.data.PublisherInfo;
-import com.axiomalaska.sos.data.PublisherInfoImp;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosSensorImp;
 import com.axiomalaska.sos.data.SosStationImp;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.data.ObservationCollection;
-import com.axiomalaska.sos.example.CnfaicObservationUpdaterFactory;
 
 public class AppTest {
-
 	@Test
 	public void test() {
 		assertTrue(true);
@@ -107,14 +105,15 @@ public class AppTest {
 		return observationRetriever;
 	}
 	
-	private SosStation createStation(){
+	private SosStation createStation()  throws UnitCreationException {
+		UnitResolver unitResolver = UnitResolver.instance();
 		
 		List<SosSensor> sensors = new ArrayList<SosSensor>();
 		List<Phenomenon> phenomena = new ArrayList<Phenomenon>();
 		PhenomenonImp airTemPhenomenonDepth20 = new PhenomenonImp();
 		airTemPhenomenonDepth20.setId("urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature");
 		airTemPhenomenonDepth20.setName("Air Temperature");
-		airTemPhenomenonDepth20.setUnits("C");
+		airTemPhenomenonDepth20.setUnit(unitResolver.resolveUnit("C"));
 		phenomena.add(airTemPhenomenonDepth20);
 		SosSensorImp airTem20Sensor = new SosSensorImp();
 		airTem20Sensor.setId("Air Temperature");
@@ -127,7 +126,7 @@ public class AppTest {
 		PhenomenonImp airTemPhenomenonDepth10 = new PhenomenonImp();
 		airTemPhenomenonDepth10.setId("urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature");
 		airTemPhenomenonDepth10.setName("Air Temperature");
-		airTemPhenomenonDepth10.setUnits("C");
+		airTemPhenomenonDepth10.setUnit(unitResolver.resolveUnit("C"));
 		phenomena.add(airTemPhenomenonDepth10);
 		SosSensorImp airTem10Sensor = new SosSensorImp();
 		airTem10Sensor.setId("Air Temperature");

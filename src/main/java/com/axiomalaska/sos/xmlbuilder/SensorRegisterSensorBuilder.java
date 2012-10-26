@@ -216,14 +216,13 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			name.appendChild(doc.createTextNode("Includes all the sensors in the network"));
 			offering.appendChild(name);
 			
+			String unitString = "";
+			if(phenomenon.getUnit() != null){
+				unitString = phenomenon.getUnit().toString();
+			}
+			
 			Element uom = doc.createElement("swe:uom");
-			if(phenomenon.getUnits().length() > 30){
-				String truncatedUnits = phenomenon.getUnits().substring(0, 30);
-				uom.setAttribute("code", truncatedUnits);
-			}
-			else{
-				uom.setAttribute("code", phenomenon.getUnits());
-			}
+		    uom.setAttribute("code", unitString);
 			quantity.appendChild(uom);
 		}
 		

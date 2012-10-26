@@ -17,6 +17,11 @@ import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 import org.junit.Test;
 
+import ucar.units.Unit;
+import ucar.units.UnitFormat;
+import ucar.units.UnitFormatManager;
+
+import com.axiomalaska.phenomena.Phenomena;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.phenomena.PhenomenonImp;
 import com.axiomalaska.sos.data.Location;
@@ -120,10 +125,14 @@ public class XmlBuildersTest {
     }
     
     private Phenomenon buildTestPhenomenon(){
-        PhenomenonImp testPhenomenon = new PhenomenonImp();
-        testPhenomenon.setId( TEST_PHENOMENON_ID );
-        testPhenomenon.setName( TEST_PHENOMENON_NAME );
-        testPhenomenon.setUnits( TEST_PHENOMENON_UNITS );
+    	Phenomenon testPhenomenon = new PhenomenonImp();
+    	try{
+    		testPhenomenon = Phenomena.instance().AIR_TEMPERATURE;
+    	}
+    	catch (Exception x){
+    		System.out.println("error creating phenomenon: " + x.getMessage());
+    	}
+    	
         return testPhenomenon;
     }
     

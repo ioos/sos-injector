@@ -47,11 +47,11 @@ public class CnfaicObservationRetriever implements ObservationRetriever {
 			String rawObservationData = httpSender.sendGetMessage(
 					"http://www.cnfaic.org/library/grabbers/nws_feed.php?hours=" + hoursText);
 			
-			Phenomenon airTemperaturePhenomenon = Phenomena.AIR_TEMPERATURE;
-			Phenomenon relativeHumidityPhenomenon = Phenomena.RELATIVE_HUMIDITY;
-			Phenomenon windSpeedPhenomenon = Phenomena.WIND_SPEED;
-			Phenomenon windfromDirectionPhenomenon = Phenomena.WIND_FROM_DIRECTION;
-			Phenomenon windSpeedofGustPhenomenon = Phenomena.WIND_SPEED_OF_GUST;
+			Phenomenon airTemperaturePhenomenon = Phenomena.instance().AIR_TEMPERATURE;
+			Phenomenon relativeHumidityPhenomenon = Phenomena.instance().RELATIVE_HUMIDITY;
+			Phenomenon windSpeedPhenomenon = Phenomena.instance().WIND_SPEED;
+			Phenomenon windfromDirectionPhenomenon = Phenomena.instance().WIND_FROM_DIRECTION;
+			Phenomenon windSpeedofGustPhenomenon = Phenomena.instance().WIND_SPEED_OF_GUST;
 			
 			Pattern observationParser = 
 					Pattern.compile(station.getId() + 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.axiomalaska.phenomena.Phenomena;
 import com.axiomalaska.phenomena.Phenomenon;
+import com.axiomalaska.phenomena.UnitCreationException;
 import com.axiomalaska.sos.StationRetriever;
 import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.SosNetwork;
@@ -62,7 +63,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		return network;
 	}
 	
-	private List<SosSensor> getSensors(SosStation station) {
+	private List<SosSensor> getSensors(SosStation station)throws UnitCreationException {
 		SosSource source = station.getSource();
 		SosNetwork airTemperatureNetwork = getAirTemperatureNetwork(source.getId());
 		
@@ -70,7 +71,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		
 		SosSensorImp airTemperatureSensor = new SosSensorImp();
 		List<Phenomenon> phenomena = new ArrayList<Phenomenon>();
-		phenomena.add(Phenomena.AIR_TEMPERATURE);
+		phenomena.add(Phenomena.instance().AIR_TEMPERATURE);
 		airTemperatureSensor.setPhenomena(phenomena);
 		airTemperatureSensor.setId("Air_Temperature");
 		airTemperatureSensor.setDescription("Air Temperature");
@@ -79,7 +80,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 	
 		SosSensorImp relativeHumiditySensor = new SosSensorImp();
 		phenomena = new ArrayList<Phenomenon>();
-		phenomena.add(Phenomena.RELATIVE_HUMIDITY);
+		phenomena.add(Phenomena.instance().RELATIVE_HUMIDITY);
 		relativeHumiditySensor.setPhenomena(phenomena);
 		relativeHumiditySensor.setId("Relative_Humidity");
 		relativeHumiditySensor.setDescription("Relative Humidity");
@@ -87,9 +88,9 @@ public class CnfaicStationRetriever implements StationRetriever {
 		
 		SosSensorImp windSensor = new SosSensorImp();
 		phenomena = new ArrayList<Phenomenon>();
-		phenomena.add(Phenomena.WIND_SPEED);
-		phenomena.add(Phenomena.WIND_FROM_DIRECTION);
-		phenomena.add(Phenomena.WIND_SPEED_OF_GUST);
+		phenomena.add(Phenomena.instance().WIND_SPEED);
+		phenomena.add(Phenomena.instance().WIND_FROM_DIRECTION);
+		phenomena.add(Phenomena.instance().WIND_SPEED_OF_GUST);
 		windSensor.setPhenomena(phenomena);
 		windSensor.setId("Wind");
 		windSensor.setDescription("Wind");
@@ -98,7 +99,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		return sensors;
 	}
 	
-	private SosStation createArcticValley(SosSource source) {
+	private SosStation createArcticValley(SosSource source) throws UnitCreationException{
 		SosStationImp arcticValley = new SosStationImp();
 
 		arcticValley.setFeatureOfInterestName("At station:Arctic Valley Ridge of source: CNFAIC");
@@ -115,7 +116,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		return arcticValley;
 	}
 
-	private SosStation createMarmotRidge(SosSource source) {
+	private SosStation createMarmotRidge(SosSource source) throws UnitCreationException{
 		SosStationImp marmot = new SosStationImp();
 
 		marmot.setFeatureOfInterestName("At station: Marmot Ridge in Hatcher Pass of source: CNFAIC");
@@ -132,7 +133,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		return marmot;
 	}
 
-	private SosStation createFresnoRidge(SosSource source) {
+	private SosStation createFresnoRidge(SosSource source) throws UnitCreationException{
 		SosStationImp fresnoRidge = new SosStationImp();
 
 		fresnoRidge
@@ -150,7 +151,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		return fresnoRidge;
 	}
 
-	private SosStation createSunburstRidge(SosSource source) {
+	private SosStation createSunburstRidge(SosSource source) throws UnitCreationException{
 		SosStationImp sunburstRidge = new SosStationImp();
 
 		sunburstRidge
@@ -168,7 +169,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		return sunburstRidge;
 	}
 
-	private SosStation createSeattleRidge(SosSource source) {
+	private SosStation createSeattleRidge(SosSource source) throws UnitCreationException{
 		SosStationImp seattleRidge = new SosStationImp();
 
 		seattleRidge
