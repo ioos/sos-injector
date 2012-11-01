@@ -489,8 +489,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 
 			Element pos = doc.createElement("gml:pos");
 			pos.setAttribute("srsName", "urn:ogc:def:crs:EPSG::4326");
-			pos.appendChild(doc.createTextNode(location.getLongitude() + " "
-					+ location.getLatitude()));
+			pos.appendChild(doc.createTextNode(location.getLatitude() + " " + 
+					location.getLongitude()));
 			point.appendChild(pos);
 		}
 		
@@ -551,8 +551,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		
 		Element pos = doc.createElement("gml:pos");
 		pos.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4326");
-		pos.appendChild(doc.createTextNode(station.getLocation().getLongitude() 
-				+ " " + station.getLocation().getLatitude()));
+		pos.appendChild(doc.createTextNode(station.getLocation().getLatitude() + 
+				" " + station.getLocation().getLongitude()));
 		point.appendChild(pos);
 		
 		return featureOfInterest;

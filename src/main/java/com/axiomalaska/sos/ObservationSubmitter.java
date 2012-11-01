@@ -130,7 +130,8 @@ public class ObservationSubmitter {
 	 * 
 	 * @param observationCollection - the data used to update the SOS
 	 */
-	public void update(ObservationCollection observationCollection, PublisherInfo publisherInfo) throws Exception {
+	public void update(ObservationCollection observationCollection,
+			PublisherInfo publisherInfo) throws Exception {
 		if (isObservationCollectionValid(observationCollection)) {
 			SosStation station = observationCollection.getStation();
 			boolean isStationCreated = isStationCreated(station);
@@ -139,7 +140,14 @@ public class ObservationSubmitter {
 			}
 
 			if (isStationCreated) {
-				insertObservations(observationCollection);
+				SosSensor sensor = observationCollection.getSensor();
+				boolean isSensorCreated = isSensorCreated(station, sensor);
+				if (!isSensorCreated) {
+					isSensorCreated = createNewSosSensor(station, sensor);
+				}
+				if (isSensorCreated) {
+					insertObservations(observationCollection);
+				}
 			}
 		}
 	}
@@ -158,7 +166,8 @@ public class ObservationSubmitter {
 	 * pull observations from
 	 */
 	public void update(List<SosStation> stations, 
-			ObservationRetriever observationRetriever, PublisherInfo publisherInfo) throws Exception {
+			ObservationRetriever observationRetriever, 
+			PublisherInfo publisherInfo) throws Exception {
 		for (SosStation station : stations) {
 			update(station, observationRetriever, publisherInfo);
 		}
