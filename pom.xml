@@ -79,5 +79,19 @@
     <connection>scm:git:git://github.com/axiomalaska/sos-injection.git</connection>
     <url>scm:git:git://github.com/axiomalaska/sos-injection.git</url>
     <developerConnection>scm:git:git://github.com/axiomalaska/sos-injection.git</developerConnection>
-  </scm>  
+  </scm>
+  
+  <repositories>
+    <repository>
+      <id>axiom-public</id>
+      <url>http://nexus.axiomalaska.com/nexus/content/repositories/public</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>52n-repo</id>
+      <url>http://52north.org/maven/repo/releases</url>
+    </repository>
+  </repositories>
 </project>
