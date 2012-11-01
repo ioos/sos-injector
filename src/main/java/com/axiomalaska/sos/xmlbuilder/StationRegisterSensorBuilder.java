@@ -148,26 +148,11 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 				      </sml:ResponsibleParty>
 				   </sml:contact>
 				   <!-- ======= LOCATION ======= -->
-		          <sml:position name="sensorLocation">
-		            <swe:Position referenceFrame="http://www.opengis.net/def/crs/EPSG/0/4326">
-		              <swe:location>
-		                <swe:Vector>
-		                  <swe:coordinate name="easting">
-		                    <swe:Quantity>
-		                      <swe:uom code="degree" />
-		                      <swe:value>-149.470</swe:value>
-		                    </swe:Quantity>                
-		                  </swe:coordinate>
-		                  <swe:coordinate name="northing">
-		                    <swe:Quantity>
-		                      <swe:uom code="degree" />
-		                      <swe:value>59.742</swe:value>
-		                    </swe:Quantity>                
-		                  </swe:coordinate>              
-		                </swe:Vector>
-		              </swe:location>
-		            </swe:Position>
-		          </sml:position>
+                   <sml:location>
+                     <gml:Point srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                       <gml:pos>34.7 -72.73</gml:pos>
+                     </gml:Point>
+                   </sml:location>				   
 			    </sml:System>
 		      </sml:member>
 		    </sml:SensorML>
@@ -259,7 +244,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 			
 			system.appendChild(doc.createComment("======= LOCATION ======="));
 			
-			system.appendChild(createPositionNode(doc, station));
+			system.appendChild(createLocationNode(doc, station));
 			
 			registerSensor.appendChild(createObservationTemplate(doc, station));
 			
@@ -565,94 +550,25 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 	}
 	
 	/**
-	<sml:position name="sensorPosition">
-		<swe:Position referenceFrame="urn:ogc:def:crs:EPSG::4326">
-			<swe:location>
-				<swe:Vector gml:id="STATION_LOCATION">
-					<swe:coordinate name="easting">
-						<swe:Quantity>
-							<swe:uom code="degree"/>
-							<swe:value>-143.0</swe:value>
-						</swe:Quantity>
-					</swe:coordinate>
-					<swe:coordinate name="northing">
-						<swe:Quantity>
-							<swe:uom code="degree"/>
-							<swe:value>63.0</swe:value>
-						</swe:Quantity>
-					</swe:coordinate>
-					<swe:coordinate name="altitude">
-						<swe:Quantity>
-							<swe:uom code="m"/>
-							<swe:value>0.0</swe:value>
-						</swe:Quantity>
-					</swe:coordinate>
-				</swe:Vector>
-			</swe:location>
-		</swe:Position>
-	</sml:position>
+    <sml:location>
+      <gml:Point srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+        <gml:pos>34.7 -72.73</gml:pos>
+      </gml:Point>
+    </sml:location>                 
 	 */
-	private Node createPositionNode(Document doc, SosStation station) {
-		Element position = doc.createElement("sml:position");
-		position.setAttribute("name", "sensorPosition");
+	private Node createLocationNode(Document doc, SosStation station) {
+		Element smlLocation = doc.createElement("sml:location");
+
+		Element gmlPoint = doc.createElement("gml:Point");
+		gmlPoint.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4326");
+		smlLocation.appendChild(gmlPoint);
 		
-		Element swePosition = doc.createElement("swe:Position");
-		swePosition.setAttribute("referenceFrame", "urn:ogc:def:crs:EPSG::4326");
-		position.appendChild(swePosition);
+		Element gmlPos = doc.createElement("gml:pos");
+		gmlPoint.appendChild(gmlPos);
 		
-		Element location = doc.createElement("swe:location");
-		swePosition.appendChild(location);
+		gmlPos.setTextContent( station.getLocation().getLatitude() + " " + station.getLocation().getLongitude() );
 		
-		Element vector = doc.createElement("swe:Vector");
-		vector.setAttribute("gml:id", "STATION_LOCATION");
-		location.appendChild(vector);
-		
-		Element eastingCoordinate = doc.createElement("swe:coordinate");
-		eastingCoordinate.setAttribute("name", "easting");
-		vector.appendChild(eastingCoordinate);
-		
-		Element eastingQuantity = doc.createElement("swe:Quantity");
-		eastingCoordinate.appendChild(eastingQuantity);
-		
-		Element eastingUom = doc.createElement("swe:uom");
-		eastingUom.setAttribute("code", "degree");
-		eastingQuantity.appendChild(eastingUom);
-		
-		Element eastingValue = doc.createElement("swe:value");
-		eastingValue.appendChild(doc.createTextNode(station.getLocation().getLongitude() + ""));
-		eastingQuantity.appendChild(eastingValue);
-		
-		Element northingCoordinate = doc.createElement("swe:coordinate");
-		northingCoordinate.setAttribute("name", "northing");
-		vector.appendChild(northingCoordinate);
-		
-		Element northingQuantity = doc.createElement("swe:Quantity");
-		northingCoordinate.appendChild(northingQuantity);
-		
-		Element northingUom = doc.createElement("swe:uom");
-		northingUom.setAttribute("code", "degree");
-		northingQuantity.appendChild(northingUom);
-		
-		Element northingValue = doc.createElement("swe:value");
-		northingValue.appendChild(doc.createTextNode(station.getLocation().getLatitude() + ""));
-		northingQuantity.appendChild(northingValue);
-		
-		Element altitudeCoordinate = doc.createElement("swe:coordinate");
-		altitudeCoordinate.setAttribute("name", "altitude");
-		vector.appendChild(altitudeCoordinate);
-		
-		Element altitudeQuantity = doc.createElement("swe:Quantity");
-		altitudeCoordinate.appendChild(altitudeQuantity);
-		
-		Element altitudeUom = doc.createElement("swe:uom");
-		altitudeUom.setAttribute("code", "m");
-		altitudeQuantity.appendChild(altitudeUom);
-		
-		Element altitudeValue = doc.createElement("swe:value");
-		altitudeValue.appendChild(doc.createTextNode("0.0"));
-		altitudeQuantity.appendChild(altitudeValue);
-		
-		return position;
+		return smlLocation;
 	}
 
 	/**

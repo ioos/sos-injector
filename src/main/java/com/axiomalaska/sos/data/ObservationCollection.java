@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.axiomalaska.phenomena.Phenomenon;
+
 /**
  * Contains a collection of observations for one associated phenomenon and station
  * 
@@ -22,7 +24,7 @@ public class ObservationCollection {
 	
 	private SosStation station;
 	private SosSensor sensor;
-	private SosPhenomenon phenomenon;
+	private Phenomenon phenomenon;
 	private List<Double> observationValues = new ArrayList<Double>();
 	private List<Calendar> observationDates = new ArrayList<Calendar>();
 	private List<Location> observationLocations = new ArrayList<Location>();
@@ -31,11 +33,11 @@ public class ObservationCollection {
 	// Public Members
 	// -------------------------------------------------------------------------
 	
-	public SosPhenomenon getPhenomenon() {
+	public Phenomenon getPhenomenon() {
 		return phenomenon;
 	}
 
-	public void setPhenomenon(SosPhenomenon phenomenon) {
+	public void setPhenomenon(Phenomenon phenomenon) {
 		this.phenomenon = phenomenon;
 	}
 	

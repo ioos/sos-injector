@@ -12,8 +12,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.data.SosNetwork;
-import com.axiomalaska.sos.data.SosPhenomenon;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.tools.IdCreator;
@@ -88,9 +88,9 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			
 			system.appendChild(createParentProcedures(doc));
 			
-			List<SosPhenomenon> phenomena = sensor.getPhenomena();
+			List<Phenomenon> phenomena = sensor.getPhenomena();
 			
-			List<SosPhenomenon> filteredPhenomena = removeDuplicatePhenomena(phenomena);
+			List<Phenomenon> filteredPhenomena = removeDuplicatePhenomena(phenomena);
 			
 			system.appendChild(createInputsNode(doc, filteredPhenomena));
 			
@@ -118,10 +118,10 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 	 * @param phenomena - the list of phenomena to remove duplicates from
 	 * @return a list of phenomena with the duplicate phenomena id removed. 
 	 */
-	private List<SosPhenomenon> removeDuplicatePhenomena(List<SosPhenomenon> phenomena) {
-		List<SosPhenomenon> filteredPhenomena = new ArrayList<SosPhenomenon>();
+	private List<Phenomenon> removeDuplicatePhenomena(List<Phenomenon> phenomena) {
+		List<Phenomenon> filteredPhenomena = new ArrayList<Phenomenon>();
 		Set<String> set = new HashSet<String>();
-		for(SosPhenomenon phenomenon : phenomena){
+		for(Phenomenon phenomenon : phenomena){
 			if(!set.contains(phenomenon.getId())){
 				filteredPhenomena.add(phenomenon);
 				set.add(phenomenon.getId());
@@ -185,13 +185,13 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		</sml:OutputList>
 	</sml:outputs>
 	 */
-	private Node createOutputsNode(Document doc, List<SosPhenomenon> phenomena) {
+	private Node createOutputsNode(Document doc, List<Phenomenon> phenomena) {
 		Element outputs = doc.createElement("sml:outputs");
 		
 		Element outputList = doc.createElement("sml:OutputList");
 		outputs.appendChild(outputList);
 		
-		for(SosPhenomenon phenomenon : phenomena){
+		for(Phenomenon phenomenon : phenomena){
 			Element output = doc.createElement("sml:output");
 			output.setAttribute("name", phenomenon.getName());
 			outputList.appendChild(output);
@@ -216,14 +216,13 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			name.appendChild(doc.createTextNode("Includes all the sensors in the network"));
 			offering.appendChild(name);
 			
+			String unitString = "";
+			if(phenomenon.getUnit() != null){
+				unitString = phenomenon.getUnit().toString();
+			}
+			
 			Element uom = doc.createElement("swe:uom");
-			if(phenomenon.getUnits().length() > 30){
-				String truncatedUnits = phenomenon.getUnits().substring(0, 30);
-				uom.setAttribute("code", truncatedUnits);
-			}
-			else{
-				uom.setAttribute("code", phenomenon.getUnits());
-			}
+		    uom.setAttribute("code", unitString);
 			quantity.appendChild(uom);
 		}
 		
@@ -239,13 +238,13 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		</sml:InputList>
 	</sml:inputs>
 	 */
-	private Node createInputsNode(Document doc, List<SosPhenomenon> phenomena) {
+	private Node createInputsNode(Document doc, List<Phenomenon> phenomena) {
 		Element inputs = doc.createElement("sml:inputs");
 		
 		Element inputList = doc.createElement("sml:InputList");
 		inputs.appendChild(inputList);
 		
-		for(SosPhenomenon phenomenon : phenomena){
+		for(Phenomenon phenomenon : phenomena){
 			Element input = doc.createElement("sml:input");
 			input.setAttribute("name", phenomenon.getName());
 			inputList.appendChild(input);

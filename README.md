@@ -5,6 +5,8 @@ The SOS Observation Injector is a Java toolkit that can be used to enter sensor 
 
 This project takes as input: source, station, sensor, and phenomenon objects and places the data into the proper SOS XML. It then submits the data into a 52 North SOS. 
 
+**NOTE: Most phenomenon identifiers used in this project are currently invalid. This is a known issue that is being resolved. Please consider any use of this project experimental until this issue is fixed.**
+
 Installation
 ------------
 The only requirements for this project are that Java 1.6 or greater is installed and Maven is used to build the project.
@@ -13,47 +15,47 @@ Maven Projects
 --------------
 To add this project to a Maven project insert the below code into your pom.xml file. 
 
-                  ....
-		  <repositories>
-		    <repository>
-		      <id>axiom_public_releases</id>
-		      <name>Axiom Releases</name>
-		      <url>http://nexus.axiomalaska.com/nexus/content/repositories/public/</url>
-		    </repository>
-		  </repositories>
-		  ....
-		  <dependencies>
-			.....
-				<dependency>
-					<groupId>com.axiomalaska</groupId>
-					<artifactId>SosInjector</artifactId>
-					<version>0.2.11</version>
-				</dependency>
-			.....
-		  </dependencies>
+    ....
+    <repositories>
+      <repository>
+        <id>axiom_public_releases</id>
+        <name>Axiom Releases</name>
+        <url>http://nexus.axiomalaska.com/nexus/content/repositories/public/</url>
+      </repository>
+    </repositories>
+    ....
+    <dependencies>
+    ....
+      <dependency>
+        <groupId>com.axiomalaska</groupId>
+        <artifactId>sos-injection</artifactId>
+        <version>0.3.2</version>
+      </dependency>
+      ....
+    </dependencies>
 
 Creating a Custom Source SOS Injector
 -------------------------------------
 The source code provides an example (referenced below) to explain how to implement a custom source SOS injector. The user needs to provide the URL for their own 52 North SOS. This example is located in the source at com.axiomalaska.sos.cnfaic. To run the example use the following code:
 
-		import com.axiomalaska.sos.ObservationUpdater;
-		import com.axiomalaska.sos.cnfaic.CnfaicObservationUpdaterFactory;
-		import com.axiomalaska.sos.data.PublisherInfo;
-		import com.axiomalaska.sos.data.PublisherInfoImp;
-
-		public class Main{
-			public static void main(String[] args){
-
-				CnfaicObservationUpdaterFactory factory = new CnfaicObservationUpdaterFactory();
-
-				PublisherInfo publisherInfo = new PublisherInfoImp();
-
-				ObservationUpdater observationUpdater = 
-					factory.buildCnfaicObservationUpdater(“http://localhost/sos/sos”, publisherInfo);
-
-				observationUpdater.update();
-			}
-		}
+    import com.axiomalaska.sos.ObservationUpdater;
+    import com.axiomalaska.sos.cnfaic.CnfaicObservationUpdaterFactory;
+    import com.axiomalaska.sos.data.PublisherInfo;
+    import com.axiomalaska.sos.data.PublisherInfoImp;
+    
+    public class Main{
+        public static void main(String[] args){
+    
+            CnfaicObservationUpdaterFactory factory = new CnfaicObservationUpdaterFactory();
+    
+            PublisherInfo publisherInfo = new PublisherInfoImp();
+    
+            ObservationUpdater observationUpdater = 
+                factory.buildCnfaicObservationUpdater(“http://localhost/sos/sos”, publisherInfo);
+    
+            observationUpdater.update();
+        }
+    }
 
 This example contains 5 stations with 3 sensors each. One of the sensors contains 3 phenomena, while the others only contain one. When running this code for the first time, 5 stations, 15 sensors, 5 phenomena, 1 network, and around 10,000 observations will be added to the SOS. This example uses a real source that is located at http://www.cnfaic.org/. Observations are pulled in real time from this website. 
 

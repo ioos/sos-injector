@@ -10,8 +10,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.data.Location;
-import com.axiomalaska.sos.data.SosPhenomenon;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.data.ObservationCollection;
@@ -32,14 +32,14 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	private SosSensor sensor;
 	private ObservationCollection observationCollection;
 	private IdCreator idCreator;
-	private SosPhenomenon phenomenon;
+	private Phenomenon phenomenon;
 	
 	// -------------------------------------------------------------------------
 	// Constructor
 	// -------------------------------------------------------------------------
 	
 	public InsertObservationBuilder(SosStation station, SosSensor sensor, 
-			SosPhenomenon phenomenon, ObservationCollection observationCollection, IdCreator idCreator){
+			Phenomenon phenomenon, ObservationCollection observationCollection, IdCreator idCreator){
 		this.station = station;
 		this.sensor = sensor;
 		this.phenomenon = phenomenon;
@@ -400,8 +400,13 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		quantity.setAttribute("definition", phenomenon.getId());
 		field.appendChild(quantity);
 
+		String unitString = "";
+		if(phenomenon.getUnit() != null){
+			unitString = phenomenon.getUnit().toString();
+		}
+		
 		Element uom = doc.createElement("swe:uom");
-		uom.setAttribute("code", phenomenon.getUnits());
+		uom.setAttribute("code", unitString);
 		quantity.appendChild(uom);
 		
 		return elementType;
@@ -484,8 +489,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 
 			Element pos = doc.createElement("gml:pos");
 			pos.setAttribute("srsName", "urn:ogc:def:crs:EPSG::4326");
-			pos.appendChild(doc.createTextNode(location.getLongitude() + " "
-					+ location.getLatitude()));
+			pos.appendChild(doc.createTextNode(location.getLatitude() + " " + 
+					location.getLongitude()));
 			point.appendChild(pos);
 		}
 		
@@ -546,8 +551,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		
 		Element pos = doc.createElement("gml:pos");
 		pos.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4326");
-		pos.appendChild(doc.createTextNode(station.getLocation().getLongitude() 
-				+ " " + station.getLocation().getLatitude()));
+		pos.appendChild(doc.createTextNode(station.getLocation().getLatitude() + 
+				" " + station.getLocation().getLongitude()));
 		point.appendChild(pos);
 		
 		return featureOfInterest;
