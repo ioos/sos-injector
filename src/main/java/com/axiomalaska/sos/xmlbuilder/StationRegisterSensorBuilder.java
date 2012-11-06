@@ -253,6 +253,9 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 			return xmlString;
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
+                        for (int i=0; i<20 && i <ex.getStackTrace().length; i++) {
+                            System.err.println("\t" + ex.getStackTrace()[i].toString());
+                        }
 		}
 		return null;
 	}
@@ -659,7 +662,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		
 		for(SosNetwork network : networks){
 			Element metaDataProperty = doc.createElement("gml:metaDataProperty");
-			metaDataProperty.setAttribute("link:title", idCreator.createNetworkId(network));
+			metaDataProperty.setAttribute("xlink:title", idCreator.createNetworkId(network));
 			simpleDataRecord.appendChild(metaDataProperty);
 		}
 		

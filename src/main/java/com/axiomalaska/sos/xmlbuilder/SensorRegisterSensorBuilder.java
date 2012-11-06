@@ -13,9 +13,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.axiomalaska.phenomena.Phenomenon;
-import com.axiomalaska.sos.data.SosNetwork;
-import com.axiomalaska.sos.data.SosSensor;
-import com.axiomalaska.sos.data.SosStation;
+import com.axiomalaska.sos.data.*;
 import com.axiomalaska.sos.tools.IdCreator;
 
 public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
@@ -94,7 +92,27 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			
 			system.appendChild(createInputsNode(doc, filteredPhenomena));
 			
-			system.appendChild(createOutputsNode(doc, filteredPhenomena));
+                        // make sure that 'network-all' is listed as a network
+                        boolean hasNetworkAll = false;
+                        for (SosNetwork net : station.getNetworks()) {
+                            if (net.getId().toLowerCase().contains("all"))
+                                hasNetworkAll = true;
+                        }
+                        
+                        // add network-all as an offering
+                        if (!hasNetworkAll) {
+                            SosNetworkImp networkall = new SosNetworkImp();
+                            networkall.setDescription("Includes all the sensors in the network");
+                            networkall.setId("network-all");
+                            List<SosNetwork> networks = station.getNetworks();
+                            networks.add(networkall);
+                            system.appendChild(createOutputsNode(doc, phenomena, networks));
+                        } else {
+                            system.appendChild(createOutputsNode(doc, phenomena, station.getNetworks()));
+                        }
+                        
+                        
+//			system.appendChild(createOutputsNode(doc, filteredPhenomena));
 			
 			registerSensor.appendChild(createObservationTemplate(doc));
 			
@@ -218,7 +236,8 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			
 			String unitString = "";
 			if(phenomenon.getUnit() != null){
-				unitString = phenomenon.getUnit().toString();
+                                // toString generates strings w/ whitespace which is against the pattern symbol for UomSymbol, just remove them??
+				unitString = phenomenon.getUnit().toString().replaceAll("\\s+", "");
 			}
 			
 			Element uom = doc.createElement("swe:uom");
@@ -340,4 +359,59 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		
 		return capabilities;
 	}
+
+        /**
+         * Altered outputs node to include the actual networks listed for the station (rather than just network-all)
+         * @param doc
+         * @param filteredPhenomena
+         * @param id
+         * @param description
+         * @return 
+         */
+    private Node createOutputsNode(Document doc, List<Phenomenon> filteredPhenomena, List<SosNetwork> networks) {
+        Element outputs = doc.createElement("sml:outputs");
+		
+		Element outputList = doc.createElement("sml:OutputList");
+		outputs.appendChild(outputList);
+		
+                for (SosNetwork network : networks) {
+                    for(Phenomenon phenomenon : filteredPhenomena){
+                            Element output = doc.createElement("sml:output");
+                            output.setAttribute("name", phenomenon.getName());
+                            outputList.appendChild(output);
+
+                            Element quantity = doc.createElement("swe:Quantity");
+
+                            quantity.setAttribute("definition", phenomenon.getId());
+
+                            output.appendChild(quantity);
+
+                            Element metaDataProperty = doc.createElement("gml:metaDataProperty");
+                            quantity.appendChild(metaDataProperty);
+
+                            Element offering = doc.createElement("offering");
+                            metaDataProperty.appendChild(offering);
+
+                            Element idNode = doc.createElement("id");
+                            idNode.appendChild(doc.createTextNode(network.getId()));
+                            offering.appendChild(idNode);
+
+                            Element name = doc.createElement("name");
+                            name.appendChild(doc.createTextNode(network.getDescription()));
+                            offering.appendChild(name);
+
+                            String unitString = "";
+                            if(phenomenon.getUnit() != null){
+                                    // toString generates strings w/ whitespace which is against the pattern symbol for UomSymbol, just remove them??
+                                    unitString = phenomenon.getUnit().toString().replaceAll("\\s+", "");
+                            }
+
+                            Element uom = doc.createElement("swe:uom");
+                        uom.setAttribute("code", unitString);
+                            quantity.appendChild(uom);
+                    }
+                }
+		
+		return outputs;
+    }
 }

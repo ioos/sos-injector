@@ -402,7 +402,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 
 		String unitString = "";
 		if(phenomenon.getUnit() != null){
-			unitString = phenomenon.getUnit().toString();
+                    // have to remove whitespace from the unit symbol -- Sean Cowan
+			unitString = phenomenon.getUnit().toString().replaceAll("\\s+", "");
 		}
 		
 		Element uom = doc.createElement("swe:uom");

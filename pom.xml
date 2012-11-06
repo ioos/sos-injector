@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.axiomalaska</groupId>
   <artifactId>sos-injection</artifactId>
-  <version>0.3.4-SNAPSHOT</version>
+  <version>0.3.4-ASA-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <distributionManagement>
@@ -30,6 +30,13 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+  
+	<repositories>
+		<repository>
+		  <id>org.n52.sensorweb</id>
+		  <url>http://52north.org/maven/repo/releases/</url>
+		</repository>
+	</repositories>
 
   <dependencies>
     <dependency>
@@ -51,7 +58,7 @@
     <dependency>
       <groupId>com.axiomalaska</groupId>
       <artifactId>phenomena</artifactId>
-      <version>0.1-SNAPSHOT</version>    
+      <version>0.1-ASA-SNAPSHOT</version>    
     </dependency>
     <dependency>
       <groupId>org.n52.sensorweb</groupId>

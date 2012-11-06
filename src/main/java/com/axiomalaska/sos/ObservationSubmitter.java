@@ -304,10 +304,12 @@ public class ObservationSubmitter {
 						filteredObservationCollection, idCreator);
 
 				String insertXml = insertObservationBuilder.build();
+                                
+                                logger.error("Inserting observation:\n" + insertXml.toString());
 
 				String response = httpSender.sendPostMessage(sosUrl, insertXml);
 
-				if (response == null || response.contains("Exception")) {
+				if (response == null || response.toLowerCase().contains("exception")) {
 					logger.error("Trying to input "
 							+ observationCollection.getObservationDates()
 									.size() + " observations from sensor: "
@@ -451,6 +453,7 @@ public class ObservationSubmitter {
 		String response = httpSender.sendPostMessage(sosUrl, getObservationXml);
 		
 		if (response != null) {
+                        logger.error("Response for get newest obs: " + response.toString());
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -532,10 +535,10 @@ public class ObservationSubmitter {
 				station, idCreator, publisherInfo);
 
 		String xml = registerSensorBuilder.build();
-
+                
 		String response = httpSender.sendPostMessage(sosUrl, xml);
 
-		if (response == null || response.contains("Exception")) {
+		if (response == null || response.toLowerCase().contains("exception")) {
 			logger.error("station: " + idCreator.createStationId(station) + " = " + response);
 			return false;
 		} else {
@@ -557,10 +560,12 @@ public class ObservationSubmitter {
 				station, sensor, idCreator);
 
 		String xml = registerSensorBuilder.build();
-
+                
+                logger.error("Sending request:\n" + xml.toString());
+                
 		String response = httpSender.sendPostMessage(sosUrl, xml);
 
-		if (response == null || response.contains("Exception")) {
+		if (response == null || response.toLowerCase().contains("exception")) {
 			logger.error("sensor: " + 
 					idCreator.createSensorId(station, sensor) + " = " + response);
 			return false;
@@ -588,7 +593,7 @@ public class ObservationSubmitter {
 
 		String response = httpSender.sendPostMessage(sosUrl, xml);
 
-		if (response == null || response.contains("Exception")) {
+		if (response == null || response.toLowerCase().contains("exception")) {
 			logger.error("network: " + idCreator.createNetworkId(network) + " = " + response);
 			return false;
 		} else {
@@ -606,7 +611,7 @@ public class ObservationSubmitter {
 
 		String output = httpSender.sendPostMessage(sosUrl, text);
 
-		return output != null && output.contains("sml:SensorML");
+		return output != null && !output.toLowerCase().contains("exception");
 	}
 	
 	private Boolean isSensorCreated(SosStation station, SosSensor sensor) throws Exception {
@@ -618,7 +623,7 @@ public class ObservationSubmitter {
 
 		String output = httpSender.sendPostMessage(sosUrl, text);
 
-		return output != null && output.contains("SensorML");
+		return output != null && !output.toLowerCase().contains("exception");
 	}
 
 	/**
@@ -637,7 +642,7 @@ public class ObservationSubmitter {
 		String text = describeSensorBuilder.build();
 
 		String output = httpSender.sendPostMessage(sosUrl, text);
-
-		return output != null && output.contains("sml:SensorML");
+                
+		return output != null && !output.toLowerCase().contains("exception");
 	}
 }
