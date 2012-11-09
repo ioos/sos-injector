@@ -13,11 +13,13 @@ import com.axiomalaska.phenomena.PhenomenonImp;
 import com.axiomalaska.phenomena.UnitCreationException;
 import com.axiomalaska.phenomena.UnitResolver;
 import com.axiomalaska.sos.data.Location;
+import com.axiomalaska.sos.data.PublisherInfoImp;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosSensorImp;
 import com.axiomalaska.sos.data.SosStationImp;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.data.ObservationCollection;
+import com.axiomalaska.sos.example.CnfaicObservationUpdaterFactory;
 
 public class AppTest {
 	@Test

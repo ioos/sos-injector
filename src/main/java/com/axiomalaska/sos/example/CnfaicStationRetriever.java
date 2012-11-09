@@ -19,6 +19,7 @@ import com.axiomalaska.sos.data.SosSource;
 
 public class CnfaicStationRetriever implements StationRetriever {
 
+	private final String STATION_PREFIX = "cnfaic:";
 	// -------------------------------------------------------------------------
 	// StationRetriever Members
 	// -------------------------------------------------------------------------
@@ -28,7 +29,6 @@ public class CnfaicStationRetriever implements StationRetriever {
 		SosSourceImp source = new SosSourceImp();
 		source.setCountry("USA");
 		source.setEmail("kevin@chugachavalanche.org");
-		source.setId("CNFAIC");
 		source.setName("Chugach Nation Forest Avalanche Information Center");
 		source.setWebAddress("www.cnfaic.org");
 		source.setOperatorSector("nonprofit");
@@ -64,8 +64,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 	}
 	
 	private List<SosSensor> getSensors(SosStation station)throws UnitCreationException {
-		SosSource source = station.getSource();
-		SosNetwork airTemperatureNetwork = getAirTemperatureNetwork(source.getId());
+		SosNetwork airTemperatureNetwork = getAirTemperatureNetwork("cnfaic");
 		
 		List<SosSensor> sensors = new ArrayList<SosSensor>();
 		
@@ -103,7 +102,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		SosStationImp arcticValley = new SosStationImp();
 
 		arcticValley.setFeatureOfInterestName("At station:Arctic Valley Ridge of source: CNFAIC");
-		arcticValley.setId("arctic_valley");
+		arcticValley.setId(STATION_PREFIX + "arctic_valley");
 		Location location = new Location(61.24, -149.51);
 		arcticValley.setLocation(location);
 		arcticValley.setMoving(false);
@@ -120,7 +119,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		SosStationImp marmot = new SosStationImp();
 
 		marmot.setFeatureOfInterestName("At station: Marmot Ridge in Hatcher Pass of source: CNFAIC");
-		marmot.setId("marmot");
+		marmot.setId(STATION_PREFIX + "marmot");
 		Location location = new Location(61.7804, -149.2582);
 		marmot.setLocation(location);
 		marmot.setMoving(false);
@@ -138,7 +137,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 
 		fresnoRidge
 				.setFeatureOfInterestName("At station: Fresno Ridge (Near Summit Lake) of source: CNFAIC");
-		fresnoRidge.setId("fresno2");
+		fresnoRidge.setId(STATION_PREFIX + "fresno2");
 		Location location = new Location(60.6869, -149.5095);
 		fresnoRidge.setLocation(location);
 		fresnoRidge.setMoving(false);
@@ -156,7 +155,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 
 		sunburstRidge
 				.setFeatureOfInterestName("At station: Sunburst Ridge of source: CNFAIC");
-		sunburstRidge.setId("sunburst");
+		sunburstRidge.setId(STATION_PREFIX + "sunburst");
 		Location location = new Location(60.7559, -149.1772);
 		sunburstRidge.setLocation(location);
 		sunburstRidge.setMoving(false);
@@ -174,7 +173,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 
 		seattleRidge
 				.setFeatureOfInterestName("At station: Seattle Ridge of source: CNFAIC");
-		seattleRidge.setId("seattle");
+		seattleRidge.setId(STATION_PREFIX + "seattle");
 		Location location = new Location(60.8338, -149.1593);
 		seattleRidge.setLocation(location);
 		seattleRidge.setMoving(false);

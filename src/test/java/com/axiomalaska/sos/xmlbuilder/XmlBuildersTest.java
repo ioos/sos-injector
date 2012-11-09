@@ -72,7 +72,6 @@ public class XmlBuildersTest {
     
     private SosSource buildTestSource(){
         SosSourceImp testSource = new SosSourceImp();
-        testSource.setId( TEST_SOURCE_ID );
         testSource.setEmail( TEST_EMAIL );
         testSource.setCity( TEST_CITY );
         testSource.setState( TEST_STATE );
