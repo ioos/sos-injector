@@ -374,42 +374,42 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		Element outputList = doc.createElement("sml:OutputList");
 		outputs.appendChild(outputList);
 		
-                for (SosNetwork network : networks) {
-                    for(Phenomenon phenomenon : filteredPhenomena){
-                            Element output = doc.createElement("sml:output");
-                            output.setAttribute("name", phenomenon.getName());
-                            outputList.appendChild(output);
+                for(Phenomenon phenomenon : filteredPhenomena){
+                    Element output = doc.createElement("sml:output");
+                    output.setAttribute("name", phenomenon.getName());
+                    outputList.appendChild(output);
 
-                            Element quantity = doc.createElement("swe:Quantity");
+                    Element quantity = doc.createElement("swe:Quantity");
 
-                            quantity.setAttribute("definition", phenomenon.getId());
+                    quantity.setAttribute("definition", phenomenon.getId());
 
-                            output.appendChild(quantity);
+                    output.appendChild(quantity);
+                    
+                    for (SosNetwork network : networks) {
+                        Element metaDataProperty = doc.createElement("gml:metaDataProperty");
+                        quantity.appendChild(metaDataProperty);
 
-                            Element metaDataProperty = doc.createElement("gml:metaDataProperty");
-                            quantity.appendChild(metaDataProperty);
+                        Element offering = doc.createElement("offering");
+                        metaDataProperty.appendChild(offering);
 
-                            Element offering = doc.createElement("offering");
-                            metaDataProperty.appendChild(offering);
+                        Element idNode = doc.createElement("id");
+                        idNode.appendChild(doc.createTextNode(network.getId()));
+                        offering.appendChild(idNode);
 
-                            Element idNode = doc.createElement("id");
-                            idNode.appendChild(doc.createTextNode(network.getId()));
-                            offering.appendChild(idNode);
-
-                            Element name = doc.createElement("name");
-                            name.appendChild(doc.createTextNode(network.getDescription()));
-                            offering.appendChild(name);
-
-                            String unitString = "";
-                            if(phenomenon.getUnit() != null){
-                                    // toString generates strings w/ whitespace which is against the pattern symbol for UomSymbol, just remove them??
-                                    unitString = phenomenon.getUnit().toString().replaceAll("\\s+", "");
-                            }
-
-                            Element uom = doc.createElement("swe:uom");
-                        uom.setAttribute("code", unitString);
-                            quantity.appendChild(uom);
+                        Element name = doc.createElement("name");
+                        name.appendChild(doc.createTextNode(network.getDescription()));
+                        offering.appendChild(name);
                     }
+
+                    String unitString = "";
+                    if(phenomenon.getUnit() != null){
+                            // toString generates strings w/ whitespace which is against the pattern symbol for UomSymbol, just remove them??
+                            unitString = phenomenon.getUnit().toString().replaceAll("\\s+", "");
+                    }
+
+                    Element uom = doc.createElement("swe:uom");
+                uom.setAttribute("code", unitString);
+                    quantity.appendChild(uom);
                 }
 		
 		return outputs;
