@@ -38,6 +38,16 @@ public class IdCreator {
 		return "urn:ioos:station:" + station.getId();
 	}
 	
+	public String createStationShortName(SosStation station){
+		String[] terms = station.getId().split(":");
+		if(terms.length == 2){
+			return terms[1];
+		}
+		else{
+			return "";
+		}
+	}
+	
 	public String createSensorId(SosStation station, SosSensor sensor){
 		return "urn:ioos:sensor:" + station.getId() + ":" + sensor.getId();
 	}

@@ -2,6 +2,7 @@ package com.axiomalaska.sos.data;
 
 public class SosSourceImp implements SosSource {
 
+	private String id;
 	private String name;
 	private String country;
 	private String email;
@@ -11,6 +12,11 @@ public class SosSourceImp implements SosSource {
 	private String city;
 	private String state;
 	private String zipcode;
+	
+	@Override
+	public String getId() {
+		return id;
+	}
 
 	@Override
 	public String getName() {
@@ -35,6 +41,10 @@ public class SosSourceImp implements SosSource {
 	@Override
 	public String getOperatorSector() {
 		return operatorSector;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public void setName(String name) {

@@ -606,7 +606,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		
 		identifierList.appendChild(createIdentifierNode(doc, "shortName", 
 				"http://mmisw.org/ont/ioos/definition/shortName", 
-				station.getId()));
+				idCreator.createStationShortName(station)));
 		
 		identifierList.appendChild(createIdentifierNode(doc, "longName", 
 				"http://mmisw.org/ont/ioos/definition/longName", 
