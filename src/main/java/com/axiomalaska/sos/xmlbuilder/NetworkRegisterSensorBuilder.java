@@ -35,6 +35,7 @@ public class NetworkRegisterSensorBuilder extends SosXmlBuilder  {
 	/**
 	 * Build the XML String
 	 * 
+		<?xml version="1.0" encoding="UTF-8"?>
 		<RegisterSensor service="SOS" version="1.0.0"
 		  xmlns="http://www.opengis.net/sos/1.0"
 		  xmlns:swe="http://www.opengis.net/swe/1.0.1"
@@ -48,46 +49,37 @@ public class NetworkRegisterSensorBuilder extends SosXmlBuilder  {
 		  xsi:schemaLocation="http://www.opengis.net/sos/1.0
 		  http://schemas.opengis.net/sos/1.0.0/sosRegisterSensor.xsd
 		  http://www.opengis.net/om/1.0
-		  http://schemas.opengis.net/om/1.0.0/extensions/observationSpecialization_override.xsd">        
+		  http://schemas.opengis.net/om/1.0.0/extensions/observationSpecialization_override.xsd">
 		  <SensorDescription>
 		    <sml:SensorML version="1.0.1">
 		      <sml:member>
-		        <sml:System xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   >
-			  <sml:identification>
-			    <sml:IdentifierList>
-			      <sml:identifier>
-			        <sml:Term definition="urn:ogc:def:identifier:OGC:uniqueID">
-				  <sml:value>urn:ioos:network:nanoos:oceanacidif</sml:value>
-				</sml:Term>
-			      </sml:identifier>
-			    </sml:IdentifierList>
-		       </sml:identification>
-			  <sml:outputs>
-			    <sml:OutputList>
-			      <sml:output name="none">
-			        <swe:Quantity definition="none">
-				  <gml:metaDataProperty>
-				    <offering>
-				      <id>network-all</id>
-				      <name>Includes all the sensors in the network</name>
-				    </offering>
-			          </gml:metaDataProperty>
-			          <swe:uom code="none"/>
-			        </swe:Quantity>
-			      </sml:output>
-			    </sml:OutputList>
-			  </sml:outputs>
-			</sml:System>
+		        <sml:System>
+		          <gml:description>All Air Temperature Sensors</gml:description>
+		          <gml:name>urn:ioos:network:aoos:airtemp</gml:name>
+		
+		          <sml:identification>
+		            <sml:IdentifierList>
+		              <sml:identifier name="networkID">
+		                <sml:Term definition="http://mmisw.org/ont/ioos/definition/networkID">
+		                  <sml:value>urn:ioos:network:aoos:airtemp</sml:value>
+		                </sml:Term>
+		              </sml:identifier>
+		            </sml:IdentifierList>
+		          </sml:identification>
+		
+		        </sml:System>
 		      </sml:member>
 		    </sml:SensorML>
 		  </SensorDescription>
+		
+		  <!-- ObservationTemplate parameter; this has to be an empty measurement at the moment, as the 52N SOS only supports Measurements to be inserted -->
 		  <ObservationTemplate>
 		    <om:Measurement>
 		      <om:samplingTime/>
 		      <om:procedure/>
 		      <om:observedProperty/>
 		      <om:featureOfInterest></om:featureOfInterest>
-		      <om:result xsi:type="gml:MeasureType" uom="" >0.0</om:result>
+		      <om:result xsi:type="gml:MeasureType" uom="">0.0</om:result>
 		    </om:Measurement>
 		  </ObservationTemplate>
 		</RegisterSensor>
@@ -189,13 +181,13 @@ public class NetworkRegisterSensorBuilder extends SosXmlBuilder  {
 	/**
 	 * Produces the XML below
           <sml:identification>
-               <sml:IdentifierList>
-                    <sml:identifier name="networkID">
-                         <sml:Term definition="http://mmisw.org/ont/ioos/definition/networkID">
-                              <sml:value>urn:ogc:object:feature:Sensor:global_hawk_24</sml:value>
-                         </sml:Term>
-                    </sml:identifier>
-               </sml:IdentifierList>
+            <sml:IdentifierList>
+              <sml:identifier name="networkID">
+                <sml:Term definition="http://mmisw.org/ont/ioos/definition/networkID">
+                  <sml:value>urn:ioos:network:aoos:airtemp</sml:value>
+                </sml:Term>
+              </sml:identifier>
+            </sml:IdentifierList>
           </sml:identification>
 	 */
 	private Node createIdentificationNode(Document doc) {
