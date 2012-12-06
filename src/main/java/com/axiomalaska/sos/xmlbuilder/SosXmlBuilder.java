@@ -1,7 +1,6 @@
 package com.axiomalaska.sos.xmlbuilder;
 
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -21,8 +20,6 @@ import org.w3c.dom.Document;
  */
 public abstract class SosXmlBuilder {
 
-	private SimpleDateFormat parseDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-0000");
-	
 	public abstract String build();
 	
 	/**
@@ -50,22 +47,27 @@ public abstract class SosXmlBuilder {
 	
 	/**
 	 * Format calendar to 2012-04-17T20:02:05-0000
-	 * @param calendar - date to be formated
+	 * 
+	 * @param calendar
+	 *            - date to be formated
 	 * @return
 	 */
 	protected String formatCalendarIntoGMTTime(Calendar calendar) {
 		Calendar copyCalendar = (Calendar) calendar.clone();
 		copyCalendar.setTimeZone(TimeZone.getTimeZone("GMT"));
-		Calendar localCalendar = Calendar.getInstance();
-		localCalendar.set(Calendar.YEAR, copyCalendar.get(Calendar.YEAR));
-		localCalendar.set(Calendar.MONTH, copyCalendar.get(Calendar.MONTH));
-		localCalendar.set(Calendar.DAY_OF_MONTH,
-				copyCalendar.get(Calendar.DAY_OF_MONTH));
-		localCalendar.set(Calendar.HOUR_OF_DAY,
-				copyCalendar.get(Calendar.HOUR_OF_DAY));
-		localCalendar.set(Calendar.MINUTE, copyCalendar.get(Calendar.MINUTE));
-		localCalendar.set(Calendar.SECOND, copyCalendar.get(Calendar.SECOND));
-
-		return parseDate.format(localCalendar.getTime());
+		return (copyCalendar.get(Calendar.YEAR) + "-"
+				+ formatNumber(copyCalendar.get(Calendar.MONTH) + 1) + "-"
+				+ formatNumber(copyCalendar.get(Calendar.DAY_OF_MONTH)) + "T"
+				+ formatNumber(copyCalendar.get(Calendar.HOUR_OF_DAY)) + ":"
+				+ formatNumber(copyCalendar.get(Calendar.MINUTE)) + ":"
+				+ formatNumber(copyCalendar.get(Calendar.SECOND)) + "-0000");
+	}
+	
+	private String formatNumber(int number) {
+		if (number >= 10) {
+			return number + "";
+		} else {
+			return "0" + number;
+		}
 	}
 }
