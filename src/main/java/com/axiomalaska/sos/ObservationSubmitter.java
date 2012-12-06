@@ -28,6 +28,7 @@ import com.axiomalaska.sos.tools.HttpSender;
 import com.axiomalaska.sos.tools.IdCreator;
 import com.axiomalaska.sos.xmlbuilder.DescribeSensorBuilder;
 import com.axiomalaska.sos.xmlbuilder.GetNewestObservationBuilder;
+import com.axiomalaska.sos.xmlbuilder.GetOldestObservationBuilder;
 import com.axiomalaska.sos.xmlbuilder.InsertObservationBuilder;
 import com.axiomalaska.sos.xmlbuilder.NetworkRegisterSensorBuilder;
 import com.axiomalaska.sos.xmlbuilder.SensorRegisterSensorBuilder;
@@ -206,6 +207,10 @@ public class ObservationSubmitter {
 		}
 	}
 	
+	// -------------------------------------------------------------------------
+	// Private Members
+	// -------------------------------------------------------------------------
+	
 	/**
 	 * Pull: Update the observations of a station with a specific phenomenon in the SOS server.
 	 * 
@@ -215,7 +220,7 @@ public class ObservationSubmitter {
 	 * @param observationRetriever - the data store of observations used to 
 	 * pull observations from
 	 */
-	public void update(SosStation station, SosSensor sensor,  
+	private void update(SosStation station, SosSensor sensor,  
 			ObservationRetriever observationRetriever)
 			throws Exception {
 		if(sensor.getPhenomena().size() > 0){
@@ -248,36 +253,51 @@ public class ObservationSubmitter {
 	 * @param observationRetriever - the data store of observations used to 
 	 * pull observations from
 	 */
-	public void update(SosStation station, SosSensor sensor, Phenomenon phenomenon,
+	private void update(SosStation station, SosSensor sensor, Phenomenon phenomenon,
 			ObservationRetriever observationRetriever) throws Exception {
 		Calendar startDate = getNewestObservationDate(station, sensor, phenomenon);
-
+		
 		ObservationCollection observationCollection = observationRetriever
 				.getObservationCollection(station, sensor, phenomenon,
 						startDate);
 
-		if (isObservationCollectionValid(observationCollection)) {
-			insertObservations(observationCollection, startDate);
-		}
+		insertObservations(observationCollection, startDate);
 	}
 	
-	// -------------------------------------------------------------------------
-	// Private Members
-	// -------------------------------------------------------------------------
-
 	/**
 	 * Insert observations from the observationCollection object in the SOS. 
 	 * 
 	 * @param observationCollection - contains the observations to be placed in the
 	 * SOS. This object should have been validated before this method is called
 	 */
-	private void insertObservations(ObservationCollection observationCollection) 
+	private void insertObservations(ObservationCollection observationCollection)
 			throws Exception {
 		Calendar newestObservationInSosDate = getNewestObservationDate(
-				observationCollection.getStation(), observationCollection.getSensor(), 
+				observationCollection.getStation(),
+				observationCollection.getSensor(),
 				observationCollection.getPhenomenon());
-		
+
 		insertObservations(observationCollection, newestObservationInSosDate);
+	}
+	
+	/**
+	 * Insert observations from the observationCollection object in the SOS. 
+	 * 
+	 * @param observationCollection - contains the observations to be placed in the
+	 * SOS. This object should have been validated before this method is called
+	 */
+	private void insertObservations(ObservationCollection observationCollection, 
+			Calendar startDate) 
+			throws Exception {
+		
+		if (isObservationCollectionValid(observationCollection)) {
+			Calendar oldestDate = getOldestObservationDate(
+					observationCollection.getStation(), observationCollection.getSensor(), 
+					observationCollection.getPhenomenon());
+			
+			insertObservations(observationCollection, 
+					startDate, oldestDate);
+		}
 	}
 
 	/**
@@ -288,14 +308,16 @@ public class ObservationSubmitter {
 	 * @param newestObservationInSosDate - the newest observation's date
 	 */
 	private void insertObservations(ObservationCollection observationCollection, 
-			Calendar newestObservationInSosDate) throws Exception {
+			Calendar newestObservationInSosDate, 
+			Calendar oldestObservationInSosDate) throws Exception {
 		SosStation station = observationCollection.getStation();
 		SosSensor sensor = observationCollection.getSensor();
 		Phenomenon phenomenon = observationCollection.getPhenomenon();
 
-		ObservationCollection filteredObservationCollection = removeOlderObservations(
-				newestObservationInSosDate, observationCollection);
-
+		ObservationCollection filteredObservationCollection = removeEnteredObservations(
+				newestObservationInSosDate, oldestObservationInSosDate, 
+				observationCollection);
+		
 		if (filteredObservationCollection.getObservationDates().size() > 0) {
 			try {
 				InsertObservationBuilder insertObservationBuilder = 
@@ -309,21 +331,21 @@ public class ObservationSubmitter {
 
 				if (response == null || response.contains("Exception")) {
 					logger.error("Trying to input "
-							+ observationCollection.getObservationDates()
+							+ filteredObservationCollection.getObservationDates()
 									.size() + " observations from sensor: "
 							+ idCreator.createSensorId(station, sensor)
 							+ " phenomenon: " + phenomenon.getId() + " from: "
 							+ " response: \n" + response);
 				} else {
 					logger.info("Inputed "
-							+ observationCollection.getObservationDates()
+							+ filteredObservationCollection.getObservationDates()
 									.size() + " observations from sensor: "
 							+ idCreator.createSensorId(station, sensor)
 							+ " phenomenon: " + phenomenon.getId());
 				}
 			} catch (Exception e) {
-				logger.error("Trying to inputk "
-						+ observationCollection.getObservationDates().size()
+				logger.error("Trying to input "
+						+ filteredObservationCollection.getObservationDates().size()
 						+ " observations from sensor: "
 						+ idCreator.createSensorId(station, sensor)
 						+ " phenomenon: " + phenomenon.getId() + " message: \n"
@@ -333,15 +355,15 @@ public class ObservationSubmitter {
 	}
 
 	/**
-	 * Remove older observations than the newestObservationInSosDate from the 
-	 * observationCollection 
+	 * Remove observations that are between the newest and oldest observations. 
 	 * @param newestObservationInSosDate - the newest observation's date
+	 * @param oldestObservationInSosDate - the oldest observation's date
 	 * @param observationCollection - the observationCollection to remove the
 	 * older observations from.
 	 * @return
 	 */
-	private ObservationCollection removeOlderObservations(
-			Calendar newestObservationInSosDate,
+	private ObservationCollection removeEnteredObservations(
+			Calendar newestObservationInSosDate, Calendar oldestObservationInSosDate,
 			ObservationCollection observationCollection) {
 		
 		ObservationCollection filteredObservationCollection = new ObservationCollection();
@@ -356,7 +378,8 @@ public class ObservationSubmitter {
 		List<Calendar> filteredObservationDates = new ArrayList<Calendar>();
 		List<Double> filteredObservationValues = new ArrayList<Double>();
 		for(int index = 0; index < observationDates.size(); index++){
-			if(observationDates.get(index).after(newestObservationInSosDate)){
+			if(observationDates.get(index).after(newestObservationInSosDate) || 
+					observationDates.get(index).before(oldestObservationInSosDate)){
 				filteredObservationDates.add(observationDates.get(index));
 				filteredObservationValues.add(observationValues.get(index));
 			}
@@ -443,8 +466,9 @@ public class ObservationSubmitter {
 	 */
 	private Calendar getNewestObservationDate(SosStation station,
 			SosSensor sensor, Phenomenon phenomenon) throws Exception {
-		GetNewestObservationBuilder getObservationLatestBuilder = new GetNewestObservationBuilder(
-				station, sensor, phenomenon, idCreator);
+		GetNewestObservationBuilder getObservationLatestBuilder = 
+				new GetNewestObservationBuilder(station, sensor, 
+						phenomenon, idCreator);
 
 		String getObservationXml = getObservationLatestBuilder.build();
 
@@ -485,6 +509,67 @@ public class ObservationSubmitter {
 		Calendar defaultDate = Calendar.getInstance();
 
 		defaultDate.set(1970, Calendar.JANUARY, 1);
+
+		defaultDate.getTime();
+
+		return defaultDate;
+	}
+	
+	/**
+	 * Get the oldest observation date from the SOS server for the station and phenomenon. 
+	 * 
+	 * @param station - the station to look up the date from
+	 * @param phenomenon - the phenomenon to look up the date from
+	 * 
+	 * @return returns a Calendar object of the oldest observation in the SOS 
+	 * from the station phenomenon passed in. If there are no observations in 
+	 * the SOS it returns a date from the first century.
+	 */
+	private Calendar getOldestObservationDate(SosStation station,
+			SosSensor sensor, Phenomenon phenomenon) throws Exception {
+		GetOldestObservationBuilder getOldestObservationBuilder = 
+				new GetOldestObservationBuilder(station, sensor, 
+						phenomenon, idCreator);
+
+		String getObservationXml = getOldestObservationBuilder.build();
+
+		String response = httpSender.sendPostMessage(sosUrl, getObservationXml);
+		
+		if (response != null) {
+			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+			Document doc = docBuilder.parse(new ByteArrayInputStream(response
+					.getBytes()));
+
+			doc.normalize();
+
+			/*
+			 * <om:samplingTime> <gml:TimeInstant
+			 * xsi:type="gml:TimeInstantType">
+			 * <gml:timePosition>2012-05-01T07:00:00.000Z</gml:timePosition>
+			 * </gml:TimeInstant> </om:samplingTime>
+			 */
+			NodeList nodeList = doc.getElementsByTagName("gml:beginPosition");
+
+			if (nodeList.getLength() == 1) {
+
+				Element timePosition = (Element) nodeList.item(0);
+
+				Calendar date = createDate(timePosition.getTextContent());
+
+				date.add(Calendar.MINUTE, -1);
+
+				return date;
+			}
+		}
+		
+		logger.debug("No observations found in SOS for Sensor: "
+				+ idCreator.createSensorId(station, sensor) + " phenomonon: "
+				+ phenomenon.getId());
+		Calendar defaultDate = Calendar.getInstance();
+
+		defaultDate.add(Calendar.YEAR, 1);
 
 		defaultDate.getTime();
 
