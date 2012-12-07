@@ -25,4 +25,6 @@ public interface SosNetwork {
 	 * @return
 	 */
 	public String getSourceId();
+	
+	public String getOfferingName();
 }

@@ -61,6 +61,7 @@ public class XmlBuildersTest {
     private String TEST_WEB_ADDRESS = "http://www.aoos.org";
     private String TEST_ADDRESS = "1234 Nowhere Dr";
     private String TEST_ZIPCODE = "99999";
+    private SosNetwork TEST_ROOT_NETWORK = buildRootNetwork();
     private SosSource TEST_SOURCE = buildTestSource();
     private SosNetwork TEST_NETWORK = buildTestNetwork();
     private Phenomenon TEST_PHENOMENON = buildTestPhenomenon();    
@@ -69,6 +70,15 @@ public class XmlBuildersTest {
     private ObservationCollection TEST_OBSERVATION_COLLECTION = buildTestObservationCollection();
     private PublisherInfo TEST_PUBLISHER_INFO = buildTestPublisherInfo();
     
+    private SosNetwork buildRootNetwork(){
+		SosNetworkImp rootNetwork = new SosNetworkImp();
+		rootNetwork.setId("all");
+		rootNetwork.setSourceId("aoos");
+		rootNetwork.setDescription("All inclusive sensor network");
+		rootNetwork.setOfferingName("All observations");
+		
+		return rootNetwork;
+    }
     
     private SosSource buildTestSource(){
         SosSourceImp testSource = new SosSourceImp();
@@ -168,7 +178,7 @@ public class XmlBuildersTest {
     @Test
     public void testGetNewestObservationBuilder() throws XmlException {
         String xmlString = new GetNewestObservationBuilder( TEST_STATION, TEST_SENSOR,
-                TEST_PHENOMENON, ID_CREATOR ).build();
+                TEST_PHENOMENON, ID_CREATOR, TEST_ROOT_NETWORK).build();
         GetObservationDocument getObsDoc = GetObservationDocument.Factory.parse( xmlString );
         validateXmlDocument( getObsDoc );
     }

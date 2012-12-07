@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.axiomalaska.phenomena.Phenomenon;
+import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.tools.IdCreator;
@@ -26,6 +27,7 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 
 	private SosStation station;
 	private SosSensor sensor;
+	private SosNetwork network;
 	private IdCreator idCreator;
 	private Phenomenon phenomenon;
 	
@@ -34,11 +36,12 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	// -------------------------------------------------------------------------
 
 	public GetNewestObservationBuilder(SosStation station, SosSensor sensor, 
-			Phenomenon phenomenon, IdCreator idCreator) {
+			Phenomenon phenomenon, IdCreator idCreator, SosNetwork network) {
 		this.station = station;
 		this.sensor = sensor;
 		this.phenomenon = phenomenon;
 		this.idCreator = idCreator;
+		this.network = network;
 	}
 
 	// -------------------------------------------------------------------------
@@ -58,7 +61,7 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	  http://schemas.opengis.net/sos/1.0.0/sosGetObservation.xsd"
 	  service="SOS" version="1.0.0" srsName="urn:ogc:def:crs:EPSG::4326">
 
-	  <offering>network-all</offering>
+	  <offering>urn:ioos:network:aoos:all</offering>
 
 	  <eventTime>
 	    <ogc:TM_Equals>
@@ -161,11 +164,12 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	}
 
 	/**
-	 * <offering>network-all</offering>
+	 * <offering>urn:ioos:network:aoos:all</offering>
 	 */
 	private Node createOffering(Document doc) {
+		String networkId = idCreator.createNetworkId(network);
 		Element offering = doc.createElement("offering");
-		offering.appendChild(doc.createTextNode("network-all"));
+		offering.appendChild(doc.createTextNode(networkId));
 		
 		return offering;
 	}

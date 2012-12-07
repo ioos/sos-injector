@@ -59,6 +59,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		network.setId("air_temperature");
 		network.setDescription("All Air Temperature Sensors");
 		network.setSourceId(sourceId);
+		network.setOfferingName(sourceId + "air_temperature");
 		
 		return network;
 	}
