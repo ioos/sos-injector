@@ -49,7 +49,7 @@ public class AppTest {
 //				new CnfaicObservationUpdaterFactory();
 //		
 //		ObservationUpdater observationUpdater = factory.buildCnfaicObservationUpdater(
-//				"http://staging1.axiom:8080/52n-sos-ioos-dev/sos", publisherInfo);
+//				"http://ghidorah:8080/52n-sos-ioos-dev/sos", publisherInfo);
 //		
 //		observationUpdater.update(rootNetwork);
 //	}
