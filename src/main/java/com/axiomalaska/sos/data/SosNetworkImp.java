@@ -5,8 +5,9 @@ public class SosNetworkImp implements SosNetwork {
 	private String id = "";
 	private String sourceId = "";
 	private String description = "";
-	private String offeringName = "";
-	
+	private String longName = "";
+	private String shortName = "";
+
 	@Override
 	public String getId() {
 		return id;
@@ -21,6 +22,16 @@ public class SosNetworkImp implements SosNetwork {
 	public String getDescription(){
 		return description;
 	}
+	
+	@Override
+	public String getLongName() {
+		return longName;
+	}
+
+	@Override
+	public String getShortName() {
+		return shortName;
+	}
 
 	public void setId(String id) {
 		this.id = id;
@@ -34,11 +45,11 @@ public class SosNetworkImp implements SosNetwork {
 		this.description = description;
 	}
 
-	public String getOfferingName() {
-		return offeringName;
+	public void setLongName(String longName) {
+		this.longName = longName;
 	}
 
-	public void setOfferingName(String offeringName) {
-		this.offeringName = offeringName;
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
 	}
 }

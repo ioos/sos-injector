@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.tools.HttpPart;
 import com.axiomalaska.sos.tools.HttpSender;
@@ -29,25 +30,27 @@ public class NetworkSubmitter {
 		this.idCreator = idCreator;
 	}
 	
-	public Boolean checkNetworkWithSos(SosNetwork network) throws Exception {
+	public Boolean checkNetworkWithSos(SosNetwork network, 
+			PublisherInfo publisherInfo) throws Exception {
 		if (isNetworkCreated(network) && isOfferingCreated(network)) {
 			return true;
 		}
 		else{
-			Boolean networkCreated = createNewSosNetwork(network);
+			Boolean networkCreated = createNewSosNetwork(network, publisherInfo);
 			Boolean offeringCreated = createOffering(network);
 			
 			return networkCreated && offeringCreated;
 		}
 	}
 
-	private Boolean createNewSosNetwork(SosNetwork network) throws Exception {
+	private Boolean createNewSosNetwork(SosNetwork network, 
+			PublisherInfo publisherInfo) throws Exception {
 		if (!isNetworkCreated(network)) {
 			logger.info("Creating network: "
 					+ idCreator.createNetworkId(network));
 
 			NetworkRegisterSensorBuilder registerSensorBuilder = new NetworkRegisterSensorBuilder(
-					network, idCreator);
+					network, idCreator, publisherInfo);
 
 			String xml = registerSensorBuilder.build();
 
@@ -74,7 +77,7 @@ public class NetworkSubmitter {
 				List<HttpPart> httpParts = new ArrayList<HttpPart>();
 				httpParts.add(new HttpPart("request", "CreateOffering"));
 				httpParts.add(new HttpPart("id", procedureId));
-				httpParts.add(new HttpPart("name", network.getOfferingName()));
+				httpParts.add(new HttpPart("name", network.getLongName()));
 				httpParts.add(new HttpPart("procedures", procedureId));
 				httpParts.add(new HttpPart("allObservedProperties", "true"));
 				httpParts.add(new HttpPart("allFeaturesOfInterest", "true"));
@@ -82,9 +85,7 @@ public class NetworkSubmitter {
 				String response = httpSender.sendGetMessage(getSosAdminUrl(),
 						httpParts);
 
-				System.out.println(response);
-
-				if (response.equals("\"Offering " + procedureId + " created\"")) {
+				if (response != null && response.equals("\"Offering " + procedureId + " created\"")) {
 					return true;
 				} else {
 					return false;

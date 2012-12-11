@@ -30,7 +30,6 @@ import com.axiomalaska.sos.xmlbuilder.DescribeSensorBuilder;
 import com.axiomalaska.sos.xmlbuilder.GetNewestObservationBuilder;
 import com.axiomalaska.sos.xmlbuilder.GetOldestObservationBuilder;
 import com.axiomalaska.sos.xmlbuilder.InsertObservationBuilder;
-import com.axiomalaska.sos.xmlbuilder.NetworkRegisterSensorBuilder;
 import com.axiomalaska.sos.xmlbuilder.SensorRegisterSensorBuilder;
 import com.axiomalaska.sos.xmlbuilder.StationRegisterSensorBuilder;
 
@@ -147,7 +146,8 @@ public class ObservationSubmitter {
 				SosSensor sensor = observationCollection.getSensor();
 				boolean isSensorCreated = isSensorCreated(station, sensor);
 				if (!isSensorCreated) {
-					isSensorCreated = createNewSosSensor(station, sensor);
+					isSensorCreated = createNewSosSensor(station, 
+							sensor, publisherInfo);
 				}
 				if (isSensorCreated) {
 					insertObservations(network, observationCollection);
@@ -200,7 +200,7 @@ public class ObservationSubmitter {
 
 			if (isStationCreated) {
 				for (SosSensor sensor : station.getSensors()) {
-					update(network, station, sensor, observationRetriever);
+					update(network, station, sensor, observationRetriever, publisherInfo);
 				}
 			}
 		}
@@ -224,13 +224,13 @@ public class ObservationSubmitter {
 	 * pull observations from
 	 */
 	private void update(SosNetwork network, SosStation station, SosSensor sensor,  
-			ObservationRetriever observationRetriever)
+			ObservationRetriever observationRetriever, PublisherInfo publisherInfo)
 			throws Exception {
 		if(sensor.getPhenomena().size() > 0){
 			boolean isSensorCreated = isSensorCreated(station, sensor);
 			
 			if (!isSensorCreated) {
-				isSensorCreated = createNewSosSensor(station, sensor);
+				isSensorCreated = createNewSosSensor(station, sensor, publisherInfo);
 			}
 
 			if (isSensorCreated) {
@@ -366,7 +366,8 @@ public class ObservationSubmitter {
 	 * @return
 	 */
 	private ObservationCollection removeEnteredObservations(
-			Calendar newestObservationInSosDate, Calendar oldestObservationInSosDate,
+			Calendar newestObservationInSosDate, 
+			Calendar oldestObservationInSosDate,
 			ObservationCollection observationCollection) {
 		
 		ObservationCollection filteredObservationCollection = new ObservationCollection();
@@ -400,7 +401,8 @@ public class ObservationSubmitter {
 	 * @return [True] if the ObservationCollection object is valid. [False] if the
 	 * ObservationCollection is not valid
 	 */
-	private boolean isObservationCollectionValid(ObservationCollection observationCollection){
+	private boolean isObservationCollectionValid(
+			ObservationCollection observationCollection){
 		if (observationCollection == null){
 			return false;
 		}
@@ -427,8 +429,10 @@ public class ObservationSubmitter {
 		Phenomenon phenomenon = observationCollection.getPhenomenon();
 		SosSensor sensor = observationCollection.getSensor();
 		
-	    if (observationCollection.getObservationDates().size() != observationCollection.getObservationValues().size()){
-			logger.info("The observationCollection's size of the dates list is not equal to the values list "
+	    if (observationCollection.getObservationDates().size() != 
+	    		observationCollection.getObservationValues().size()){
+			logger.info("The observationCollection's size of the dates list is " 
+	    		    + "not equal to the values list "
 					+ " for station: " + idCreator.createStationId(station)
 					+ " sensor: " + sensor.getId() 
 					+ " phenomenon: " + phenomenon.getId());
@@ -608,42 +612,49 @@ public class ObservationSubmitter {
 	 * @param station - the station to be created
 	 * @return [true] if the station was create successfully [false] if else. 
 	 */
-	private boolean createNewSosStation(SosStation station, PublisherInfo publisherInfo) throws Exception {
+	private boolean createNewSosStation(SosStation station, 
+			PublisherInfo publisherInfo) throws Exception {
 		logger.info("Creating station: " + idCreator.createStationId(station));
 
 		for(SosNetwork network : station.getNetworks()){
-			if(!networkSubmitter.checkNetworkWithSos(network)){
-				logger.info("Error creating network " + idCreator.createNetworkId(network));
+			if(!networkSubmitter.checkNetworkWithSos(network, publisherInfo)){
+				logger.info("Error creating network " + 
+						idCreator.createNetworkId(network));
 			}
 		}
 		
-		StationRegisterSensorBuilder registerSensorBuilder = new StationRegisterSensorBuilder(
-				station, idCreator, publisherInfo);
+		StationRegisterSensorBuilder registerSensorBuilder = 
+				new StationRegisterSensorBuilder(station, idCreator, publisherInfo);
 
 		String xml = registerSensorBuilder.build();
 
 		String response = httpSender.sendPostMessage(sosUrl, xml);
 
 		if (response == null || response.contains("Exception")) {
-			logger.error("station: " + idCreator.createStationId(station) + " = " + response);
+			logger.error("station: " + idCreator.createStationId(station) + 
+					" = " + response);
 			return false;
 		} else {
-			logger.info("Finished creating station: " + idCreator.createStationId(station));
+			logger.info("Finished creating station: " + 
+					idCreator.createStationId(station));
 			return true;
 		}
 	}
 	
-	private boolean createNewSosSensor(SosStation station, SosSensor sensor) throws Exception {
-		logger.info("Creating sensor: " + idCreator.createSensorId(station, sensor));
+	private boolean createNewSosSensor(SosStation station, 
+			SosSensor sensor, PublisherInfo publisherInfo) throws Exception {
+		logger.info("Creating sensor: " + 
+			idCreator.createSensorId(station, sensor));
 
 		for(SosNetwork network : sensor.getNetworks()){
-			if(!networkSubmitter.checkNetworkWithSos(network)){
-				logger.info("Error creating network " + idCreator.createNetworkId(network));
+			if(!networkSubmitter.checkNetworkWithSos(network, publisherInfo)){
+				logger.info("Error creating network " + 
+						idCreator.createNetworkId(network));
 			}
 		}
 		
-		SensorRegisterSensorBuilder registerSensorBuilder = new SensorRegisterSensorBuilder(
-				station, sensor, idCreator);
+		SensorRegisterSensorBuilder registerSensorBuilder = 
+				new SensorRegisterSensorBuilder(station, sensor, idCreator);
 
 		String xml = registerSensorBuilder.build();
 
@@ -660,7 +671,8 @@ public class ObservationSubmitter {
 		}
 	}
 	
-	private Boolean isSensorCreated(SosStation station, SosSensor sensor) throws Exception {
+	private Boolean isSensorCreated(SosStation station, 
+			SosSensor sensor) throws Exception {
 		String procedureId = idCreator.createSensorId(station, sensor);
 		DescribeSensorBuilder describeSensorBuilder = new DescribeSensorBuilder(
 				procedureId);
@@ -689,6 +701,6 @@ public class ObservationSubmitter {
 
 		String output = httpSender.sendPostMessage(sosUrl, text);
 
-		return output != null && output.contains("sml:SensorML");
+		return output != null && output.contains("SensorML");
 	}
 }
