@@ -660,7 +660,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		
 		for(SosNetwork network : networks){
 			Element metaDataProperty = doc.createElement("gml:metaDataProperty");
-			metaDataProperty.setAttribute("link:title", idCreator.createNetworkId(network));
+			metaDataProperty.setAttribute("xlink:title", idCreator.createNetworkId(network));
 			simpleDataRecord.appendChild(metaDataProperty);
 		}
 		
