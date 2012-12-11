@@ -43,13 +43,13 @@ public class AppTest {
 //		rootNetwork.setId("all");
 //		rootNetwork.setSourceId("aoos");
 //		rootNetwork.setDescription("All inclusive sensor network");
-//		rootNetwork.setOfferingName("All observations");
+//		rootNetwork.setLongName("All observations");
 //		
 //		CnfaicObservationUpdaterFactory factory = 
 //				new CnfaicObservationUpdaterFactory();
 //		
 //		ObservationUpdater observationUpdater = factory.buildCnfaicObservationUpdater(
-//				"http://ghidorah:8080/52n-sos-ioos-dev/sos", publisherInfo);
+//				"http://staging1.axiom:8080/52n-sos-ioos-dev/sos", publisherInfo);
 //		
 //		observationUpdater.update(rootNetwork);
 //	}

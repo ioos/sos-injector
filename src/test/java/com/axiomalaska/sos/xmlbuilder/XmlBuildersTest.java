@@ -75,7 +75,7 @@ public class XmlBuildersTest {
 		rootNetwork.setId("all");
 		rootNetwork.setSourceId("aoos");
 		rootNetwork.setDescription("All inclusive sensor network");
-		rootNetwork.setOfferingName("All observations");
+		rootNetwork.setLongName("All observations");
 		
 		return rootNetwork;
     }
@@ -193,7 +193,8 @@ public class XmlBuildersTest {
     
     @Test
     public void testNetworkRegisterSensorBuilder() throws XmlException {
-        String xmlString = new NetworkRegisterSensorBuilder( TEST_NETWORK, ID_CREATOR ).build();
+        String xmlString = new NetworkRegisterSensorBuilder( TEST_NETWORK, 
+        		ID_CREATOR, TEST_PUBLISHER_INFO ).build();
         RegisterSensorDocument registerSensorDoc = RegisterSensorDocument.Factory.parse( xmlString );
         validateXmlDocument( registerSensorDoc );
     }
