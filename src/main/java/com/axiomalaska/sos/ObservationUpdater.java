@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosStation;
+import com.axiomalaska.sos.data.SosNetwork;
 
 /**
  * This class is used to update the a SOS server
@@ -82,11 +83,11 @@ public class ObservationUpdater {
 	 * Update the SOS with new observations
 	 * @throws Exception
 	 */
-	public void update() throws Exception {
+	public void update(SosNetwork network) throws Exception {
 		ObservationSubmitter observationSubmitter = new ObservationSubmitter(
 				sosUrl, logger);
 
-		observationSubmitter.update(stationRetriever.getStations(),
+		observationSubmitter.update(network, stationRetriever.getStations(),
 				observationRetriever, publisherInfo);
                 
                 if (isoWriter != null) {

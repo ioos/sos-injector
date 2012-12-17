@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import com.axiomalaska.phenomena.Phenomenon;
@@ -13,18 +14,23 @@ import com.axiomalaska.phenomena.PhenomenonImp;
 import com.axiomalaska.phenomena.UnitCreationException;
 import com.axiomalaska.phenomena.UnitResolver;
 import com.axiomalaska.sos.data.Location;
+import com.axiomalaska.sos.data.PublisherInfoImp;
+import com.axiomalaska.sos.data.SosNetwork;
+import com.axiomalaska.sos.data.SosNetworkImp;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosSensorImp;
 import com.axiomalaska.sos.data.SosStationImp;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.data.ObservationCollection;
+import com.axiomalaska.sos.example.CnfaicObservationUpdaterFactory;
+import com.axiomalaska.sos.tools.IdCreator;
 
 public class AppTest {
 	@Test
 	public void test() {
 		assertTrue(true);
 	}
-
+	
 //	@Test
 //	public void testCnfaic() throws Exception{
 //		PublisherInfoImp publisherInfo = new PublisherInfoImp();
@@ -33,13 +39,19 @@ public class AppTest {
 //		publisherInfo.setName("NOAA");
 //		publisherInfo.setWebAddress("www.noaa.gov");
 //		
+//		SosNetworkImp rootNetwork = new SosNetworkImp();
+//		rootNetwork.setId("all");
+//		rootNetwork.setSourceId("aoos");
+//		rootNetwork.setDescription("All inclusive sensor network");
+//		rootNetwork.setLongName("All observations");
+//		
 //		CnfaicObservationUpdaterFactory factory = 
 //				new CnfaicObservationUpdaterFactory();
 //		
 //		ObservationUpdater observationUpdater = factory.buildCnfaicObservationUpdater(
 //				"http://staging1.axiom:8080/52n-sos-ioos-dev/sos", publisherInfo);
 //		
-//		observationUpdater.update();
+//		observationUpdater.update(rootNetwork);
 //	}
 	
 //	@Test

@@ -25,4 +25,8 @@ public interface SosNetwork {
 	 * @return
 	 */
 	public String getSourceId();
+
+	public String getLongName();
+
+	public String getShortName();
 }

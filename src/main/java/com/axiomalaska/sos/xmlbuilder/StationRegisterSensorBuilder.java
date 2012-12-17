@@ -540,7 +540,8 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		
 		Element pos = doc.createElement("gml:pos");
 		pos.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4326");
-		pos.appendChild(doc.createTextNode(station.getLocation().getLatitude() + " " + station.getLocation().getLongitude()));
+		pos.appendChild(doc.createTextNode(station.getLocation().getLatitude() + 
+				" " + station.getLocation().getLongitude()));
 		point.appendChild(pos);
 		
 		Element result = doc.createElement("om:result");
@@ -608,7 +609,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		
 		identifierList.appendChild(createIdentifierNode(doc, "shortName", 
 				"http://mmisw.org/ont/ioos/definition/shortName", 
-				station.getId()));
+				idCreator.createStationShortName(station)));
 		
 		identifierList.appendChild(createIdentifierNode(doc, "longName", 
 				"http://mmisw.org/ont/ioos/definition/longName", 

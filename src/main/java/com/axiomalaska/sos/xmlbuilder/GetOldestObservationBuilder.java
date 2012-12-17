@@ -19,7 +19,7 @@ import com.axiomalaska.sos.tools.IdCreator;
  * 
  * @author Lance Finfrock
  */
-public class GetNewestObservationBuilder extends SosXmlBuilder {
+public class GetOldestObservationBuilder extends SosXmlBuilder {
 
 	// -------------------------------------------------------------------------
 	// Private Data
@@ -27,15 +27,15 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 
 	private SosStation station;
 	private SosSensor sensor;
-	private SosNetwork network;
 	private IdCreator idCreator;
 	private Phenomenon phenomenon;
+	private SosNetwork network;
 	
 	// -------------------------------------------------------------------------
 	// Constructor
 	// -------------------------------------------------------------------------
 
-	public GetNewestObservationBuilder(SosStation station, SosSensor sensor, 
+	public GetOldestObservationBuilder(SosStation station, SosSensor sensor, 
 			Phenomenon phenomenon, IdCreator idCreator, SosNetwork network) {
 		this.station = station;
 		this.sensor = sensor;
@@ -231,7 +231,7 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 		ogcTMEquals.appendChild(gmlTimeInstant);
 		
 		Element gmlTimePosition = doc.createElement("gml:timePosition");
-		gmlTimePosition.appendChild(doc.createTextNode("latest"));
+		gmlTimePosition.appendChild(doc.createTextNode("getFirst"));
 		gmlTimeInstant.appendChild(gmlTimePosition);
 		
 		return eventTime;

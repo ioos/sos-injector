@@ -192,11 +192,6 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		<sml:OutputList>
 			<sml:output name="Air Temperature">
 				<swe:Quantity definition="http://mmisw.org/ont/cf/parameter/air_temperature">
-					<gml:metaDataProperty>
-						<offering>
-							<id>network-all</id>
-						</offering>
-					</gml:metaDataProperty>
 					<swe:uom code="C"/>
 				</swe:Quantity>
 			</sml:output>
@@ -219,20 +214,6 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			quantity.setAttribute("definition", phenomenon.getId());
 			
 			output.appendChild(quantity);
-			
-			Element metaDataProperty = doc.createElement("gml:metaDataProperty");
-			quantity.appendChild(metaDataProperty);
-			
-			Element offering = doc.createElement("offering");
-			metaDataProperty.appendChild(offering);
-			
-			Element id = doc.createElement("id");
-			id.appendChild(doc.createTextNode("network-all"));
-			offering.appendChild(id);
-			
-			Element name = doc.createElement("name");
-			name.appendChild(doc.createTextNode("Includes all the sensors in the network"));
-			offering.appendChild(name);
 			
 			String unitString = "";
 			if(phenomenon.getUnit() != null){

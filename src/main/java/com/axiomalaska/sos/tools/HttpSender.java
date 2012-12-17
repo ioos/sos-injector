@@ -92,7 +92,7 @@ public class HttpSender {
 
 	public String sendGetMessage(String serviceURL, List<HttpPart> httpParts)
 			throws Exception {
-		String buildUrl = buildUrl(serviceURL, httpParts, false);
+		String buildUrl = buildUrl(serviceURL, httpParts, true);
 		return sendGetMessage(buildUrl);
 	}
 	

@@ -53,8 +53,9 @@ public class CnfaicObservationRetriever implements ObservationRetriever {
 			Phenomenon windfromDirectionPhenomenon = Phenomena.instance().WIND_FROM_DIRECTION;
 			Phenomenon windSpeedofGustPhenomenon = Phenomena.instance().WIND_SPEED_OF_GUST;
 			
+			String foreignId = station.getId().replace("cnfaic:", "");
 			Pattern observationParser = 
-					Pattern.compile(station.getId() + 
+					Pattern.compile(foreignId + 
 							",((\\d{4}-\\d{2}-\\d{2} \\d{2}):\\d{2}:\\d{2},(\\d+.\\d+),(\\d+),(\\d+),(\\d+),(\\d+))");
 		
 			Matcher matcher = observationParser.matcher(rawObservationData);

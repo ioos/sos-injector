@@ -15,7 +15,20 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
+import com.axiomalaska.phenomena.Phenomenon;
+import com.axiomalaska.sos.data.ObservationCollection;
+import com.axiomalaska.sos.data.PublisherInfo;
+import com.axiomalaska.sos.data.SosNetwork;
+import com.axiomalaska.sos.data.SosSensor;
+import com.axiomalaska.sos.data.SosStation;
+import com.axiomalaska.sos.tools.HttpSender;
+import com.axiomalaska.sos.tools.IdCreator;
+import com.axiomalaska.sos.xmlbuilder.DescribeSensorBuilder;
+import com.axiomalaska.sos.xmlbuilder.GetNewestObservationBuilder;
+import com.axiomalaska.sos.xmlbuilder.GetOldestObservationBuilder;
+import com.axiomalaska.sos.xmlbuilder.InsertObservationBuilder;
+import com.axiomalaska.sos.xmlbuilder.SensorRegisterSensorBuilder;
+import com.axiomalaska.sos.xmlbuilder.StationRegisterSensorBuilder;
 /**
  * This class is used to push observations from a station and it's 
  * phenomena/sensor into the SOS
@@ -52,6 +65,7 @@ public class ObservationSubmitter {
 	private HttpSender httpSender = new HttpSender();
 	private Logger logger;
 	private IdCreator idCreator;
+	private NetworkSubmitter networkSubmitter = null;
 
 	// -------------------------------------------------------------------------
 	// Constructor
@@ -102,6 +116,8 @@ public class ObservationSubmitter {
 		this.sosUrl = sosUrl;
 		this.logger = logger;
 		this.idCreator = idCreator;
+		this.networkSubmitter = new NetworkSubmitter(
+				sosUrl, logger, idCreator);
 	}
 
 	// -------------------------------------------------------------------------
@@ -113,7 +129,7 @@ public class ObservationSubmitter {
 	 * 
 	 * @param observationCollection - the data used to update the SOS
 	 */
-	public void update(ObservationCollection observationCollection,
+	public void update(SosNetwork network, ObservationCollection observationCollection,
 			PublisherInfo publisherInfo) throws Exception {
 		if (isObservationCollectionValid(observationCollection)) {
 			SosStation station = observationCollection.getStation();
@@ -126,10 +142,11 @@ public class ObservationSubmitter {
 				SosSensor sensor = observationCollection.getSensor();
 				boolean isSensorCreated = isSensorCreated(station, sensor);
 				if (!isSensorCreated) {
-					isSensorCreated = createNewSosSensor(station, sensor);
+					isSensorCreated = createNewSosSensor(station, 
+							sensor, publisherInfo);
 				}
 				if (isSensorCreated) {
-					insertObservations(observationCollection);
+					insertObservations(network, observationCollection);
 				}
 			}
 		}
@@ -148,11 +165,11 @@ public class ObservationSubmitter {
 	 * @param observationRetriever - the data store of observations used to 
 	 * pull observations from
 	 */
-	public void update(List<SosStation> stations, 
+	public void update(SosNetwork network, List<SosStation> stations, 
 			ObservationRetriever observationRetriever, 
 			PublisherInfo publisherInfo) throws Exception {
 		for (SosStation station : stations) {
-			update(station, observationRetriever, publisherInfo);
+			update(network, station, observationRetriever, publisherInfo);
 		}
 	}
 
@@ -169,7 +186,7 @@ public class ObservationSubmitter {
 	 * @param observationRetriever -  the data store of observations used to 
 	 * pull observations from
 	 */
-	public void update(SosStation station,  
+	public void update(SosNetwork network, SosStation station,  
 			ObservationRetriever observationRetriever, PublisherInfo publisherInfo) throws Exception {
 		if (station.getSensors().size() > 0) {
 			boolean isStationCreated = isStationCreated(station);
@@ -179,7 +196,7 @@ public class ObservationSubmitter {
 
 			if (isStationCreated) {
 				for (SosSensor sensor : station.getSensors()) {
-					update(station, sensor, observationRetriever);
+					update(network, station, sensor, observationRetriever, publisherInfo);
 				}
 			}
 		}
@@ -188,6 +205,10 @@ public class ObservationSubmitter {
 					" does not have any sensors. The station will not be added.");
 		}
 	}
+	
+	// -------------------------------------------------------------------------
+	// Private Members
+	// -------------------------------------------------------------------------
 	
 	/**
 	 * Pull: Update the observations of a station with a specific phenomenon in the SOS server.
@@ -198,19 +219,19 @@ public class ObservationSubmitter {
 	 * @param observationRetriever - the data store of observations used to 
 	 * pull observations from
 	 */
-	public void update(SosStation station, SosSensor sensor,  
-			ObservationRetriever observationRetriever)
+	private void update(SosNetwork network, SosStation station, SosSensor sensor,  
+			ObservationRetriever observationRetriever, PublisherInfo publisherInfo)
 			throws Exception {
 		if(sensor.getPhenomena().size() > 0){
 			boolean isSensorCreated = isSensorCreated(station, sensor);
 			
 			if (!isSensorCreated) {
-				isSensorCreated = createNewSosSensor(station, sensor);
+				isSensorCreated = createNewSosSensor(station, sensor, publisherInfo);
 			}
 
 			if (isSensorCreated) {
 				for(Phenomenon phenomenon : sensor.getPhenomena()){
-					update(station, sensor, phenomenon, observationRetriever);
+					update(network, station, sensor, phenomenon, observationRetriever);
 				}
 			}
 		}
@@ -231,36 +252,51 @@ public class ObservationSubmitter {
 	 * @param observationRetriever - the data store of observations used to 
 	 * pull observations from
 	 */
-	public void update(SosStation station, SosSensor sensor, Phenomenon phenomenon,
+	private void update(SosNetwork network, SosStation station, SosSensor sensor, Phenomenon phenomenon,
 			ObservationRetriever observationRetriever) throws Exception {
-		Calendar startDate = getNewestObservationDate(station, sensor, phenomenon);
-
+		Calendar startDate = getNewestObservationDate(network, station, sensor, phenomenon);
+		
 		ObservationCollection observationCollection = observationRetriever
 				.getObservationCollection(station, sensor, phenomenon,
 						startDate);
 
-		if (isObservationCollectionValid(observationCollection)) {
-			insertObservations(observationCollection, startDate);
-		}
+		insertObservations(network, observationCollection, startDate);
 	}
 	
-	// -------------------------------------------------------------------------
-	// Private Members
-	// -------------------------------------------------------------------------
-
 	/**
 	 * Insert observations from the observationCollection object in the SOS. 
 	 * 
 	 * @param observationCollection - contains the observations to be placed in the
 	 * SOS. This object should have been validated before this method is called
 	 */
-	private void insertObservations(ObservationCollection observationCollection) 
+	private void insertObservations(SosNetwork network, ObservationCollection observationCollection)
 			throws Exception {
-		Calendar newestObservationInSosDate = getNewestObservationDate(
-				observationCollection.getStation(), observationCollection.getSensor(), 
+		Calendar newestObservationInSosDate = getNewestObservationDate(network,
+				observationCollection.getStation(),
+				observationCollection.getSensor(),
 				observationCollection.getPhenomenon());
+
+		insertObservations(network, observationCollection, newestObservationInSosDate);
+	}
+	
+	/**
+	 * Insert observations from the observationCollection object in the SOS. 
+	 * 
+	 * @param observationCollection - contains the observations to be placed in the
+	 * SOS. This object should have been validated before this method is called
+	 */
+	private void insertObservations(SosNetwork network, ObservationCollection observationCollection, 
+			Calendar startDate) 
+			throws Exception {
 		
-		insertObservations(observationCollection, newestObservationInSosDate);
+		if (isObservationCollectionValid(observationCollection)) {
+			Calendar oldestDate = getOldestObservationDate(network,
+					observationCollection.getStation(), observationCollection.getSensor(), 
+					observationCollection.getPhenomenon());
+			
+			insertObservations(observationCollection, 
+					startDate, oldestDate);
+		}
 	}
 
 	/**
@@ -271,14 +307,16 @@ public class ObservationSubmitter {
 	 * @param newestObservationInSosDate - the newest observation's date
 	 */
 	private void insertObservations(ObservationCollection observationCollection, 
-			Calendar newestObservationInSosDate) throws Exception {
+			Calendar newestObservationInSosDate, 
+			Calendar oldestObservationInSosDate) throws Exception {
 		SosStation station = observationCollection.getStation();
 		SosSensor sensor = observationCollection.getSensor();
 		Phenomenon phenomenon = observationCollection.getPhenomenon();
 
-		ObservationCollection filteredObservationCollection = removeOlderObservations(
-				newestObservationInSosDate, observationCollection);
-
+		ObservationCollection filteredObservationCollection = removeEnteredObservations(
+				newestObservationInSosDate, oldestObservationInSosDate, 
+				observationCollection);
+		
 		if (filteredObservationCollection.getObservationDates().size() > 0) {
 			try {
 				InsertObservationBuilder insertObservationBuilder = 
@@ -292,21 +330,21 @@ public class ObservationSubmitter {
 
 				if (response == null || response.toLowerCase().contains("exception")) {
 					logger.error("Trying to input "
-							+ observationCollection.getObservationDates()
+							+ filteredObservationCollection.getObservationDates()
 									.size() + " observations from sensor: "
 							+ idCreator.createSensorId(station, sensor)
 							+ " phenomenon: " + phenomenon.getId() + " from: "
 							+ " response: \n" + response);
 				} else {
 					logger.info("Inputed "
-							+ observationCollection.getObservationDates()
+							+ filteredObservationCollection.getObservationDates()
 									.size() + " observations from sensor: "
 							+ idCreator.createSensorId(station, sensor)
 							+ " phenomenon: " + phenomenon.getId());
 				}
 			} catch (Exception e) {
-				logger.error("Trying to inputk "
-						+ observationCollection.getObservationDates().size()
+				logger.error("Trying to input "
+						+ filteredObservationCollection.getObservationDates().size()
 						+ " observations from sensor: "
 						+ idCreator.createSensorId(station, sensor)
 						+ " phenomenon: " + phenomenon.getId() + " message: \n"
@@ -316,15 +354,16 @@ public class ObservationSubmitter {
 	}
 
 	/**
-	 * Remove older observations than the newestObservationInSosDate from the 
-	 * observationCollection 
+	 * Remove observations that are between the newest and oldest observations. 
 	 * @param newestObservationInSosDate - the newest observation's date
+	 * @param oldestObservationInSosDate - the oldest observation's date
 	 * @param observationCollection - the observationCollection to remove the
 	 * older observations from.
 	 * @return
 	 */
-	private ObservationCollection removeOlderObservations(
-			Calendar newestObservationInSosDate,
+	private ObservationCollection removeEnteredObservations(
+			Calendar newestObservationInSosDate, 
+			Calendar oldestObservationInSosDate,
 			ObservationCollection observationCollection) {
 		
 		ObservationCollection filteredObservationCollection = new ObservationCollection();
@@ -339,7 +378,8 @@ public class ObservationSubmitter {
 		List<Calendar> filteredObservationDates = new ArrayList<Calendar>();
 		List<Double> filteredObservationValues = new ArrayList<Double>();
 		for(int index = 0; index < observationDates.size(); index++){
-			if(observationDates.get(index).after(newestObservationInSosDate)){
+			if(observationDates.get(index).after(newestObservationInSosDate) || 
+					observationDates.get(index).before(oldestObservationInSosDate)){
 				filteredObservationDates.add(observationDates.get(index));
 				filteredObservationValues.add(observationValues.get(index));
 			}
@@ -357,7 +397,8 @@ public class ObservationSubmitter {
 	 * @return [True] if the ObservationCollection object is valid. [False] if the
 	 * ObservationCollection is not valid
 	 */
-	private boolean isObservationCollectionValid(ObservationCollection observationCollection){
+	private boolean isObservationCollectionValid(
+			ObservationCollection observationCollection){
 		if (observationCollection == null){
 			return false;
 		}
@@ -384,8 +425,10 @@ public class ObservationSubmitter {
 		Phenomenon phenomenon = observationCollection.getPhenomenon();
 		SosSensor sensor = observationCollection.getSensor();
 		
-	    if (observationCollection.getObservationDates().size() != observationCollection.getObservationValues().size()){
-			logger.info("The observationCollection's size of the dates list is not equal to the values list "
+	    if (observationCollection.getObservationDates().size() != 
+	    		observationCollection.getObservationValues().size()){
+			logger.info("The observationCollection's size of the dates list is " 
+	    		    + "not equal to the values list "
 					+ " for station: " + idCreator.createStationId(station)
 					+ " sensor: " + sensor.getId() 
 					+ " phenomenon: " + phenomenon.getId());
@@ -424,10 +467,11 @@ public class ObservationSubmitter {
 	 * from the station phenomenon passed in. If there are no observations in 
 	 * the SOS it returns a date from the first century.
 	 */
-	private Calendar getNewestObservationDate(SosStation station,
+	private Calendar getNewestObservationDate(SosNetwork network, SosStation station,
 			SosSensor sensor, Phenomenon phenomenon) throws Exception {
-		GetNewestObservationBuilder getObservationLatestBuilder = new GetNewestObservationBuilder(
-				station, sensor, phenomenon, idCreator);
+		GetNewestObservationBuilder getObservationLatestBuilder = 
+				new GetNewestObservationBuilder(station, sensor, 
+						phenomenon, idCreator, network);
 
 		String getObservationXml = getObservationLatestBuilder.build();
 
@@ -473,6 +517,68 @@ public class ObservationSubmitter {
 
 		return defaultDate;
 	}
+	
+	/**
+	 * Get the oldest observation date from the SOS server for the station and phenomenon. 
+	 * 
+	 * @param station - the station to look up the date from
+	 * @param phenomenon - the phenomenon to look up the date from
+	 * 
+	 * @return returns a Calendar object of the oldest observation in the SOS 
+	 * from the station phenomenon passed in. If there are no observations in 
+	 * the SOS it returns a date from the first century.
+	 */
+	private Calendar getOldestObservationDate(SosNetwork network, 
+			SosStation station,	SosSensor sensor, 
+			Phenomenon phenomenon) throws Exception {
+		GetOldestObservationBuilder getOldestObservationBuilder = 
+				new GetOldestObservationBuilder(station, sensor, 
+						phenomenon, idCreator, network);
+
+		String getObservationXml = getOldestObservationBuilder.build();
+
+		String response = httpSender.sendPostMessage(sosUrl, getObservationXml);
+		
+		if (response != null) {
+			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+			Document doc = docBuilder.parse(new ByteArrayInputStream(response
+					.getBytes()));
+
+			doc.normalize();
+
+			/*
+			 * <om:samplingTime> <gml:TimeInstant
+			 * xsi:type="gml:TimeInstantType">
+			 * <gml:timePosition>2012-05-01T07:00:00.000Z</gml:timePosition>
+			 * </gml:TimeInstant> </om:samplingTime>
+			 */
+			NodeList nodeList = doc.getElementsByTagName("gml:beginPosition");
+
+			if (nodeList.getLength() == 1) {
+
+				Element timePosition = (Element) nodeList.item(0);
+
+				Calendar date = createDate(timePosition.getTextContent());
+
+				date.add(Calendar.MINUTE, -1);
+
+				return date;
+			}
+		}
+		
+		logger.debug("No observations found in SOS for Sensor: "
+				+ idCreator.createSensorId(station, sensor) + " phenomonon: "
+				+ phenomenon.getId());
+		Calendar defaultDate = Calendar.getInstance();
+
+		defaultDate.add(Calendar.YEAR, 1);
+
+		defaultDate.getTime();
+
+		return defaultDate;
+	}
 
 	/**
 	 * Create a Calendar object from a string
@@ -502,17 +608,19 @@ public class ObservationSubmitter {
 	 * @param station - the station to be created
 	 * @return [true] if the station was create successfully [false] if else. 
 	 */
-	private boolean createNewSosStation(SosStation station, PublisherInfo publisherInfo) throws Exception {
+	private boolean createNewSosStation(SosStation station, 
+			PublisherInfo publisherInfo) throws Exception {
 		logger.info("Creating station: " + idCreator.createStationId(station));
 
 		for(SosNetwork network : station.getNetworks()){
-			if(!isNetworkCreated(network)){
-				createNewSosNetwork(network);
+			if(!networkSubmitter.checkNetworkWithSos(network, publisherInfo)){
+				logger.info("Error creating network " + 
+						idCreator.createNetworkId(network));
 			}
 		}
 		
-		StationRegisterSensorBuilder registerSensorBuilder = new StationRegisterSensorBuilder(
-				station, idCreator, publisherInfo);
+		StationRegisterSensorBuilder registerSensorBuilder = 
+				new StationRegisterSensorBuilder(station, idCreator, publisherInfo);
 
 		String xml = registerSensorBuilder.build();
                 
@@ -522,22 +630,26 @@ public class ObservationSubmitter {
 			logger.error("station: " + idCreator.createStationId(station) + " = " + response);
 			return false;
 		} else {
-			logger.info("Finished creating station: " + idCreator.createStationId(station));
+			logger.info("Finished creating station: " + 
+					idCreator.createStationId(station));
 			return true;
 		}
 	}
 	
-	private boolean createNewSosSensor(SosStation station, SosSensor sensor) throws Exception {
-		logger.info("Creating sensor: " + idCreator.createSensorId(station, sensor));
+	private boolean createNewSosSensor(SosStation station, 
+			SosSensor sensor, PublisherInfo publisherInfo) throws Exception {
+		logger.info("Creating sensor: " + 
+			idCreator.createSensorId(station, sensor));
 
 		for(SosNetwork network : sensor.getNetworks()){
-			if(!isNetworkCreated(network)){
-				createNewSosNetwork(network);
+			if(!networkSubmitter.checkNetworkWithSos(network, publisherInfo)){
+				logger.info("Error creating network " + 
+						idCreator.createNetworkId(network));
 			}
 		}
 		
-		SensorRegisterSensorBuilder registerSensorBuilder = new SensorRegisterSensorBuilder(
-				station, sensor, idCreator);
+		SensorRegisterSensorBuilder registerSensorBuilder = 
+				new SensorRegisterSensorBuilder(station, sensor, idCreator);
 
 		String xml = registerSensorBuilder.build();
                 
@@ -563,21 +675,22 @@ public class ObservationSubmitter {
 	 */
 	private boolean createNewSosNetwork(SosNetwork network) throws Exception {
 		logger.info("Creating network: " + idCreator.createNetworkId(network));
+                return false;
 
-		NetworkRegisterSensorBuilder registerSensorBuilder = new NetworkRegisterSensorBuilder(
-				network, idCreator);
-
-		String xml = registerSensorBuilder.build();
-
-		String response = httpSender.sendPostMessage(sosUrl, xml);
-
-		if (response == null || response.toLowerCase().contains("exception")) {
-			logger.error("network: " + idCreator.createNetworkId(network) + " = " + response);
-			return false;
-		} else {
-			logger.info("Finished creating network: " + idCreator.createNetworkId(network));
-			return true;
-		}
+//		NetworkRegisterSensorBuilder registerSensorBuilder = new NetworkRegisterSensorBuilder(
+//				network, idCreator);
+//
+//		String xml = registerSensorBuilder.build();
+//
+//		String response = httpSender.sendPostMessage(sosUrl, xml);
+//
+//		if (response == null || response.toLowerCase().contains("exception")) {
+//			logger.error("network: " + idCreator.createNetworkId(network) + " = " + response);
+//			return false;
+//		} else {
+//			logger.info("Finished creating network: " + idCreator.createNetworkId(network));
+//			return true;
+//		}
 	}
 	
 	private Boolean isNetworkCreated(SosNetwork network) throws Exception {
