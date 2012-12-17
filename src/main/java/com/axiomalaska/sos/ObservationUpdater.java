@@ -3,6 +3,7 @@ package com.axiomalaska.sos;
 import org.apache.log4j.Logger;
 
 import com.axiomalaska.sos.data.PublisherInfo;
+import com.axiomalaska.sos.data.SosStation;
 
 /**
  * This class is used to update the a SOS server
@@ -21,6 +22,8 @@ public class ObservationUpdater {
 	private ObservationRetriever observationRetriever;
 	private String name;
 	private PublisherInfo publisherInfo;
+        
+        private ISOFileWriter isoWriter = null;
 	
 	// -------------------------------------------------------------------------
 	// Constructor
@@ -53,6 +56,20 @@ public class ObservationUpdater {
 		this.name = name;
 		this.publisherInfo = publisherInfo;
 	}
+        
+        public ObservationUpdater(String sosUrl, Logger logger,
+                StationRetriever stationRetriever,
+                PublisherInfo publisherInfo,
+                ObservationRetriever observationRetriever,
+                ISOFileWriter fileWriter) {
+            this.sosUrl = sosUrl;
+            this.logger = logger;
+            this.stationRetriever = stationRetriever;
+            this.observationRetriever = observationRetriever;
+            this.name = "no name";
+            this.publisherInfo = publisherInfo;
+            this.isoWriter = fileWriter;
+        }
 	
 	// -------------------------------------------------------------------------
 	// Public Members
@@ -71,5 +88,11 @@ public class ObservationUpdater {
 
 		observationSubmitter.update(stationRetriever.getStations(),
 				observationRetriever, publisherInfo);
+                
+                if (isoWriter != null) {
+                    for (SosStation station : stationRetriever.getStations()) {
+                        isoWriter.writeISOFileForStation(station);
+                    }
+                }
 	}
 }

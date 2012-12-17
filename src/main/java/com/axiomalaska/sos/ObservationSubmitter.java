@@ -1,37 +1,20 @@
 package com.axiomalaska.sos;
 
+import com.axiomalaska.phenomena.Phenomenon;
+import com.axiomalaska.sos.data.*;
+import com.axiomalaska.sos.tools.HttpSender;
+import com.axiomalaska.sos.tools.IdCreator;
+import com.axiomalaska.sos.xmlbuilder.*;
 import java.io.ByteArrayInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-
+import java.util.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-
-import com.axiomalaska.phenomena.Phenomenon;
-import com.axiomalaska.sos.data.ObservationCollection;
-import com.axiomalaska.sos.data.PublisherInfo;
-import com.axiomalaska.sos.data.SosNetwork;
-import com.axiomalaska.sos.data.SosSensor;
-import com.axiomalaska.sos.data.SosStation;
-import com.axiomalaska.sos.tools.HttpSender;
-import com.axiomalaska.sos.tools.IdCreator;
-import com.axiomalaska.sos.xmlbuilder.DescribeSensorBuilder;
-import com.axiomalaska.sos.xmlbuilder.GetNewestObservationBuilder;
-import com.axiomalaska.sos.xmlbuilder.InsertObservationBuilder;
-import com.axiomalaska.sos.xmlbuilder.NetworkRegisterSensorBuilder;
-import com.axiomalaska.sos.xmlbuilder.SensorRegisterSensorBuilder;
-import com.axiomalaska.sos.xmlbuilder.StationRegisterSensorBuilder;
 
 /**
  * This class is used to push observations from a station and it's 
@@ -304,8 +287,6 @@ public class ObservationSubmitter {
 						filteredObservationCollection, idCreator);
 
 				String insertXml = insertObservationBuilder.build();
-                                
-                                logger.error("Inserting observation:\n" + insertXml.toString());
 
 				String response = httpSender.sendPostMessage(sosUrl, insertXml);
 
@@ -453,7 +434,6 @@ public class ObservationSubmitter {
 		String response = httpSender.sendPostMessage(sosUrl, getObservationXml);
 		
 		if (response != null) {
-                        logger.error("Response for get newest obs: " + response.toString());
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -560,8 +540,6 @@ public class ObservationSubmitter {
 				station, sensor, idCreator);
 
 		String xml = registerSensorBuilder.build();
-                
-                logger.error("Sending request:\n" + xml.toString());
                 
 		String response = httpSender.sendPostMessage(sosUrl, xml);
 
