@@ -15,20 +15,6 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import com.axiomalaska.phenomena.Phenomenon;
-import com.axiomalaska.sos.data.ObservationCollection;
-import com.axiomalaska.sos.data.PublisherInfo;
-import com.axiomalaska.sos.data.SosNetwork;
-import com.axiomalaska.sos.data.SosSensor;
-import com.axiomalaska.sos.data.SosStation;
-import com.axiomalaska.sos.tools.HttpSender;
-import com.axiomalaska.sos.tools.IdCreator;
-import com.axiomalaska.sos.xmlbuilder.DescribeSensorBuilder;
-import com.axiomalaska.sos.xmlbuilder.GetNewestObservationBuilder;
-import com.axiomalaska.sos.xmlbuilder.GetOldestObservationBuilder;
-import com.axiomalaska.sos.xmlbuilder.InsertObservationBuilder;
-import com.axiomalaska.sos.xmlbuilder.SensorRegisterSensorBuilder;
-import com.axiomalaska.sos.xmlbuilder.StationRegisterSensorBuilder;
 /**
  * This class is used to push observations from a station and it's 
  * phenomena/sensor into the SOS
@@ -656,6 +642,7 @@ public class ObservationSubmitter {
 		String response = httpSender.sendPostMessage(sosUrl, xml);
 
 		if (response == null || response.toLowerCase().contains("exception")) {
+                        logger.error("error in response to: " + sosUrl + "\n" + xml);
 			logger.error("sensor: " + 
 					idCreator.createSensorId(station, sensor) + " = " + response);
 			return false;
@@ -673,10 +660,10 @@ public class ObservationSubmitter {
 	 *            - the station to be created
 	 * @return - [true] if the station was create successfully [false] if else. 
 	 */
-	private boolean createNewSosNetwork(SosNetwork network) throws Exception {
-		logger.info("Creating network: " + idCreator.createNetworkId(network));
-                return false;
-
+//	private boolean createNewSosNetwork(SosNetwork network) throws Exception {
+//		logger.info("Creating network: " + idCreator.createNetworkId(network));
+//                return false;
+//
 //		NetworkRegisterSensorBuilder registerSensorBuilder = new NetworkRegisterSensorBuilder(
 //				network, idCreator);
 //
@@ -691,7 +678,7 @@ public class ObservationSubmitter {
 //			logger.info("Finished creating network: " + idCreator.createNetworkId(network));
 //			return true;
 //		}
-	}
+//	}
 	
 	private Boolean isNetworkCreated(SosNetwork network) throws Exception {
 		String procedureId = idCreator.createNetworkId(network);

@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.data.SosNetwork;
+import java.util.logging.Level;
 
 /**
  * This class is used to update the a SOS server
@@ -79,11 +80,21 @@ public class ObservationUpdater {
 	public String getName(){
 		return name;
 	}
+        
+        public String getSource() {
+            try {
+                return stationRetriever.getStations().get(0).getSource().getId();
+            } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(ObservationUpdater.class.getName()).log(Level.SEVERE, null, ex);
+                return "source";
+            }
+        }
 	/**
 	 * Update the SOS with new observations
 	 * @throws Exception
 	 */
 	public void update(SosNetwork network) throws Exception {
+            logger.info("Updating with root network: " + network.getShortName());
 		ObservationSubmitter observationSubmitter = new ObservationSubmitter(
 				sosUrl, logger);
 

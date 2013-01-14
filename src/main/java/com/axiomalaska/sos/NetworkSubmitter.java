@@ -107,7 +107,7 @@ public class NetworkSubmitter {
 		
 		String response = httpSender.sendGetMessage(getSosAdminUrl(), httpParts);
 		
-		if(response.equals("true")){
+		if(response != null && response.equals("true")){
 			return true;
 		}
 		else{

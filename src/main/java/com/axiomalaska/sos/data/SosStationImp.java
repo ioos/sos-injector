@@ -83,6 +83,7 @@ public class SosStationImp implements SosStation {
 		this.sensors = sensors;
 	}
 	
+        @Override
 	public String toString(){
 		return "ID " + id + " " + featureOfInterestName;
 	}
@@ -91,10 +92,12 @@ public class SosStationImp implements SosStation {
 	 * A list of networks this station is associated to
 	 * @return
 	 */
+        @Override
 	public List<SosNetwork> getNetworks(){
 		return networks;
 	}
 	
+        @Override
 	public void setNetworks(List<SosNetwork> networks){
 		this.networks = networks;
 	}

@@ -15,6 +15,7 @@ import org.w3c.dom.Node;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.data.*;
 import com.axiomalaska.sos.tools.IdCreator;
+import java.util.*;
 
 public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 
@@ -91,7 +92,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			List<Phenomenon> filteredPhenomena = removeDuplicatePhenomena(phenomena);
 			
 			system.appendChild(createInputsNode(doc, filteredPhenomena));
-			
+                        
                         // make sure that 'network-all' is listed as a network
                         boolean hasNetworkAll = false;
                         for (SosNetwork net : station.getNetworks()) {
@@ -104,7 +105,10 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
                             SosNetworkImp networkall = new SosNetworkImp();
                             networkall.setDescription("Includes all the sensors in the network");
                             networkall.setId("network-all");
-                            List<SosNetwork> networks = station.getNetworks();
+                            ArrayList<SosNetwork> networks = new ArrayList<SosNetwork>();
+                            for (Iterator<SosNetwork> it = station.getNetworks().iterator(); it.hasNext();) {
+                                networks.add(it.next());
+                            }
                             networks.add(networkall);
                             system.appendChild(createOutputsNode(doc, phenomena, networks));
                         } else {
@@ -115,12 +119,13 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 //			system.appendChild(createOutputsNode(doc, filteredPhenomena));
 			
 			registerSensor.appendChild(createObservationTemplate(doc));
-			
+                        
 			String xmlString = getString(doc);
 			
 			return xmlString;
 		} catch (Exception ex) {
-			System.err.println(ex.getMessage());
+			System.err.println("Error in register sensor build: - ");
+                        ex.printStackTrace();
 		}
 		return null;
 	}
