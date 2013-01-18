@@ -27,11 +27,24 @@ public class ObservationCollection {
 	private Phenomenon phenomenon;
 	private List<Double> observationValues = new ArrayList<Double>();
 	private List<Calendar> observationDates = new ArrayList<Calendar>();
-	private List<Location> observationLocations = new ArrayList<Location>();
+	private Double depth = null;
 	
 	// -------------------------------------------------------------------------
 	// Public Members
 	// -------------------------------------------------------------------------
+	
+	/**
+	 * Could be null if no depth is involved
+	 * 
+	 * @return
+	 */
+	public Double getDepth() {
+		return depth;
+	}
+
+	public void setDepth(Double depth) {
+		this.depth = depth;
+	}
 	
 	public Phenomenon getPhenomenon() {
 		return phenomenon;
@@ -46,13 +59,6 @@ public class ObservationCollection {
 	 */
 	public SosSensor getSensor() {
 		return sensor;
-	}
-
-	/**
-	 * The location of each observation
-	 */
-	public List<Location> getObservationLocations() {
-		return observationLocations;
 	}
 
 	/**
@@ -74,10 +80,6 @@ public class ObservationCollection {
 	 */
 	public List<Calendar> getObservationDates() {
 		return observationDates;
-	}
-
-	public void setObservationLocations(List<Location> observationLocations) {
-		this.observationLocations = observationLocations;
 	}
 	
 	public void setStation(SosStation station) {

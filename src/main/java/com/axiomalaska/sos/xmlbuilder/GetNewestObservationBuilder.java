@@ -30,6 +30,8 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	private SosNetwork network;
 	private IdCreator idCreator;
 	private Phenomenon phenomenon;
+	private Double depth;
+	private boolean useFoi = true;
 	
 	// -------------------------------------------------------------------------
 	// Constructor
@@ -42,6 +44,19 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 		this.phenomenon = phenomenon;
 		this.idCreator = idCreator;
 		this.network = network;
+		this.useFoi = false;
+	}
+	
+	public GetNewestObservationBuilder(SosStation station, SosSensor sensor, 
+			Phenomenon phenomenon, IdCreator idCreator, SosNetwork network, 
+			Double depth) {
+		this.station = station;
+		this.sensor = sensor;
+		this.phenomenon = phenomenon;
+		this.idCreator = idCreator;
+		this.network = network;
+		this.depth = depth;
+		this.useFoi = true;
 	}
 
 	// -------------------------------------------------------------------------
@@ -74,7 +89,7 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	  <procedure>urn:ogc:object:feature:Sensor:13774</procedure>
 	  <observedProperty>urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature</observedProperty>
 	  <featureOfInterest>
-		  <ObjectID>foi_13774</ObjectID>
+		  <ObjectID>urn:ioos:sensor:aoos:pilotrock:seawatertemp-10m</ObjectID>
 	  </featureOfInterest>
 	  <responseFormat>text/xml;subtype="om/1.0.0"</responseFormat>   
 	</GetObservation>
@@ -91,17 +106,17 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 			doc.appendChild(getObservation);
 
 			getObservation.appendChild(createOffering(doc));
-			
+
 			getObservation.appendChild(createEventTime(doc));
-			
+
 			getObservation.appendChild(createProcedure(doc));
-			
+
 			getObservation.appendChild(createObservedProperty(doc));
-			
-			if (!station.isMoving()) {
+
+			if(useFoi){
 				getObservation.appendChild(createFeatureOfInterest(doc));
 			}
-			
+
 			getObservation.appendChild(createResponseFormat(doc));
 
 			return getString(doc);
@@ -123,8 +138,8 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	private Node createFeatureOfInterest(Document doc) {
 		Element featureOfInterest = doc.createElement("featureOfInterest");
 		
-	    String featureOfInterestId = idCreator.createFeatureOfInterestId(
-				station, sensor);
+	    String featureOfInterestId = idCreator.createObservationFeatureOfInterestId(
+				station, sensor, depth);
 		
 		Element offering = doc.createElement("ObjectID");
 		offering.appendChild(doc.createTextNode(featureOfInterestId));

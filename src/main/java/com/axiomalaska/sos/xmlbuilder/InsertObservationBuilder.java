@@ -11,7 +11,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.axiomalaska.phenomena.Phenomenon;
-import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.data.ObservationCollection;
@@ -33,18 +32,21 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	private ObservationCollection observationCollection;
 	private IdCreator idCreator;
 	private Phenomenon phenomenon;
+	private Double depth;
 	
 	// -------------------------------------------------------------------------
 	// Constructor
 	// -------------------------------------------------------------------------
 	
 	public InsertObservationBuilder(SosStation station, SosSensor sensor, 
-			Phenomenon phenomenon, ObservationCollection observationCollection, IdCreator idCreator){
+			Phenomenon phenomenon, ObservationCollection observationCollection, 
+			IdCreator idCreator, Double depth){
 		this.station = station;
 		this.sensor = sensor;
 		this.phenomenon = phenomenon;
 		this.observationCollection = observationCollection;
 		this.idCreator = idCreator;
+		this.depth = depth;
 	}
 	
 	// -------------------------------------------------------------------------
@@ -157,12 +159,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		
 		observation.appendChild(createObservedProperty(doc));
 		
-		if(station.isMoving()){
-			observation.appendChild(createMovingFeatureOfInterest(doc));
-		}
-		else{
-			observation.appendChild(createFeatureOfInterest(doc));
-		}
+		observation.appendChild(createFeatureOfInterest(doc));
 		
 		observation.appendChild(createResult(doc, station));
 		
@@ -274,12 +271,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		encoding.appendChild(textBlock);
 		
 		Element values = doc.createElement("swe:values");
-		if(station.isMoving()){
-			values.appendChild(buildMovingValues(doc));
-		}
-		else{
-			values.appendChild(buildValues(doc));
-		}
+		values.appendChild(buildValues(doc));
+		
 		dataArray.appendChild(values);
 		
 		return result;
@@ -290,37 +283,6 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 */
 	private int getNumberOfValues() {
 		return observationCollection.getObservationDates().size();
-	}
-
-	/**
-	 * Builds the values list. Each set of values is separated by a semicolon. 
-	 * Each value in the set of values is separated by a comma. 
-	 * example:
-	 * foi_3234,2012-04-17T20:02:05-0000,10.0;foi_3234,2012-04-17T16:02:05-0000,11.0;foi_3234,2012-04-17T12:02:05-0000,12.0;
-	 */
-	private Node buildMovingValues(Document doc) {
-		
-		List<Calendar> dates = observationCollection.getObservationDates();
-		List<Double> values = observationCollection.getObservationValues();
-		List<Location> locations = observationCollection.getObservationLocations();
-		
-		String text = "";
-		int size = getNumberOfValues();
-		
-		for(int index = 0; index < size; index++){
-			Calendar date = dates.get(index);
-			Double value = values.get(index);
-			Location location = locations.get(index);
-			
-			String featureOfInterestId = 
-					idCreator.createFeatureOfInterestId(station, 
-							sensor, location);
-			
-			text += featureOfInterestId + "," + 
-					formatCalendarIntoGMTTime(date) + "," + value + ";"; 
-		}
-		
-		return doc.createTextNode(text);
 	}
 	
 	/**
@@ -338,7 +300,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		int size = getNumberOfValues();
 		
 		String featureOfInterestId = 
-				idCreator.createFeatureOfInterestId(station, sensor);
+				idCreator.createObservationFeatureOfInterestId(
+						station, sensor, depth);
 		
 		for(int index = 0; index < size; index++){
 			Calendar date = dates.get(index);
@@ -411,110 +374,22 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		
 		return elementType;
 	}
-
-	/**
-	 * 
-	<om:featureOfInterest>
-		<gml:FeatureCollection>
-			<gml:featureMember>
-				<sa:SamplingPoint gml:id="aoos:1111:MV_62.0_-151.0">
-					<gml:name>station at 1111 source Aoos</gml:name>
-					<sa:sampledFeature xlink:href=""/>
-					<sa:position>
-						<gml:Point>
-							<gml:pos srsName="urn:ogc:def:crs:EPSG::4326">-151.0 62.0</gml:pos>
-						</gml:Point>
-					</sa:position>
-				</sa:SamplingPoint>
-			</gml:featureMember>
-			<gml:featureMember>
-				<sa:SamplingPoint gml:id="aoos:1111:MV_62.2_-151.2">
-					<gml:name>station at 1111 source Aoos</gml:name>
-					<sa:sampledFeature xlink:href=""/>
-					<sa:position>
-						<gml:Point>
-							<gml:pos srsName="urn:ogc:def:crs:EPSG::4326">-151.2 62.2</gml:pos>
-						</gml:Point>
-					</sa:position>
-				</sa:SamplingPoint>
-			</gml:featureMember>
-			<gml:featureMember>
-				<sa:SamplingPoint gml:id="aoos:1111:MV_62.4_-151.4">
-					<gml:name>station at 1111 source Aoos</gml:name>
-					<sa:sampledFeature xlink:href=""/>
-					<sa:position>
-						<gml:Point>
-							<gml:pos srsName="urn:ogc:def:crs:EPSG::4326">-151.4 62.4</gml:pos>
-						</gml:Point>
-					</sa:position>
-				</sa:SamplingPoint>
-			</gml:featureMember>
-		</gml:FeatureCollection>
-	</om:featureOfInterest>
-	 */
-	private Node createMovingFeatureOfInterest(Document doc){
-		Element featureOfInterest = doc.createElement("om:featureOfInterest");
-		Element featureCollection = doc.createElement("gml:FeatureCollection");
-		featureOfInterest.appendChild(featureCollection);
-		
-		for (Location location : observationCollection.getObservationLocations()) {
-			Element featureMember = doc.createElement("gml:featureMember");
-			featureCollection.appendChild(featureMember);
-
-			Element samplingPoint = doc.createElement("sa:SamplingPoint");
-
-			String featureOfInterestId = idCreator.createFeatureOfInterestId(
-					station, sensor, location);
-
-			samplingPoint.setAttribute("gml:id", featureOfInterestId);
-			featureMember.appendChild(samplingPoint);
-
-			String featureOfInterestDescription = idCreator
-					.createFeatureOfInterestName(station, sensor);
-
-			Element gmlName = doc.createElement("gml:name");
-			gmlName.appendChild(doc
-					.createTextNode(featureOfInterestDescription));
-			samplingPoint.appendChild(gmlName);
-
-			Element sampledFeature = doc.createElement("sa:sampledFeature");
-			sampledFeature.setAttribute("xlink:href", "");
-			samplingPoint.appendChild(sampledFeature);
-
-			Element position = doc.createElement("sa:position");
-			samplingPoint.appendChild(position);
-
-			Element point = doc.createElement("gml:Point");
-			position.appendChild(point);
-
-			Element pos = doc.createElement("gml:pos");
-			pos.setAttribute("srsName", "urn:ogc:def:crs:EPSG::4326");
-			pos.appendChild(doc.createTextNode(location.getLatitude() + " " + 
-					location.getLongitude()));
-			point.appendChild(pos);
-		}
-		
-		return featureOfInterest;
-	}
 	
 	/**
 	 * Create the Feature of Interest Node
 	 * example
-	 * <om:featureOfInterest>
-	 * 		<gml:FeatureCollection>
-	 * 			<gml:featureMember>
-	 * 				<sa:SamplingPoint gml:id="foi_3234">
-	 * 					<gml:name>The sampling point at station: Anchorage Hillside - AOOS</gml:name>
-	 * 					<sa:sampledFeature xlink:href=""/>
-	 * 					<sa:position>
-	 * 						<gml:Point>
-	 * 							<gml:pos srsName="urn:ogc:def:crs:EPSG::4326">-143.0 63.0</gml:pos>
-	 * 						</gml:Point>
-	 * 					</sa:position>
-	 * 				</sa:SamplingPoint>
-	 * 			</gml:featureMember>
-	 * 		</gml:FeatureCollection>
-	 * </om:featureOfInterest>
+	   <om:featureOfInterest>
+	     <sa:SamplingPoint gml:id="urn:ioos:sensor:aoos:pilotrock:seawatertemp-10m">
+	       <gml:description>Pilot Rock Station, AK Seawater Temperature Sensor (-10 meters)</gml:description>
+	       <gml:name>Pilot Rock, AK Seawater Temp (-10 meters)</gml:name>
+	       <sa:sampledFeature/>
+	       <sa:position>
+	         <gml:Point>
+	           <gml:pos srsName="http://www.opengis.net/def/crs/EPSG/0/4979">59.742 -149.470 -10</gml:pos>
+	         </gml:Point>
+	       </sa:position>
+	     </sa:SamplingPoint>
+	   </om:featureOfInterest>
 	 * 
 	 * @param station - station to get information from
 	 */
@@ -524,13 +399,13 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		Element samplingPoint = doc.createElement("sa:SamplingPoint");
 
 		String featureOfInterestId = 
-				idCreator.createFeatureOfInterestId(station, sensor);
+				idCreator.createObservationFeatureOfInterestId(station, sensor, depth);
 
 		samplingPoint.setAttribute("gml:id", featureOfInterestId);
 		featureOfInterest.appendChild(samplingPoint);
 		
 		String featureOfInterestDescription = 
-				idCreator.createFeatureOfInterestName(station, sensor);
+				idCreator.createObservationFeatureOfInterestName(station, sensor, depth);
 		
 		Element description = doc.createElement("gml:description");
 		description.appendChild(doc.createTextNode(featureOfInterestDescription));
@@ -550,9 +425,19 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		position.appendChild(point);
 		
 		Element pos = doc.createElement("gml:pos");
-		pos.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4326");
-		pos.appendChild(doc.createTextNode(station.getLocation().getLatitude() + 
-				" " + station.getLocation().getLongitude()));
+		pos.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4979");
+		
+		String locationText = "";
+		if (depth != null) {
+			locationText = station.getLocation().getLatitude() + " "
+					+ station.getLocation().getLongitude();
+		} else {
+			locationText = station.getLocation().getLatitude() + " "
+					+ station.getLocation().getLongitude();
+		}
+		
+		pos.appendChild(doc.createTextNode(locationText));
+		
 		point.appendChild(pos);
 		
 		return featureOfInterest;

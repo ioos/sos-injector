@@ -72,19 +72,21 @@ public class CnfaicStationRetriever implements StationRetriever {
 		
 		SosSensorImp airTemperatureSensor = new SosSensorImp();
 		List<Phenomenon> phenomena = new ArrayList<Phenomenon>();
-		phenomena.add(Phenomena.instance().AIR_TEMPERATURE);
+		Phenomenon airTemperature = Phenomena.instance().AIR_TEMPERATURE;
+		phenomena.add(airTemperature);
 		airTemperatureSensor.setPhenomena(phenomena);
-		airTemperatureSensor.setId("Air_Temperature");
-		airTemperatureSensor.setDescription("Air Temperature");
+		airTemperatureSensor.setId(findPhenomenonTag(airTemperature));
+		airTemperatureSensor.setDescription(airTemperature.getName());
 		airTemperatureSensor.addNetwork(airTemperatureNetwork);
 		sensors.add(airTemperatureSensor);
 	
 		SosSensorImp relativeHumiditySensor = new SosSensorImp();
 		phenomena = new ArrayList<Phenomenon>();
-		phenomena.add(Phenomena.instance().RELATIVE_HUMIDITY);
+		Phenomenon relativeHumidity = Phenomena.instance().RELATIVE_HUMIDITY;
+		phenomena.add(relativeHumidity);
 		relativeHumiditySensor.setPhenomena(phenomena);
-		relativeHumiditySensor.setId("Relative_Humidity");
-		relativeHumiditySensor.setDescription("Relative Humidity");
+		relativeHumiditySensor.setId(findPhenomenonTag(relativeHumidity));
+		relativeHumiditySensor.setDescription(relativeHumidity.getName());
 		sensors.add(relativeHumiditySensor);
 		
 		SosSensorImp windSensor = new SosSensorImp();
@@ -93,11 +95,16 @@ public class CnfaicStationRetriever implements StationRetriever {
 		phenomena.add(Phenomena.instance().WIND_FROM_DIRECTION);
 		phenomena.add(Phenomena.instance().WIND_SPEED_OF_GUST);
 		windSensor.setPhenomena(phenomena);
-		windSensor.setId("Wind");
+		windSensor.setId("wind");
 		windSensor.setDescription("Wind");
 		sensors.add(windSensor);
 
 		return sensors;
+	}
+	
+	private String findPhenomenonTag(Phenomenon phenomenon) {
+		int index = phenomenon.getId().lastIndexOf("/") + 1;
+		return phenomenon.getId().substring(index);
 	}
 	
 	private SosStation createArcticValley(SosSource source) throws UnitCreationException{
@@ -107,7 +114,6 @@ public class CnfaicStationRetriever implements StationRetriever {
 		arcticValley.setId(STATION_PREFIX + "arctic_valley");
 		Location location = new Location(61.24, -149.51);
 		arcticValley.setLocation(location);
-		arcticValley.setMoving(false);
 		arcticValley.setSource(source);
 		arcticValley.setSensors(getSensors(arcticValley));
 		arcticValley.setDescription("http://www.cnfaic.org/wx/wx_arctic.php");
@@ -124,7 +130,6 @@ public class CnfaicStationRetriever implements StationRetriever {
 		marmot.setId(STATION_PREFIX + "marmot");
 		Location location = new Location(61.7804, -149.2582);
 		marmot.setLocation(location);
-		marmot.setMoving(false);
 		marmot.setSource(source);
 		marmot.setSensors(getSensors(marmot));
 		marmot.setDescription("http://www.cnfaic.org/wx/wx_marmot.php");
@@ -142,7 +147,6 @@ public class CnfaicStationRetriever implements StationRetriever {
 		fresnoRidge.setId(STATION_PREFIX + "fresno2");
 		Location location = new Location(60.6869, -149.5095);
 		fresnoRidge.setLocation(location);
-		fresnoRidge.setMoving(false);
 		fresnoRidge.setSource(source);
 		fresnoRidge.setSensors(getSensors(fresnoRidge));
 		fresnoRidge.setDescription("http://www.cnfaic.org/wx/wx_summit.php");
@@ -160,7 +164,6 @@ public class CnfaicStationRetriever implements StationRetriever {
 		sunburstRidge.setId(STATION_PREFIX + "sunburst");
 		Location location = new Location(60.7559, -149.1772);
 		sunburstRidge.setLocation(location);
-		sunburstRidge.setMoving(false);
 		sunburstRidge.setSource(source);
 		sunburstRidge.setSensors(getSensors(sunburstRidge));
 		sunburstRidge.setDescription("http://www.cnfaic.org/wx/wx_sunburst.php");
@@ -178,7 +181,6 @@ public class CnfaicStationRetriever implements StationRetriever {
 		seattleRidge.setId(STATION_PREFIX + "seattle");
 		Location location = new Location(60.8338, -149.1593);
 		seattleRidge.setLocation(location);
-		seattleRidge.setMoving(false);
 		seattleRidge.setSource(source);
 		seattleRidge.setSensors(getSensors(seattleRidge));
 		seattleRidge.setDescription("http://www.cnfaic.org/wx/wx_seattle.php");
