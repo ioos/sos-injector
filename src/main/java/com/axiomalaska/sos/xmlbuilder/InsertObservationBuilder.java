@@ -428,9 +428,9 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		pos.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4979");
 		
 		String locationText = "";
-		if (depth != null) {
+		if (depth != null && depth != 0.0) {
 			locationText = station.getLocation().getLatitude() + " "
-					+ station.getLocation().getLongitude();
+					+ station.getLocation().getLongitude() + " " + depth;
 		} else {
 			locationText = station.getLocation().getLatitude() + " "
 					+ station.getLocation().getLongitude();

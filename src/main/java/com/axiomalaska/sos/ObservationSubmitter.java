@@ -258,8 +258,8 @@ public class ObservationSubmitter {
 	 * @param observationRetriever - the data store of observations used to 
 	 * pull observations from
 	 */
-	private void update(SosNetwork network, SosStation station, SosSensor sensor, Phenomenon phenomenon,
-			ObservationRetriever observationRetriever) throws Exception {
+	private void update(SosNetwork network, SosStation station, SosSensor sensor, 
+			Phenomenon phenomenon, ObservationRetriever observationRetriever) throws Exception {
 		Calendar startDateForAllDepths = getNewestObservationDateForAllDepths(network, station, sensor, phenomenon);
 		
 		List<ObservationCollection> observationCollections = observationRetriever

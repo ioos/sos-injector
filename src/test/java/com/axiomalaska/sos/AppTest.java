@@ -46,19 +46,20 @@ public class AppTest {
 //		rootNetwork.setSourceId("aoos");
 //		rootNetwork.setDescription("All inclusive sensor network");
 //		rootNetwork.setLongName("All observations");
+//		rootNetwork.setShortName("All");
 //		
 //		CnfaicObservationUpdaterFactory factory = 
 //				new CnfaicObservationUpdaterFactory();
 //		
 //		ObservationUpdater observationUpdater = factory.buildCnfaicObservationUpdater(
-//				"http://ghidorah:8080/52n-sos-ioos-dev/sos", publisherInfo);
+//				"http://staging1.axiom:8080/52n-sos-ioos-dev/sos", publisherInfo, rootNetwork);
 //		
 //		observationUpdater.update(rootNetwork);
 //	}
 //	
 //	@Test
 //	public void testWithDepth() throws Exception {
-//		String sosUrl = "http://ghidorah:8080/52n-sos-ioos-dev/sos";
+//		String sosUrl = "http://staging1.axiom:8080/52n-sos-ioos-dev/sos";
 //		ObservationSubmitter observationSubmitter = new ObservationSubmitter(sosUrl);
 //		
 //		PublisherInfoImp publisherInfo = new PublisherInfoImp();
@@ -93,6 +94,7 @@ public class AppTest {
 //		station.setName("Anchorage");
 //		station.setPlatformType("buoy");
 //		station.setSource(source);
+//		station.addNetwork(rootNetwork);
 //
 //		ArrayList<SosSensor> sensors = new ArrayList<SosSensor>();
 //		sensors.add(createSensor());

@@ -121,4 +121,8 @@ public class SosStationImp implements SosStation {
 	public void setPlatformType(String platformType){
 		this.platformType = platformType;
 	}
+	
+	public void addNetwork(SosNetwork network){
+		networks.add(network);
+	}
 }

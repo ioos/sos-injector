@@ -20,6 +20,12 @@ import com.axiomalaska.sos.data.SosSource;
 public class CnfaicStationRetriever implements StationRetriever {
 
 	private final String STATION_PREFIX = "cnfaic:";
+	private SosNetwork rootNetwork;
+	
+	public CnfaicStationRetriever(SosNetwork rootNetwork){
+		this.rootNetwork = rootNetwork;
+	}
+	
 	// -------------------------------------------------------------------------
 	// StationRetriever Members
 	// -------------------------------------------------------------------------
@@ -119,6 +125,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		arcticValley.setDescription("http://www.cnfaic.org/wx/wx_arctic.php");
 		arcticValley.setName("Arctic Valley Ridge");
 		arcticValley.setPlatformType("FIXED MET STATION");
+		arcticValley.addNetwork(rootNetwork);
 
 		return arcticValley;
 	}
@@ -135,6 +142,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		marmot.setDescription("http://www.cnfaic.org/wx/wx_marmot.php");
 		marmot.setName("Marmot Ridge in Hatcher Pass");
 		marmot.setPlatformType("FIXED MET STATION");
+		marmot.addNetwork(rootNetwork);
 
 		return marmot;
 	}
@@ -152,6 +160,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		fresnoRidge.setDescription("http://www.cnfaic.org/wx/wx_summit.php");
 		fresnoRidge.setName("Fresno Ridge (Near Summit Lake)");
 		fresnoRidge.setPlatformType("FIXED MET STATION");
+		fresnoRidge.addNetwork(rootNetwork);
 		
 		return fresnoRidge;
 	}
@@ -169,6 +178,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		sunburstRidge.setDescription("http://www.cnfaic.org/wx/wx_sunburst.php");
 		sunburstRidge.setName("Sunburst Ridge");
 		sunburstRidge.setPlatformType("FIXED MET STATION");
+		sunburstRidge.addNetwork(rootNetwork);
 		
 		return sunburstRidge;
 	}
@@ -186,6 +196,7 @@ public class CnfaicStationRetriever implements StationRetriever {
 		seattleRidge.setDescription("http://www.cnfaic.org/wx/wx_seattle.php");
 		seattleRidge.setName("Seattle Ridge");
 		seattleRidge.setPlatformType("FIXED MET STATION");
+		seattleRidge.addNetwork(rootNetwork);
 		
 		return seattleRidge;
 	}
