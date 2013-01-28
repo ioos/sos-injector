@@ -17,8 +17,12 @@ public class IdCreator {
 	public String createFeatureOfInterestId(SosStation station, 
 			SosSensor sensor, Location location){
 		String locationTag = ":" + location.getLatitude() + ":" + location.getLongitude();
-		
-		return "urn:ioos:station:" + station.getId() + ":" + sensor.getId() + locationTag;
+		String authority = getAuthority(station);
+                
+                if (!authority.equals(""))
+                    return "urn:ioos:station:" + authority + ":" + station.getId() + ":" + sensor.getId() + locationTag;
+                else
+                    return "urn:ioos:station:" + station.getId() + ":" + sensor.getId() + locationTag;
 	}
 	
 	public String createFeatureOfInterestName(SosStation station, SosSensor sensor) {
@@ -27,14 +31,42 @@ public class IdCreator {
 	
 	public String createFeatureOfInterestId(SosStation station, 
 			SosSensor sensor){
-		return "urn:ioos:station:" + station.getId();
+                String authority = getAuthority(station);
+                if (!authority.equals(""))
+                    return "urn:ioos:station:" + authority + ":" + station.getId();
+                else
+                    return "urn:ioos:station:" + station.getId();
 	}
 	
 	public String createNetworkId(SosNetwork network){
-		return "urn:ioos:network:" + network.getSourceId() + ":" + network.getId();
+//            if (!network.getId().equals("all"))
+//                return "network-" + network.getSourceId();
+//            else
+//                return "network-all";
+            if (!network.getSourceId().equals(network.getId())) {
+                return "urn:ioos:network:" + network.getSourceId() + ":" + network.getId();
+            } else if (!network.getSourceId().equals("") && !network.getId().equals("all")) {
+                return "urn:ioos:network:" + network.getSourceId() + ":all";
+            } else {
+                return "urn:ioos:network:all";
+            }
 	}
+        
+        public String createNetworkProcedure(SosNetwork network) {
+            if (!network.getSourceId().equals(network.getId())) {
+                return "urn:ioos:network:" + network.getSourceId() + ":" + network.getId();
+            } else if (!network.getSourceId().equals("") && !network.getId().equals("all")) {
+                return "urn:ioos:network:" + network.getSourceId() + ":all";
+            } else {
+                return "urn:ioos:network:all";
+            }
+        }
 	
 	public String createStationId(SosStation station){
+            String authority = getAuthority(station);
+            if (!authority.equals(""))
+                return "urn:ioos:station:" + authority + ":" + station.getId();
+            else
 		return "urn:ioos:station:" + station.getId();
 	}
 	
@@ -49,6 +81,21 @@ public class IdCreator {
 	}
 	
 	public String createSensorId(SosStation station, SosSensor sensor){
+            String authority = getAuthority(station);
+            if (!authority.equals(""))
+                return "urn:ioos:sensor:" + authority + ":" + station.getId() + ":" + sensor.getId();
+            else
 		return "urn:ioos:sensor:" + station.getId() + ":" + sensor.getId();
 	}
+        
+        private String getAuthority(SosStation station) {
+            String authority = "";
+            for (SosNetwork network : station.getNetworks()) {
+                if (!"network-all".equals(network.getSourceId())) {
+                    authority = network.getSourceId();
+                    break;
+                }
+            }
+            return authority;
+        }
 }

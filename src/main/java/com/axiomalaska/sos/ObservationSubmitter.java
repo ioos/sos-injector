@@ -154,9 +154,17 @@ public class ObservationSubmitter {
 	public void update(SosNetwork network, List<SosStation> stations, 
 			ObservationRetriever observationRetriever, 
 			PublisherInfo publisherInfo) throws Exception {
-		for (SosStation station : stations) {
-			update(network, station, observationRetriever, publisherInfo);
-		}
+            // check for existence of network-all, add it if not
+            if (!networkSubmitter.checkNetworkWithSos(createNetworkAll(), publisherInfo, true)) {
+                logger.info("Error creating network " + 
+						idCreator.createNetworkId(createNetworkAll()));
+            }
+            // update the stations
+            for (int i=0; i<stations.size(); i++) {
+                SosStation station = stations.get(i);
+                // update the station
+                update(network, station, observationRetriever, publisherInfo);
+            }
 	}
 
 	/**
@@ -182,6 +190,7 @@ public class ObservationSubmitter {
 
 			if (isStationCreated) {
 				for (SosSensor sensor : station.getSensors()) {
+                                    logger.info("Creating sensor: " + sensor.getId());
 					update(network, station, sensor, observationRetriever, publisherInfo);
 				}
 			}
@@ -723,4 +732,18 @@ public class ObservationSubmitter {
                 
 		return output != null && !output.toLowerCase().contains("exception");
 	}
+        
+        /**
+         * Creates the network-all network which will contain all procedures
+         * @return SosNetwork containing info for network all
+         */
+        private SosNetwork createNetworkAll() {
+            SosNetworkImp netall = new SosNetworkImp();
+            netall.setDescription("Contains all procedures in the SOS Server");
+            netall.setId("all");
+            netall.setLongName("urn:ioos:network:all");
+            netall.setShortName("network-all");
+            netall.setSourceId("all");
+            return netall;
+        }
 }

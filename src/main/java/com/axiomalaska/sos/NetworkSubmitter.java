@@ -29,15 +29,19 @@ public class NetworkSubmitter {
 		this.logger = logger;
 		this.idCreator = idCreator;
 	}
+        
+        public Boolean checkNetworkWithSos(SosNetwork network, PublisherInfo publisherInfo) throws Exception {
+            return checkNetworkWithSos(network, publisherInfo, false);
+        }
 	
 	public Boolean checkNetworkWithSos(SosNetwork network, 
-			PublisherInfo publisherInfo) throws Exception {
+			PublisherInfo publisherInfo, boolean networkAll) throws Exception {
 		if (isNetworkCreated(network) && isOfferingCreated(network)) {
 			return true;
 		}
 		else{
 			Boolean networkCreated = createNewSosNetwork(network, publisherInfo);
-			Boolean offeringCreated = createOffering(network);
+			Boolean offeringCreated = createOffering(network, networkAll);
 			
 			return networkCreated && offeringCreated;
 		}
@@ -70,24 +74,31 @@ public class NetworkSubmitter {
 		}
 	}
 	
-	private Boolean createOffering(SosNetwork network) throws Exception {
+	private Boolean createOffering(SosNetwork network, boolean networkAll) throws Exception {
 		if (!isOfferingCreated(network)) {
 			if (isNetworkCreated(network)) {
-				String procedureId = idCreator.createNetworkId(network);
+				String networkId = idCreator.createNetworkId(network);
+                                
+                                logger.info("Creating offering: " + networkId + "  sourceid: " + network.getSourceId());
+                                        
 				List<HttpPart> httpParts = new ArrayList<HttpPart>();
 				httpParts.add(new HttpPart("request", "CreateOffering"));
-				httpParts.add(new HttpPart("id", procedureId));
+				httpParts.add(new HttpPart("id", networkId));
 				httpParts.add(new HttpPart("name", network.getLongName()));
-				httpParts.add(new HttpPart("procedures", procedureId));
 				httpParts.add(new HttpPart("allObservedProperties", "true"));
 				httpParts.add(new HttpPart("allFeaturesOfInterest", "true"));
-
+                                if (networkAll)
+                                    httpParts.add(new HttpPart("allProcedures", "true"));
+                                else
+                                    httpParts.add(new HttpPart("procedures", idCreator.createNetworkProcedure(network)));
+                                    
 				String response = httpSender.sendGetMessage(getSosAdminUrl(),
 						httpParts);
 
-				if (response != null && response.equals("\"Offering " + procedureId + " created\"")) {
+				if (response != null && response.equals("\"Offering " + networkId + " created\"")) {
 					return true;
 				} else {
+                                    System.err.println(response);
 					return false;
 				}
 			}

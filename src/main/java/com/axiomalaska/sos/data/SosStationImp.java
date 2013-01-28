@@ -17,7 +17,7 @@ public class SosStationImp implements SosStation {
 	private String platformType;
 	private boolean isMoving = false;
 	private List<SosSensor> sensors = new ArrayList<SosSensor>();
-	private List<SosNetwork> networks = new ArrayList<SosNetwork>();
+	private ArrayList<SosNetwork> networks = new ArrayList<SosNetwork>();
 	
 	// -------------------------------------------------------------------------
 	// Public Members
@@ -99,7 +99,10 @@ public class SosStationImp implements SosStation {
 	
         @Override
 	public void setNetworks(List<SosNetwork> networks){
-		this.networks = networks;
+            this.networks = new ArrayList<SosNetwork>();
+            for (SosNetwork net : networks) {
+                this.networks.add(net);
+            }
 	}
 
 	@Override

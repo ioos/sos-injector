@@ -93,35 +93,14 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			
 			system.appendChild(createInputsNode(doc, filteredPhenomena));
                         
-                        // make sure that 'network-all' is listed as a network
-                        boolean hasNetworkAll = false;
-                        for (SosNetwork net : station.getNetworks()) {
-                            if (net.getId().toLowerCase().contains("all"))
-                                hasNetworkAll = true;
-                        }
-                        
-                        // add network-all as an offering
-                        if (!hasNetworkAll) {
-                            SosNetworkImp networkall = new SosNetworkImp();
-                            networkall.setDescription("Includes all the sensors in the network");
-                            networkall.setId("network-all");
-                            ArrayList<SosNetwork> networks = new ArrayList<SosNetwork>();
-                            for (Iterator<SosNetwork> it = station.getNetworks().iterator(); it.hasNext();) {
-                                networks.add(it.next());
-                            }
-                            networks.add(networkall);
-                            system.appendChild(createOutputsNode(doc, phenomena, networks));
-                        } else {
-                            system.appendChild(createOutputsNode(doc, phenomena, station.getNetworks()));
-                        }
-                        
+                        system.appendChild(createOutputsNode(doc, phenomena, station.getNetworks()));
                         
 //			system.appendChild(createOutputsNode(doc, filteredPhenomena));
 			
 			registerSensor.appendChild(createObservationTemplate(doc));
                         
 			String xmlString = getString(doc);
-			
+                        
 			return xmlString;
 		} catch (Exception ex) {
 			System.err.println("Error in register sensor build: - ");
@@ -379,7 +358,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
                         metaDataProperty.appendChild(offering);
 
                         Element idNode = doc.createElement("id");
-                        idNode.appendChild(doc.createTextNode(network.getId()));
+                        idNode.appendChild(doc.createTextNode(idCreator.createNetworkId(network)));
                         offering.appendChild(idNode);
 
                         Element name = doc.createElement("name");

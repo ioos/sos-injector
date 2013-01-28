@@ -162,7 +162,7 @@ public class NetworkRegisterSensorBuilder extends SosXmlBuilder  {
 			registerSensor.appendChild(createObservationTemplate(doc));
 			
 			String xmlString = getString(doc);
-			
+                        
 			return xmlString;
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
@@ -416,7 +416,7 @@ public class NetworkRegisterSensorBuilder extends SosXmlBuilder  {
 	 */
 	private Node createNameNode(Document doc, SosNetwork network) {
 		Element name = doc.createElement("gml:name");
-		name.appendChild(doc.createTextNode(network.getId()));
+		name.appendChild(doc.createTextNode(idCreator.createNetworkProcedure(network)));
 		return name;
 	}
 }
