@@ -13,11 +13,6 @@ public interface SosStation {
 	 * A list of phenomena that this station has readings for
 	 */
 	public List<SosSensor> getSensors();
-	
-	/**
-	 * Is the station moving
-	 */
-	public boolean isMoving();
 
 	/**
 	 * This ID should be unique for each station. For example '11111'

@@ -39,7 +39,7 @@ public class CnfaicObservationRetriever implements ObservationRetriever {
 	// -------------------------------------------------------------------------
 
 	@Override
-	public ObservationCollection getObservationCollection(SosStation station,
+	public List<ObservationCollection> getObservationCollection(SosStation station,
 			SosSensor sensor, Phenomenon phenomenon, Calendar startDate) {
 		String hoursText = calculatedDifferenceFromNow(startDate);
 		
@@ -116,7 +116,12 @@ public class CnfaicObservationRetriever implements ObservationRetriever {
 			observationCollection.setStation(station);
 			observationCollection.setPhenomenon(phenomenon);
 			
-			return observationCollection;
+			ArrayList<ObservationCollection> observationCollections = 
+					new ArrayList<ObservationCollection>();
+			
+			observationCollections.add(observationCollection);
+			
+			return observationCollections;
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return null;

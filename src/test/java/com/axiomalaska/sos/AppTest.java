@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import com.axiomalaska.phenomena.Phenomena;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.phenomena.PhenomenonImp;
 import com.axiomalaska.phenomena.UnitCreationException;
@@ -19,6 +20,7 @@ import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.data.SosNetworkImp;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosSensorImp;
+import com.axiomalaska.sos.data.SosSourceImp;
 import com.axiomalaska.sos.data.SosStationImp;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.data.ObservationCollection;
@@ -44,15 +46,116 @@ public class AppTest {
 //		rootNetwork.setSourceId("aoos");
 //		rootNetwork.setDescription("All inclusive sensor network");
 //		rootNetwork.setLongName("All observations");
+//		rootNetwork.setShortName("All");
 //		
 //		CnfaicObservationUpdaterFactory factory = 
 //				new CnfaicObservationUpdaterFactory();
 //		
 //		ObservationUpdater observationUpdater = factory.buildCnfaicObservationUpdater(
-//				"http://staging1.axiom:8080/52n-sos-ioos-dev/sos", publisherInfo);
+//				"http://staging1.axiom:8080/52n-sos-ioos-dev/sos", publisherInfo, rootNetwork);
 //		
 //		observationUpdater.update(rootNetwork);
 //	}
+//	
+//	@Test
+//	public void testWithDepth() throws Exception {
+//		String sosUrl = "http://staging1.axiom:8080/52n-sos-ioos-dev/sos";
+//		ObservationSubmitter observationSubmitter = new ObservationSubmitter(sosUrl);
+//		
+//		PublisherInfoImp publisherInfo = new PublisherInfoImp();
+//		publisherInfo.setCountry("USA");
+//		publisherInfo.setEmail("john.doe@gmail.com");
+//		publisherInfo.setName("NOAA");
+//		publisherInfo.setWebAddress("www.noaa.gov");
+//		
+//		SosNetworkImp rootNetwork = new SosNetworkImp();
+//		rootNetwork.setId("all");
+//		rootNetwork.setSourceId("aoos");
+//		rootNetwork.setDescription("All inclusive sensor network");
+//		rootNetwork.setLongName("All observations");
+//		
+//		SosSourceImp source = new SosSourceImp();
+//		source.setAddress("address");
+//		source.setCity("city");
+//		source.setCountry("country");
+//		source.setEmail("email");
+//		source.setId("aoos");
+//		source.setName("aoos");
+//		source.setOperatorSector("operatorSector");
+//		source.setState("state");
+//		source.setWebAddress("webAddress");
+//		source.setZipcode("zipcode");
+//
+//		SosStationImp station = new SosStationImp();
+//		station.setDescription("description");
+//		station.setFeatureOfInterestName("featureOfInterestName");
+//		station.setId("aoos:1234");
+//		station.setLocation(new Location(68, -144));
+//		station.setName("Anchorage");
+//		station.setPlatformType("buoy");
+//		station.setSource(source);
+//		station.addNetwork(rootNetwork);
+//
+//		ArrayList<SosSensor> sensors = new ArrayList<SosSensor>();
+//		sensors.add(createSensor());
+//		station.setSensors(sensors);
+//		
+//		List<Calendar> dates = getDates();
+//		for (int count = 0; count < 4; count++) {
+//			ObservationCollection observationCollection = new ObservationCollection();
+//
+//			List<Double> values = getValues(count);
+//			
+//			observationCollection.setStation(station);
+//			observationCollection.setDepth(count*-10.0);
+//			observationCollection.setObservationDates(dates);
+//			observationCollection.setObservationValues(values);
+//			observationCollection
+//					.setPhenomenon(Phenomena.instance().SOIL_TEMPERATURE);
+//			observationCollection.setSensor(createSensor());
+//
+//			
+//			observationSubmitter.update(rootNetwork, observationCollection,
+//					publisherInfo);
+//		}
+//	}
+	
+	private List<Calendar> getDates(){
+		ArrayList<Calendar> dates = new ArrayList<Calendar>();
+		
+		Calendar baseDate = Calendar.getInstance();
+		for(int count = 0; count < 10 ; count++){
+			Calendar date = (Calendar)baseDate.clone();
+			date.add(Calendar.DAY_OF_MONTH, count);
+			dates.add(date);
+		}
+		
+		return dates;
+	}
+	
+	private List<Double> getValues(int times){
+		ArrayList<Double> values = new ArrayList<Double>();
+		
+		for(int count = 0; count < 10 ; count++){
+			values.add((double)count * times);
+		}
+		
+		return values;
+	}
+	
+	private SosSensor createSensor() throws Exception {
+		SosSensorImp sensor = new SosSensorImp();
+		sensor.setDescription("description");
+		sensor.setId("ground_temp");
+		
+		ArrayList<Phenomenon> phenomena = new ArrayList<Phenomenon>();
+		
+		phenomena.add(Phenomena.instance().SOIL_TEMPERATURE);
+		
+		sensor.setPhenomena(phenomena);
+		
+		return sensor;
+	}
 	
 //	@Test
 //	public void test3() throws Exception {
@@ -82,7 +185,7 @@ public class AppTest {
 	
 	private ObservationRetriever createObservationRetriever(){
 		ObservationRetriever observationRetriever = new ObservationRetriever(){
-			public ObservationCollection getObservationCollection(SosStation station, 
+			public List<ObservationCollection> getObservationCollection(SosStation station, 
 					SosSensor sensor, Phenomenon phenomenon, Calendar startDate){
 				ObservationCollection valuesCollection = new ObservationCollection();
 				
@@ -110,7 +213,12 @@ public class AppTest {
 				
 				valuesCollection.setObservationDates(dateValues);
 				
-				return valuesCollection;
+				ArrayList<ObservationCollection> observationCollections = 
+						new ArrayList<ObservationCollection>();
+				
+				observationCollections.add(valuesCollection);
+				
+				return observationCollections;
 			}
 		};
 		

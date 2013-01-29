@@ -1,6 +1,7 @@
 package com.axiomalaska.sos;
 
 import java.util.Calendar;
+import java.util.List;
 
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.data.ObservationCollection;
@@ -24,6 +25,6 @@ public interface ObservationRetriever {
 	 * 
 	 * @return a ObservationCollection with observations or null if no observation were found
 	 */
-	public ObservationCollection getObservationCollection(SosStation station, 
+	public List<ObservationCollection> getObservationCollection(SosStation station, 
 			SosSensor sensor, Phenomenon phenomenon, Calendar startDate);
 }

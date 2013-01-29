@@ -15,7 +15,6 @@ public class SosStationImp implements SosStation {
 	private String description = "";
 	private SosSource source;
 	private String platformType;
-	private boolean isMoving = false;
 	private List<SosSensor> sensors = new ArrayList<SosSensor>();
 	private ArrayList<SosNetwork> networks = new ArrayList<SosNetwork>();
 	
@@ -28,13 +27,6 @@ public class SosStationImp implements SosStation {
 	 */
 	public List<SosSensor> getSensors() {
 		return sensors;
-	}
-	
-	/**
-	 * Is the station moving
-	 */
-	public boolean isMoving() {
-		return isMoving;
 	}
 
 	/**
@@ -61,10 +53,6 @@ public class SosStationImp implements SosStation {
 	 */
 	public Location getLocation() {
 		return location;
-	}
-	
-	public void setMoving(boolean isMoving) {
-		this.isMoving = isMoving;
 	}
 
 	public void setLocation(Location location) {
@@ -138,5 +126,9 @@ public class SosStationImp implements SosStation {
 	
 	public void setPlatformType(String platformType){
 		this.platformType = platformType;
+	}
+	
+	public void addNetwork(SosNetwork network){
+		networks.add(network);
 	}
 }

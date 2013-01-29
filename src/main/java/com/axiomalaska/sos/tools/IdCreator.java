@@ -6,14 +6,13 @@ import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
 
 /**
- * This class is used to create the ID of the objects of the SOS. This was created
- * because of the multiple changes being made to the IDs. 
+ * This class is used to create the ID of the objects of the SOS. This was
+ * created because of the multiple changes being made to the IDs.
  * 
  * @author Lance Finfrock
- *
+ * 
  */
 public class IdCreator {
-	
 	public String createFeatureOfInterestId(SosStation station, 
 			SosSensor sensor, Location location){
 		String locationTag = ":" + location.getLatitude() + ":" + location.getLongitude();
@@ -69,17 +68,15 @@ public class IdCreator {
             else
 		return "urn:ioos:station:" + station.getId();
 	}
-	
-	public String createStationShortName(SosStation station){
+
+	public String createStationShortName(SosStation station) {
 		String[] terms = station.getId().split(":");
-		if(terms.length == 2){
+		if (terms.length == 2) {
 			return terms[1];
-		}
-		else{
+		} else {
 			return "";
 		}
 	}
-	
 	public String createSensorId(SosStation station, SosSensor sensor){
             String authority = getAuthority(station);
             if (!authority.equals(""))
@@ -98,4 +95,16 @@ public class IdCreator {
             }
             return authority;
         }
+
+    public String createObservationFeatureOfInterestId(SosStation station, SosSensor sensor, Double depth) {
+        	return station.getFeatureOfInterestName() + " " + sensor.getDescription() + "(" + depth + " meters)";
+    }
+
+    public String createObservationFeatureOfInterestName(SosStation station, SosSensor sensor, Double depth) {
+        	if (depth != null) {
+                    return createSensorId(station, sensor) + depth + "m";
+                } else {
+                    return createSensorId(station, sensor);
+                }
+    }
 }

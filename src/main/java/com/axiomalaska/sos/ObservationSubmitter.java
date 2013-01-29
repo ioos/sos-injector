@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
 /**
  * This class is used to push observations from a station and it's 
  * phenomena/sensor into the SOS
@@ -115,7 +116,8 @@ public class ObservationSubmitter {
 	 * 
 	 * @param observationCollection - the data used to update the SOS
 	 */
-	public void update(SosNetwork network, ObservationCollection observationCollection,
+	public void update(SosNetwork rootNetwork, 
+			ObservationCollection observationCollection,
 			PublisherInfo publisherInfo) throws Exception {
 		if (isObservationCollectionValid(observationCollection)) {
 			SosStation station = observationCollection.getStation();
@@ -132,7 +134,7 @@ public class ObservationSubmitter {
 							sensor, publisherInfo);
 				}
 				if (isSensorCreated) {
-					insertObservations(network, observationCollection);
+					insertObservations(rootNetwork, observationCollection);
 				}
 			}
 		}
@@ -247,15 +249,19 @@ public class ObservationSubmitter {
 	 * @param observationRetriever - the data store of observations used to 
 	 * pull observations from
 	 */
-	private void update(SosNetwork network, SosStation station, SosSensor sensor, Phenomenon phenomenon,
-			ObservationRetriever observationRetriever) throws Exception {
-		Calendar startDate = getNewestObservationDate(network, station, sensor, phenomenon);
+	private void update(SosNetwork network, SosStation station, SosSensor sensor, 
+			Phenomenon phenomenon, ObservationRetriever observationRetriever) throws Exception {
+		Calendar startDateForAllDepths = getNewestObservationDateForAllDepths(network, station, sensor, phenomenon);
 		
-		ObservationCollection observationCollection = observationRetriever
+		List<ObservationCollection> observationCollections = observationRetriever
 				.getObservationCollection(station, sensor, phenomenon,
-						startDate);
+						startDateForAllDepths);
 
-		insertObservations(network, observationCollection, startDate);
+		for(ObservationCollection observationCollection : observationCollections){
+			Calendar startDate = getNewestObservationDate(network, station, sensor, 
+					phenomenon, observationCollection.getDepth());
+			insertObservations(network, observationCollection, startDate);
+		}
 	}
 	
 	/**
@@ -269,7 +275,7 @@ public class ObservationSubmitter {
 		Calendar newestObservationInSosDate = getNewestObservationDate(network,
 				observationCollection.getStation(),
 				observationCollection.getSensor(),
-				observationCollection.getPhenomenon());
+				observationCollection.getPhenomenon(), observationCollection.getDepth());
 
 		insertObservations(network, observationCollection, newestObservationInSosDate);
 	}
@@ -287,7 +293,7 @@ public class ObservationSubmitter {
 		if (isObservationCollectionValid(observationCollection)) {
 			Calendar oldestDate = getOldestObservationDate(network,
 					observationCollection.getStation(), observationCollection.getSensor(), 
-					observationCollection.getPhenomenon());
+					observationCollection.getPhenomenon(), observationCollection.getDepth());
 			
 			insertObservations(observationCollection, 
 					startDate, oldestDate);
@@ -307,6 +313,7 @@ public class ObservationSubmitter {
 		SosStation station = observationCollection.getStation();
 		SosSensor sensor = observationCollection.getSensor();
 		Phenomenon phenomenon = observationCollection.getPhenomenon();
+		Double depth = observationCollection.getDepth();
 
 		ObservationCollection filteredObservationCollection = removeEnteredObservations(
 				newestObservationInSosDate, oldestObservationInSosDate, 
@@ -317,7 +324,7 @@ public class ObservationSubmitter {
 				InsertObservationBuilder insertObservationBuilder = 
 						new InsertObservationBuilder(
 						station, sensor, phenomenon,
-						filteredObservationCollection, idCreator);
+						filteredObservationCollection, idCreator, depth);
 
 				String insertXml = insertObservationBuilder.build();
 
@@ -437,17 +444,6 @@ public class ObservationSubmitter {
 					+ " phenomenon: " + phenomenon.getId());
 			return false;
 		}
-	    
-	    if(station.isMoving() && 
-	    		observationCollection.getObservationLocations().size() != 
-	    		observationCollection.getObservationValues().size()){
-			logger.info("Moving station does not have the same amount of " +
-					"locations has values. Station name " + idCreator.createStationId(station)
-					+ " sensor: " + sensor.getId() 
-					+ " phenomenon: " + phenomenon.getId());
-			
-	    	return false;
-	    }
 		
 		return true;
 	}
@@ -463,54 +459,66 @@ public class ObservationSubmitter {
 	 * the SOS it returns a date from the first century.
 	 */
 	private Calendar getNewestObservationDate(SosNetwork network, SosStation station,
+			SosSensor sensor, Phenomenon phenomenon, Double depth) throws Exception {
+		GetNewestObservationBuilder getObservationNewestBuilder = 
+				new GetNewestObservationBuilder(station, sensor, 
+						phenomenon, idCreator, network, depth);
+
+		Calendar date = extractDateFromResponse(getObservationNewestBuilder);
+		
+		if(date != null) {
+			date.add(Calendar.MINUTE, 1);
+			return date;
+		}
+		else {
+			logger.debug("No observations found in SOS for Sensor: "
+					+ idCreator.createSensorId(station, sensor) + " phenomonon: "
+					+ phenomenon.getId());
+			Calendar defaultDate = Calendar.getInstance();
+
+			defaultDate.set(1970, Calendar.JANUARY, 1);
+
+			defaultDate.getTime();
+
+			return defaultDate;
+		}
+	}
+	
+	/**
+	 * Get the newest observation date from the SOS server for the station 
+	 * and phenomenon for all depths. 
+	 * 
+	 * @param station - the station to look up the date from
+	 * @param phenomenon - the phenomenon to look up the date from
+	 * 
+	 * @return returns a Calendar object of the newest observation in the SOS 
+	 * from the station phenomenon passed in. If there are no observations in 
+	 * the SOS it returns a date from the first century.
+	 */
+	private Calendar getNewestObservationDateForAllDepths(SosNetwork network, SosStation station,
 			SosSensor sensor, Phenomenon phenomenon) throws Exception {
-		GetNewestObservationBuilder getObservationLatestBuilder = 
+		GetNewestObservationBuilder getObservationNewestBuilder = 
 				new GetNewestObservationBuilder(station, sensor, 
 						phenomenon, idCreator, network);
 
-		String getObservationXml = getObservationLatestBuilder.build();
-
-		String response = httpSender.sendPostMessage(sosUrl, getObservationXml);
+		Calendar date = extractDateFromResponse(getObservationNewestBuilder);
 		
-		if (response != null) {
-			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
-					.newInstance();
-			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			Document doc = docBuilder.parse(new ByteArrayInputStream(response
-					.getBytes()));
-
-			doc.normalize();
-
-			/*
-			 * <om:samplingTime> <gml:TimeInstant
-			 * xsi:type="gml:TimeInstantType">
-			 * <gml:timePosition>2012-05-01T07:00:00.000Z</gml:timePosition>
-			 * </gml:TimeInstant> </om:samplingTime>
-			 */
-			NodeList nodeList = doc.getElementsByTagName("gml:beginPosition");
-
-			if (nodeList.getLength() == 1) {
-
-				Element timePosition = (Element) nodeList.item(0);
-
-				Calendar date = createDate(timePosition.getTextContent());
-
-				date.add(Calendar.MINUTE, 1);
-
-				return date;
-			}
+		if(date != null) {
+			date.add(Calendar.MINUTE, 1);
+			return date;
 		}
-		
-		logger.debug("No observations found in SOS for Sensor: "
-				+ idCreator.createSensorId(station, sensor) + " phenomonon: "
-				+ phenomenon.getId());
-		Calendar defaultDate = Calendar.getInstance();
+		else {
+			logger.debug("No observations found in SOS for Sensor: "
+					+ idCreator.createSensorId(station, sensor) + " phenomonon: "
+					+ phenomenon.getId());
+			Calendar defaultDate = Calendar.getInstance();
 
-		defaultDate.set(1970, Calendar.JANUARY, 1);
+			defaultDate.set(1970, Calendar.JANUARY, 1);
 
-		defaultDate.getTime();
+			defaultDate.getTime();
 
-		return defaultDate;
+			return defaultDate;
+		}
 	}
 	
 	/**
@@ -525,15 +533,37 @@ public class ObservationSubmitter {
 	 */
 	private Calendar getOldestObservationDate(SosNetwork network, 
 			SosStation station,	SosSensor sensor, 
-			Phenomenon phenomenon) throws Exception {
+			Phenomenon phenomenon, Double depth) throws Exception {
 		GetOldestObservationBuilder getOldestObservationBuilder = 
 				new GetOldestObservationBuilder(station, sensor, 
-						phenomenon, idCreator, network);
+						phenomenon, idCreator, network, depth);
 
-		String getObservationXml = getOldestObservationBuilder.build();
+		Calendar date = extractDateFromResponse(getOldestObservationBuilder);
+		
+		if(date != null) {
+			date.add(Calendar.MINUTE, -1);
+			return date;
+		}
+		else {
+			logger.debug("No observations found in SOS for Sensor: "
+					+ idCreator.createSensorId(station, sensor) + " phenomonon: "
+					+ phenomenon.getId());
+			Calendar defaultDate = Calendar.getInstance();
+
+			defaultDate.add(Calendar.YEAR, 1);
+
+			defaultDate.getTime();
+
+			return defaultDate;
+		}
+	}
+
+	private Calendar extractDateFromResponse(SosXmlBuilder sosXmlBuilder)
+			throws Exception {
+		String getObservationXml = sosXmlBuilder.build();
 
 		String response = httpSender.sendPostMessage(sosUrl, getObservationXml);
-		
+
 		if (response != null) {
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
 					.newInstance();
@@ -557,24 +587,13 @@ public class ObservationSubmitter {
 
 				Calendar date = createDate(timePosition.getTextContent());
 
-				date.add(Calendar.MINUTE, -1);
-
 				return date;
 			}
 		}
-		
-		logger.debug("No observations found in SOS for Sensor: "
-				+ idCreator.createSensorId(station, sensor) + " phenomonon: "
-				+ phenomenon.getId());
-		Calendar defaultDate = Calendar.getInstance();
 
-		defaultDate.add(Calendar.YEAR, 1);
-
-		defaultDate.getTime();
-
-		return defaultDate;
+		return null;
 	}
-
+	
 	/**
 	 * Create a Calendar object from a string
 	 * @param dayRawText - the string to convert into a Calendar object

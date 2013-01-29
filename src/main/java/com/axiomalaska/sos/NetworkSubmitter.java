@@ -141,6 +141,6 @@ public class NetworkSubmitter {
 	private String getSosAdminUrl(){
 		int x = sosUrl.lastIndexOf("sos");
 		
-		return sosUrl.substring(0, x) + "/admin";
+		return sosUrl.substring(0, x) + "admin";
 	}
 }

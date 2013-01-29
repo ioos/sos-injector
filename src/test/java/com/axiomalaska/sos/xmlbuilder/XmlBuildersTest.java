@@ -116,7 +116,6 @@ public class XmlBuildersTest {
         List<SosSensor> sensors = new ArrayList<SosSensor>();
         sensors.add( TEST_SENSOR );
         testStation.setSensors( sensors );
-        testStation.setMoving( false );
         return testStation;
     }
     
@@ -186,7 +185,7 @@ public class XmlBuildersTest {
     @Test
     public void testInsertObservationBuilder() throws XmlException {
         String xmlString = new InsertObservationBuilder( TEST_STATION, TEST_SENSOR, TEST_PHENOMENON,
-                TEST_OBSERVATION_COLLECTION, ID_CREATOR ).build();
+                TEST_OBSERVATION_COLLECTION, ID_CREATOR, null ).build();
         InsertObservationDocument insObsDoc = InsertObservationDocument.Factory.parse( xmlString );
         validateXmlDocument( insObsDoc );
     }
