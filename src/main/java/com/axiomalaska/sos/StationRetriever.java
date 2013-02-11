@@ -1,8 +1,7 @@
 package com.axiomalaska.sos;
 
-import java.util.List;
-
 import com.axiomalaska.sos.data.SosStation;
+import java.util.List;
 
 /**
  * The interface to pull SosStation

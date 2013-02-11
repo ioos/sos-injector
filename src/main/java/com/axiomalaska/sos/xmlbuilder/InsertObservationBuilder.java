@@ -121,6 +121,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	 * 	</om:Observation>
 	 * </InsertObservation>
 	 */
+    @Override
 	public String build() {
 		try{
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -164,6 +165,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		observation.appendChild(createResult(doc, station));
 		
 		String xmlString = getString(doc);
+                
         return xmlString;
 	  } catch (Exception ex) {
 		System.err.println(ex.getMessage());
@@ -434,7 +436,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 					+ station.getLocation().getLongitude() + " " + depth;
 		} else {
 			locationText = station.getLocation().getLatitude() + " "
-					+ station.getLocation().getLongitude();
+					+ station.getLocation().getLongitude() + " 0.0";
 		}
 		
 		pos.appendChild(doc.createTextNode(locationText));

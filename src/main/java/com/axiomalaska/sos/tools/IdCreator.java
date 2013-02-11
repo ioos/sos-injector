@@ -97,7 +97,11 @@ public class IdCreator {
         }
 
     public String createObservationFeatureOfInterestId(SosStation station, SosSensor sensor, Double depth) {
-        	return station.getFeatureOfInterestName() + " " + sensor.getDescription() + "(" + depth + " meters)";
+        	if (depth != null) {
+                    return createSensorId(station, sensor) + depth + "m";
+                } else {
+                    return createSensorId(station, sensor);
+                }
     }
 
     public String createObservationFeatureOfInterestName(SosStation station, SosSensor sensor, Double depth) {

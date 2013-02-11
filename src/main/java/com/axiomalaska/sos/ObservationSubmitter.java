@@ -314,6 +314,8 @@ public class ObservationSubmitter {
 		SosSensor sensor = observationCollection.getSensor();
 		Phenomenon phenomenon = observationCollection.getPhenomenon();
 		Double depth = observationCollection.getDepth();
+                
+                logger.info("Inserting observation for:\n" + station.getName() + " - " + sensor.getId() + " - " + phenomenon.getTag() + " - " + depth);
 
 		ObservationCollection filteredObservationCollection = removeEnteredObservations(
 				newestObservationInSosDate, oldestObservationInSosDate, 
@@ -563,8 +565,8 @@ public class ObservationSubmitter {
 		String getObservationXml = sosXmlBuilder.build();
 
 		String response = httpSender.sendPostMessage(sosUrl, getObservationXml);
-
-		if (response != null) {
+                
+		if (response != null & !response.contains("HTTP Status 404")) {
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();

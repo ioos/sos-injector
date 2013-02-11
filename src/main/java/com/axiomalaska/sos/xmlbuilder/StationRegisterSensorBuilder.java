@@ -249,7 +249,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 			registerSensor.appendChild(createObservationTemplate(doc, station));
 			
 			String xmlString = getString(doc);
-			
+                        
 			return xmlString;
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
