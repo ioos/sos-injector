@@ -41,6 +41,25 @@ public interface SosStation {
 	 */
 	public SosSource getSource();
 	
+	
+	/**
+	 * The name of sponsoring parties (zero-many)
+	 * @return
+	 */
+	public String getSponsor();
+	
+	public List<DocumentMember> getDocumentation();
+	
+	public List<HistoryEvent> getHistory();
+	
+	
+	/**
+	 * Optional WMO and/or NDBC/CMAN? ID
+	 * 
+	 * @return if null or "" no WmoID will be created
+	 */
+	public String getWmoId();
+	
 	/**
 	 * A list of networks this station is associated to
 	 * @return

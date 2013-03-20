@@ -15,8 +15,12 @@ public class SosStationImp implements SosStation {
 	private String description = "";
 	private SosSource source;
 	private String platformType;
+	private String wmoId;
+	private String sponsor = "";
 	private List<SosSensor> sensors = new ArrayList<SosSensor>();
-	private ArrayList<SosNetwork> networks = new ArrayList<SosNetwork>();
+	private List<SosNetwork> networks = new ArrayList<SosNetwork>();
+	private List<DocumentMember> documents = new ArrayList<DocumentMember>();
+	private List<HistoryEvent> historyItems = new ArrayList<HistoryEvent>();
 	
 	// -------------------------------------------------------------------------
 	// Public Members
@@ -34,6 +38,32 @@ public class SosStationImp implements SosStation {
 	 */
 	public String getId() {
 		return id;
+	}
+	
+	@Override
+	public String getWmoId(){
+		return wmoId;
+	}
+	
+	public void setWmoId(String wmoId){
+		this.wmoId = wmoId;
+	}
+	
+	/**
+	 * The name of sponsoring parties (zero-many)
+	 * @return
+	 */
+	@Override
+	public String getSponsor(){
+		return sponsor;
+	}
+	
+	public List<DocumentMember> getDocumentation(){
+		return documents;
+	}
+	
+	public List<HistoryEvent> getHistory(){
+		return historyItems;
 	}
 
 	/**
@@ -108,12 +138,24 @@ public class SosStationImp implements SosStation {
 		return name;
 	}
 	
+	public void setSponsor(String sponsor){
+		this.sponsor = sponsor;
+	}
+	
 	public void setSource(SosSource source) {
 		this.source = source;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public void setDocumentation(List<DocumentMember> documents){
+		this.documents = documents;
+	}
+	
+	public void setHistoryEvents(List<HistoryEvent> historyEvents){
+		this.historyItems = historyEvents;
 	}
 
 	public void setName(String name) {
@@ -130,5 +172,13 @@ public class SosStationImp implements SosStation {
 	
 	public void addNetwork(SosNetwork network){
 		networks.add(network);
+	}
+	
+	public void addHistoryEvent(HistoryEvent historyEvent) {
+		historyItems.add(historyEvent);
+	}
+
+	public void addDocumentMember(DocumentMember documentMember) {
+		documents.add(documentMember);
 	}
 }

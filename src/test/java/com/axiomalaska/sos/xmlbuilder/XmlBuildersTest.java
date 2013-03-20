@@ -17,10 +17,6 @@ import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 import org.junit.Test;
 
-import ucar.units.Unit;
-import ucar.units.UnitFormat;
-import ucar.units.UnitFormatManager;
-
 import com.axiomalaska.phenomena.Phenomena;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.phenomena.PhenomenonImp;
@@ -47,9 +43,6 @@ public class XmlBuildersTest {
     private String TEST_STATION_NAME = "Prudhoe Bay Station";
     private String TEST_STATION_PLATFORM_TYPE = "cman";
     private String TEST_SENSOR_ID = "urn:ioos:sensor:aoos:prudhoe:airtemp";
-    private String TEST_PHENOMENON_ID = "http://mmisw.org/ont/cf/parameter/air_temperature";
-    private String TEST_PHENOMENON_NAME = "Air Temperature";
-    private String TEST_PHENOMENON_UNITS = "degC";
     private String TEST_DESCRIPTION = "description";
     private String TEST_FOI_NAME = "Prudhoe Bay";
     private String TEST_EMAIL = "noone@nowhere.com";   
