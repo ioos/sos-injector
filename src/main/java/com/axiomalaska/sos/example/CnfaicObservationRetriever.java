@@ -61,10 +61,15 @@ public class CnfaicObservationRetriever implements ObservationRetriever {
 			Matcher matcher = observationParser.matcher(rawObservationData);
 			List<Calendar> dateValues = new ArrayList<Calendar>();
 			List<Double> dataValues = new ArrayList<Double>();
+			
+			//You need to check the previous date because spring day light 
+			//saving time adds a duplicate date
+			Calendar previousDate = null;
 			while(matcher.find()){
 				String rawDate = matcher.group(DATE_INDEX);
 				Calendar date = createDate(rawDate);
-				if (date.after(startDate)) {
+				if ((previousDate == null || !compareDate(previousDate, date)) && 
+						date.after(startDate)) {
 					
 					dateValues.add(date);
 
@@ -105,6 +110,8 @@ public class CnfaicObservationRetriever implements ObservationRetriever {
 
 						dataValues.add(windGust);
 					}
+					
+					previousDate = date;
 				}
 			}
 			
@@ -132,6 +139,17 @@ public class CnfaicObservationRetriever implements ObservationRetriever {
 	// Private Members
 	// -------------------------------------------------------------------------
 
+	private boolean compareDate(Calendar date1, Calendar date2) {
+		if(date1 == null || date2 == null) return false;
+		boolean areEqual = date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR)
+				&& date1.get(Calendar.MONTH) == date2.get(Calendar.MONTH)
+				&& date1.get(Calendar.DAY_OF_MONTH) == date2
+						.get(Calendar.DAY_OF_MONTH)
+				&& date1.get(Calendar.HOUR_OF_DAY) == date2
+						.get(Calendar.HOUR_OF_DAY);
+		return areEqual;
+	}
+	
 	@SuppressWarnings("deprecation")
 	private Calendar createDate(String rawDate) throws ParseException {
 		Date date = parseDate.parse(rawDate);

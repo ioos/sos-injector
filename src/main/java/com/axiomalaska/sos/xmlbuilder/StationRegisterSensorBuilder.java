@@ -9,6 +9,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.axiomalaska.sos.data.DocumentMember;
+import com.axiomalaska.sos.data.HistoryEvent;
 import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.data.SosSource;
@@ -91,6 +93,12 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 					           <sml:value>BEAVER CREEK ABOVE VICTORIA CREEK NEAR BEAVER 43SE</sml:value>
 					        </sml:Term>
 					     </sml:identifier>
+						  <!-- Optional WMO and/or NDBC/CMAN? ID -->
+				          <sml:identifier name="wmoID">
+				            <sml:Term definition="http://mmisw.org/ont/ioos/definition/wmoID">
+				              <sml:value>41001</sml:value>
+				            </sml:Term>
+				          </sml:identifier>
 					  </sml:IdentifierList>
 				   </sml:identification>
 				   <!-- ======= STATION CLASSIFIERS ======= -->
@@ -114,6 +122,12 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 					           <sml:value>HADS</sml:value>
 					        </sml:Term>
 					     </sml:classifier>
+					      <sml:classifier name="sponsor">
+					        <sml:Term definition="http://mmisw.org/ont/ioos/definition/sponsor">
+					          <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/organization"/>
+					          <sml:value>ACE</sml:value>
+					        </sml:Term>
+					      </sml:classifier>					     
 					     <sml:classifier name="parentNetwork">
 					        <sml:Term definition="urn:ioos:def:classifier:IOOS:parentNetwork">
 					           <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/organization"/>
@@ -239,8 +253,19 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 			
 			system.appendChild(doc.createComment("======= CONTACTS ======="));
 			system.appendChild(createContactOperatorNode(doc, station.getSource()));
-			
 			system.appendChild(createContactPublisherNode(doc));
+			
+			if (station.getDocumentation() != null
+					&& !station.getDocumentation().isEmpty()) {
+				system.appendChild(doc
+						.createComment("======= Documentation ======="));
+				system.appendChild(createDocumentationNode(doc, station));
+			}
+			
+			if (station.getHistory() != null && !station.getHistory().isEmpty()) {
+				system.appendChild(doc.createComment("======= History ======="));
+				system.appendChild(createHistoryNode(doc, station));
+			}
 			
 			system.appendChild(doc.createComment("======= LOCATION ======="));
 			
@@ -260,6 +285,125 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
   // ---------------------------------------------------------------------------
   // Private Members
   // ---------------------------------------------------------------------------
+
+	/**
+	 * 
+      <sml:history>
+        <sml:EventList>
+          <sml:member name="deployment_start">
+            <sml:Event>
+              <sml:date>2010-01-12</sml:date>
+              <gml:description>Deployment start event</gml:description>
+              <sml:documentation xlink:href="http://sdftest.ndbc.noaa.gov/sos/server.php?service=SOS&amp;request=DescribeSensor&amp;version=1.0.0&amp;outputformat=text/xml;subtype=&quot;sensorML/1.0.1&quot;&amp;procedure=urn:ioos:station:wmo:41001:20100112"/>
+            </sml:Event>
+          </sml:member>
+          <sml:member name="deployment_stop">
+            <sml:Event>
+              <sml:date>2011-02-06</sml:date>
+              <gml:description>Deployment stop event</gml:description>
+              <sml:documentation xlink:href="http://sdftest.ndbc.noaa.gov/sos/server.php?service=SOS&amp;request=DescribeSensor&amp;version=1.0.0&amp;outputformat=text/xml;subtype=&quot;sensorML/1.0.1&quot;&amp;procedure=urn:ioos:station:wmo:41001:20100112"/>
+            </sml:Event>
+          </sml:member>
+          <sml:member name="deployment_start">
+            <sml:Event>
+              <sml:date>2011-02-07</sml:date>
+              <gml:description>Deployment start event</gml:description>
+              <sml:documentation xlink:href="http://sdftest.ndbc.noaa.gov/sos/server.php?service=SOS&amp;request=DescribeSensor&amp;version=1.0.0&amp;outputformat=text/xml;subtype=&quot;sensorML/1.0.1&quot;&amp;procedure=urn:ioos:station:wmo:41001:20110207"/>
+            </sml:Event>
+          </sml:member>
+        </sml:EventList>
+      </sml:history>
+	 */
+	private Node createHistoryNode(Document doc, SosStation station) {
+		Element history = doc.createElement("sml:history");
+		Element eventList = doc.createElement("sml:EventList");
+		history.appendChild(eventList);
+		
+		for(HistoryEvent historyEvent : station.getHistory()){
+			Element member = doc.createElement("sml:member");
+			member.setAttribute("name", historyEvent.getName());
+			eventList.appendChild(member);
+			
+			Element event = doc.createElement("sml:Event");
+			member.appendChild(event);
+			
+			//<sml:date>2011-02-07</sml:date>
+			Element dateElemnt = doc.createElement("sml:date");
+			String dateString = String.format("%1$04d-%2$02d-%3$02d", 
+					historyEvent.getYear(), historyEvent.getMonth(), historyEvent.getDay());
+			dateElemnt.appendChild(doc.createTextNode(dateString));
+			event.appendChild(dateElemnt);
+			
+			Element description = doc.createElement("gml:description");
+			description.appendChild(doc.createTextNode(historyEvent.getDescription()));
+			event.appendChild(description);
+			
+			Element documentation = doc.createElement("sml:documentation");
+			documentation.setAttribute("xlink:href", historyEvent.getDocumentationUrl());
+			event.appendChild(documentation);
+		}
+		
+		return history;
+	}
+	
+	/**
+	 * 
+      <sml:documentation>
+        <sml:DocumentList>
+          <sml:member name="qc" xlink:arcrole="qualityControlDocument">
+            <sml:Document>
+              <gml:description>Handbook of Automated Data Quality Control Checks and Procedures, National Data Buoy Center, August 2009</gml:description>
+              <sml:format>pdf</sml:format>
+              <sml:onlineResource xlink:href="http://www.ndbc.noaa.gov/NDBCHandbookofAutomatedDataQualityControl2009.pdf"/>
+            </sml:Document>
+          </sml:member>
+          <sml:member name="wp1" xlink:arcrole="urn:ogc:def:role:webPage">
+            <sml:Document>
+              <gml:description>Station web page from provider</gml:description>
+              <sml:format>text/html</sml:format>
+              <sml:onlineResource xlink:href="STATION_WEBPAGE"/>
+            </sml:Document>
+          </sml:member>
+          <sml:member name="wp2" xlink:arcrole="urn:ogc:def:role:webPage">
+            <sml:Document>
+              <gml:description>Station web page from operator</gml:description>
+              <sml:format>text/html</sml:format>
+              <sml:onlineResource xlink:href="STATION_WEBPAGE"/>
+            </sml:Document>            
+          </sml:member>
+        </sml:DocumentList>
+      </sml:documentation>
+	 */
+	private Node createDocumentationNode(Document doc, SosStation station) {
+		Element documentation = doc.createElement("sml:documentation");
+		Element documentList = doc.createElement("sml:DocumentList");
+		documentation.appendChild(documentList);
+		
+		for (DocumentMember documentMember : station.getDocumentation()) {
+			// <sml:member name="qc" xlink:arcrole="qualityControlDocument">
+			Element member = doc.createElement("sml:member");
+			member.setAttribute("name", documentMember.getName());
+			member.setAttribute("xlink:arcrole", documentMember.getArcrole());
+			documentList.appendChild(member);
+
+			Element document = doc.createElement("sml:Document");
+			member.appendChild(document);
+
+			Element description = doc.createElement("gml:description");
+			description.appendChild(doc.createTextNode(documentMember.getDescription()));
+			document.appendChild(description);
+
+			Element format = doc.createElement("sml:format");
+			format.appendChild(doc.createTextNode(documentMember.getFormat()));
+			document.appendChild(format);
+
+			Element onlineResource = doc.createElement("sml:onlineResource");
+			onlineResource.setAttribute("xlink:href", documentMember.getOnlineResource());
+			document.appendChild(onlineResource);
+		}
+		
+		return documentation;
+	}
 	
 	/**
 	    <sml:contact xlink:role="http://mmisw.org/ont/ioos/definition/operator">
@@ -387,10 +531,16 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 			  </sml:classifier>
 			  <sml:classifier name="publisher">
 			    <sml:Term definition="http://mmisw.org/ont/ioos/definition/publisher">
-			      <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/organizationm"/>
+			      <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/organization"/>
 			      <sml:value>RAWS</sml:value>
 			    </sml:Term>
 			  </sml:classifier>
+	          <sml:classifier name="sponsor">
+	            <sml:Term definition="http://mmisw.org/ont/ioos/definition/sponsor">
+	              <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/organization"/>
+	              <sml:value>ACE</sml:value>
+	            </sml:Term>
+	          </sml:classifier>
 			  <sml:classifier name="parentNetwork">
 			    <sml:Term definition="http://mmisw.org/ont/ioos/definition/parentNetwork">
 			      <sml:codeSpace xlink:href="http://mmisw.org/ont/ioos/organization"/>
@@ -418,6 +568,10 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		classifierList.appendChild(createClassifierNode(doc, "publisher", 
 				"http://mmisw.org/ont/ioos/definition/publisher", "http://mmisw.org/ont/ioos/organization",
 				source.getName()));
+		
+		classifierList.appendChild(createClassifierNode(doc, "sponsor", 
+				"http://mmisw.org/ont/ioos/definition/sponsor", "http://mmisw.org/ont/ioos/organization",
+				station.getSponsor()));
 		
 		classifierList.appendChild(createClassifierNode(doc, "parentNetwork", 
 				"http://mmisw.org/ont/ioos/definition/parentNetwork", "http://mmisw.org/ont/ioos/organization",
@@ -591,6 +745,11 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 			         <sml:value>longName</sml:value>
 			       </sml:Term>
 			    </sml:identifier>
+	          <sml:identifier name="wmoID">
+	            <sml:Term definition="http://mmisw.org/ont/ioos/definition/wmoID">
+	              <sml:value>41001</sml:value>
+	            </sml:Term>
+	          </sml:identifier>
            </sml:IdentifierList>
         </sml:identification>
 	 */
@@ -611,6 +770,12 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		identifierList.appendChild(createIdentifierNode(doc, "longName", 
 				"http://mmisw.org/ont/ioos/definition/longName", 
 				station.getName()));
+		
+		if(station.getWmoId() != null && station.getWmoId().length() > 0){
+			identifierList.appendChild(createIdentifierNode(doc, "wmoID", 
+					"http://mmisw.org/ont/ioos/definition/wmoID", 
+					station.getWmoId()));
+		}
 		
 		return identification;
 	}

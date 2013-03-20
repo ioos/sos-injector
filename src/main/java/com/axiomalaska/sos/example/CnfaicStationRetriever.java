@@ -7,6 +7,8 @@ import com.axiomalaska.phenomena.Phenomena;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.phenomena.UnitCreationException;
 import com.axiomalaska.sos.StationRetriever;
+import com.axiomalaska.sos.data.DocumentMemberImp;
+import com.axiomalaska.sos.data.HistoryEventImp;
 import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.data.SosNetworkImp;
@@ -118,14 +120,21 @@ public class CnfaicStationRetriever implements StationRetriever {
 
 		arcticValley.setFeatureOfInterestName("At station:Arctic Valley Ridge of source: CNFAIC");
 		arcticValley.setId(STATION_PREFIX + "arctic_valley");
-		Location location = new Location(61.24, -149.51);
-		arcticValley.setLocation(location);
+		arcticValley.setLocation(new Location(61.24, -149.51));
 		arcticValley.setSource(source);
+		arcticValley.setSponsor("AlyeskaResort, Bear Tooth, Broken Tooth Brewing");
 		arcticValley.setSensors(getSensors(arcticValley));
 		arcticValley.setDescription("http://www.cnfaic.org/wx/wx_arctic.php");
 		arcticValley.setName("Arctic Valley Ridge");
 		arcticValley.setPlatformType("FIXED MET STATION");
 		arcticValley.addNetwork(rootNetwork);
+		
+		HistoryEventImp deployment = new HistoryEventImp();
+		deployment.setName("deployment_start");
+		deployment.setDate(1980, 12, 12);
+		deployment.setDescription("When the station was first deployed");
+		deployment.setDocumentationUrl("http://www.cnfaic.org/wx/wx_arctic.php");
+		arcticValley.addHistoryEvent(deployment);
 
 		return arcticValley;
 	}
@@ -135,15 +144,36 @@ public class CnfaicStationRetriever implements StationRetriever {
 
 		marmot.setFeatureOfInterestName("At station: Marmot Ridge in Hatcher Pass of source: CNFAIC");
 		marmot.setId(STATION_PREFIX + "marmot");
-		Location location = new Location(61.7804, -149.2582);
-		marmot.setLocation(location);
+		marmot.setLocation(new Location(61.7804, -149.2582));
 		marmot.setSource(source);
+		marmot.setSponsor("AlyeskaResort, Bear Tooth, Broken Tooth Brewing");
 		marmot.setSensors(getSensors(marmot));
 		marmot.setDescription("http://www.cnfaic.org/wx/wx_marmot.php");
 		marmot.setName("Marmot Ridge in Hatcher Pass");
 		marmot.setPlatformType("FIXED MET STATION");
 		marmot.addNetwork(rootNetwork);
 
+		HistoryEventImp deployment = new HistoryEventImp();
+		deployment.setName("deployment_start");
+		deployment.setDate(1980, 7, 2);
+		deployment.setDescription("When the station was first deployed");
+		deployment.setDocumentationUrl("http://www.cnfaic.org/wx/wx_marmot.php");
+		marmot.addHistoryEvent(deployment);
+		
+		HistoryEventImp nonreponsive = new HistoryEventImp();
+		nonreponsive.setName("service_stopped");
+		nonreponsive.setDate(2000, 2, 4);
+		nonreponsive.setDescription("Not receiving readings");
+		nonreponsive.setDocumentationUrl("http://www.cnfaic.org/wx/wx_marmot.php");
+		marmot.addHistoryEvent(nonreponsive);
+		
+		HistoryEventImp serviceFixed = new HistoryEventImp();
+		serviceFixed.setName("service_fixed");
+		serviceFixed.setDate(2000, 6, 4);
+		serviceFixed.setDescription("fixed station");
+		serviceFixed.setDocumentationUrl("http://www.cnfaic.org/wx/wx_marmot.php");
+		marmot.addHistoryEvent(serviceFixed);
+		
 		return marmot;
 	}
 
@@ -156,11 +186,14 @@ public class CnfaicStationRetriever implements StationRetriever {
 		Location location = new Location(60.6869, -149.5095);
 		fresnoRidge.setLocation(location);
 		fresnoRidge.setSource(source);
+		fresnoRidge.setSponsor("AlyeskaResort, Bear Tooth, Broken Tooth Brewing");
 		fresnoRidge.setSensors(getSensors(fresnoRidge));
 		fresnoRidge.setDescription("http://www.cnfaic.org/wx/wx_summit.php");
 		fresnoRidge.setName("Fresno Ridge (Near Summit Lake)");
 		fresnoRidge.setPlatformType("FIXED MET STATION");
 		fresnoRidge.addNetwork(rootNetwork);
+		
+		fresnoRidge.setWmoId("wmofresno2");
 		
 		return fresnoRidge;
 	}
@@ -180,6 +213,22 @@ public class CnfaicStationRetriever implements StationRetriever {
 		sunburstRidge.setPlatformType("FIXED MET STATION");
 		sunburstRidge.addNetwork(rootNetwork);
 		
+		DocumentMemberImp homeWebPage = new DocumentMemberImp();
+		homeWebPage.setName("Home");
+		homeWebPage.setArcrole("urn:ogc:def:role:webPage");
+		homeWebPage.setDescription("The home page of the station");
+		homeWebPage.setFormat("text/html");
+		homeWebPage.setOnlineResource("http://www.cnfaic.org/wx/wx_site.php?site=sunburst");
+		sunburstRidge.addDocumentMember(homeWebPage);
+		
+		DocumentMemberImp southwebcamPage = new DocumentMemberImp();
+		southwebcamPage.setName("southcam");
+		southwebcamPage.setArcrole("urn:ogc:def:role:webPage");
+		southwebcamPage.setDescription("A webcam from the station");
+		southwebcamPage.setFormat("text/html");
+		southwebcamPage.setOnlineResource("http://www.whitewinter.net/Skiinfo/webcams/Sunburstlive/over.php");
+		sunburstRidge.addDocumentMember(southwebcamPage);
+		
 		return sunburstRidge;
 	}
 
@@ -189,14 +238,61 @@ public class CnfaicStationRetriever implements StationRetriever {
 		seattleRidge
 				.setFeatureOfInterestName("At station: Seattle Ridge of source: CNFAIC");
 		seattleRidge.setId(STATION_PREFIX + "seattle");
-		Location location = new Location(60.8338, -149.1593);
-		seattleRidge.setLocation(location);
+		seattleRidge.setLocation(new Location(60.8338, -149.1593));
 		seattleRidge.setSource(source);
 		seattleRidge.setSensors(getSensors(seattleRidge));
+		seattleRidge.setSponsor("AlyeskaResort, Bear Tooth, Broken Tooth Brewing");
 		seattleRidge.setDescription("http://www.cnfaic.org/wx/wx_seattle.php");
 		seattleRidge.setName("Seattle Ridge");
 		seattleRidge.setPlatformType("FIXED MET STATION");
 		seattleRidge.addNetwork(rootNetwork);
+		
+		seattleRidge.setWmoId("wmo1977");
+		
+		HistoryEventImp deployment = new HistoryEventImp();
+		deployment.setName("deployment_start");
+		deployment.setDate(1980, 7, 2);
+		deployment.setDescription("When the station was first deployed");
+		deployment.setDocumentationUrl("http://www.cnfaic.org/wx/wx_site.php?site=seattle");
+		seattleRidge.addHistoryEvent(deployment);
+		
+		HistoryEventImp nonreponsive = new HistoryEventImp();
+		nonreponsive.setName("service_stopped");
+		nonreponsive.setDate(2000, 2, 4);
+		nonreponsive.setDescription("Not receiving readings");
+		nonreponsive.setDocumentationUrl("http://www.cnfaic.org/wx/wx_site.php?site=seattle");
+		seattleRidge.addHistoryEvent(nonreponsive);
+		
+		HistoryEventImp serviceFixed = new HistoryEventImp();
+		serviceFixed.setName("service_fixed");
+		serviceFixed.setDate(2000, 6, 4);
+		serviceFixed.setDescription("fixed station");
+		serviceFixed.setDocumentationUrl("http://www.cnfaic.org/wx/wx_site.php?site=seattle");
+		seattleRidge.addHistoryEvent(serviceFixed);
+		
+		DocumentMemberImp homeWebPage = new DocumentMemberImp();
+		homeWebPage.setName("Home");
+		homeWebPage.setArcrole("urn:ogc:def:role:webPage");
+		homeWebPage.setDescription("The home page of the station");
+		homeWebPage.setFormat("text/html");
+		homeWebPage.setOnlineResource("http://www.cnfaic.org/wx/wx_site.php?site=seattle");
+		seattleRidge.addDocumentMember(homeWebPage);
+		
+		DocumentMemberImp southwebcamPage = new DocumentMemberImp();
+		southwebcamPage.setName("southcam");
+		southwebcamPage.setArcrole("urn:ogc:def:role:webPage");
+		southwebcamPage.setDescription("A south facing webcam from the station");
+		southwebcamPage.setFormat("text/html");
+		southwebcamPage.setOnlineResource("http://www.cnfaic.org/wx/camraw/seattle_one.jpg");
+		seattleRidge.addDocumentMember(southwebcamPage);
+		
+		DocumentMemberImp westWebcamPage = new DocumentMemberImp();
+		westWebcamPage.setName("westcam");
+		westWebcamPage.setArcrole("urn:ogc:def:role:webPage");
+		westWebcamPage.setDescription("A west facing webcam from the station");
+		westWebcamPage.setFormat("text/html");
+		westWebcamPage.setOnlineResource("http://www.cnfaic.org/wx/camraw/seattle_two.jpg");
+		seattleRidge.addDocumentMember(westWebcamPage);
 		
 		return seattleRidge;
 	}
