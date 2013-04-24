@@ -166,6 +166,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		
 		String xmlString = getString(doc);
                 
+                System.out.println(xmlString);
+                
         return xmlString;
 	  } catch (Exception ex) {
 		System.err.println(ex.getMessage());
