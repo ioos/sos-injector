@@ -192,7 +192,6 @@ public class ObservationSubmitter {
 
 			if (isStationCreated) {
 				for (SosSensor sensor : station.getSensors()) {
-                                    logger.info("Creating sensor: " + sensor.getId());
 					update(network, station, sensor, observationRetriever, publisherInfo);
 				}
 			}
@@ -220,10 +219,17 @@ public class ObservationSubmitter {
 			ObservationRetriever observationRetriever, PublisherInfo publisherInfo)
 			throws Exception {
 		if(sensor.getPhenomena().size() > 0){
+                    
 			boolean isSensorCreated = isSensorCreated(station, sensor);
 			
 			if (!isSensorCreated) {
-				isSensorCreated = createNewSosSensor(station, sensor, publisherInfo);
+                            logger.info("Creating sensor: " + sensor.getId());
+                            for (Phenomenon phem : sensor.getPhenomena()) {
+                                Calendar startDateForAllDepths = getNewestObservationDateForAllDepths(network, station, sensor, phem);
+                                for (ObservationCollection oc : observationRetriever.getObservationCollection(station, sensor, phem, startDateForAllDepths)) {
+                                    isSensorCreated = createNewSosSensor(station, sensor, publisherInfo, oc.getDepth());
+                                }
+                            }
 			}
 
 			if (isSensorCreated) {
@@ -315,8 +321,6 @@ public class ObservationSubmitter {
 		Phenomenon phenomenon = observationCollection.getPhenomenon();
 		Double depth = observationCollection.getDepth();
                 
-                logger.info("Inserting observation for:\n" + station.getName() + " - " + sensor.getId() + " - " + phenomenon.getTag() + " - " + depth);
-
 		ObservationCollection filteredObservationCollection = removeEnteredObservations(
 				newestObservationInSosDate, oldestObservationInSosDate, 
 				observationCollection);
@@ -651,9 +655,14 @@ public class ObservationSubmitter {
 			return true;
 		}
 	}
+        
+        private boolean createNewSosSensor(SosStation station, 
+			SosSensor sensor, PublisherInfo publisherInfo) throws Exception {
+            return createNewSosSensor(station, sensor, publisherInfo, Double.NaN);
+        }
 	
 	private boolean createNewSosSensor(SosStation station, 
-			SosSensor sensor, PublisherInfo publisherInfo) throws Exception {
+			SosSensor sensor, PublisherInfo publisherInfo, Double depth) throws Exception {
 		logger.info("Creating sensor: " + 
 			idCreator.createSensorId(station, sensor));
 
@@ -665,7 +674,8 @@ public class ObservationSubmitter {
 		}
 		
 		SensorRegisterSensorBuilder registerSensorBuilder = 
-				new SensorRegisterSensorBuilder(station, sensor, idCreator);
+				new SensorRegisterSensorBuilder(station, sensor, idCreator, depth);
+                
 
 		String xml = registerSensorBuilder.build();
                 
@@ -723,6 +733,7 @@ public class ObservationSubmitter {
 	}
 	
 	private Boolean isSensorCreated(SosStation station, SosSensor sensor) throws Exception {
+            logger.info("Checking sensor: " + sensor.getId());
 		String procedureId = idCreator.createSensorId(station, sensor);
 		DescribeSensorBuilder describeSensorBuilder = new DescribeSensorBuilder(
 				procedureId);

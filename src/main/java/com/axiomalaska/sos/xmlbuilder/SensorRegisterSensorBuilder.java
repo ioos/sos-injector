@@ -26,6 +26,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 	private SosSensor sensor;
 	private IdCreator idCreator;
 	private SosStation station;
+        private Double depth;
 	
   // ---------------------------------------------------------------------------
   // Constructor
@@ -35,6 +36,14 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		this.sensor = sensor;
 		this.idCreator = idCreator;
 		this.station = station;
+                this.depth = Double.NaN;
+	}
+        
+        public SensorRegisterSensorBuilder(SosStation station, SosSensor sensor, IdCreator idCreator, Double depth){
+		this.sensor = sensor;
+		this.idCreator = idCreator;
+		this.station = station;
+                this.depth = depth;
 	}
 	
   // ---------------------------------------------------------------------------
@@ -55,6 +64,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			registerSensor.setAttribute("service", "SOS");
 			registerSensor.setAttribute("version", "1.0.0");
 			registerSensor.setAttribute("xmlns", "http://www.opengis.net/sos/1.0");
+			registerSensor.setAttribute("xmlns:sa", "http://www.opengis.net/sampling/1.0");
 			registerSensor.setAttribute("xmlns:swe", "http://www.opengis.net/swe/1.0.1");
 			registerSensor.setAttribute("xmlns:ows", "http://www.opengeospatial.net/ows");
 			registerSensor.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
@@ -97,7 +107,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
                         
 //			system.appendChild(createOutputsNode(doc, filteredPhenomena));
 			
-			registerSensor.appendChild(createObservationTemplate(doc));
+			registerSensor.appendChild(createObservationTemplate(doc, sensor));
                         
 			String xmlString = getString(doc);
                         
@@ -144,7 +154,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
           </om:Measurement>
         </ObservationTemplate>
 	 */
-	private Node createObservationTemplate(Document doc) {
+	private Node createObservationTemplate(Document doc, SosSensor sensor1) {
 		Element observationTemplate = doc.createElement("ObservationTemplate");
 		
 		Element measurement = doc.createElement("om:Measurement");
@@ -158,9 +168,45 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		
 		Element observedProperty = doc.createElement("om:observedProperty");
 		measurement.appendChild(observedProperty);
-		
-		Element featureOfInterest = doc.createElement("om:featureOfInterest");
+                
+                // need to create a featureOfInterest for the sensor
+                Element featureOfInterest = doc.createElement("om:featureOfInterest");
 		measurement.appendChild(featureOfInterest);
+		
+		Element samplingPoint = doc.createElement("sa:SamplingPoint");
+                if (depth != null && depth != Double.NaN) {
+                    samplingPoint.setAttribute("gml:id", idCreator.createObservationFeatureOfInterestId(station, sensor1, depth));
+                } else {
+                    samplingPoint.setAttribute("gml:id", idCreator.createObservationFeatureOfInterestId(station, sensor1, null));
+                }
+		featureOfInterest.appendChild(samplingPoint);
+		
+		Element description = doc.createElement("gml:description");
+		description.appendChild(doc.createTextNode(sensor1.getDescription()));
+		samplingPoint.appendChild(description);
+		
+		Element name = doc.createElement("gml:name");
+                if (depth != null && depth != Double.NaN) {
+                    name.appendChild(doc.createTextNode(idCreator.createObservationFeatureOfInterestName(station, sensor1, depth)));
+                } else {
+                    name.appendChild(doc.createTextNode(idCreator.createObservationFeatureOfInterestName(station, sensor1, null)));
+                }
+		samplingPoint.appendChild(name);
+		
+		Element sampledFeature = doc.createElement("sa:sampledFeature");
+		samplingPoint.appendChild(sampledFeature);
+		
+		Element position = doc.createElement("sa:position");
+		samplingPoint.appendChild(position);
+		
+		Element point = doc.createElement("gml:Point");
+		position.appendChild(point);
+		
+		Element pos = doc.createElement("gml:pos");
+		pos.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4326");
+		pos.appendChild(doc.createTextNode(station.getLocation().getLatitude() + 
+				" " + station.getLocation().getLongitude()));
+		point.appendChild(pos);
 		
 		Element result = doc.createElement("om:result");
 		result.setAttribute("uom", "");

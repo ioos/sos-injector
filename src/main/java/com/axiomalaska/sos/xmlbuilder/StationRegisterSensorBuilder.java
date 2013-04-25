@@ -672,7 +672,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		measurement.appendChild(featureOfInterest);
 		
 		Element samplingPoint = doc.createElement("sa:SamplingPoint");
-		samplingPoint.setAttribute("gml:id", "foi-pilot-rock");
+		samplingPoint.setAttribute("gml:id", station.getId());
 		featureOfInterest.appendChild(samplingPoint);
 		
 		Element description = doc.createElement("gml:description");
