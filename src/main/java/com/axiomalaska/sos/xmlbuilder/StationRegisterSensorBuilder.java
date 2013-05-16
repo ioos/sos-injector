@@ -274,10 +274,13 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 			registerSensor.appendChild(createObservationTemplate(doc, station));
 			
 			String xmlString = getString(doc);
-			
+                        
 			return xmlString;
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
+                        for (int i=0; i<20 && i <ex.getStackTrace().length; i++) {
+                            System.err.println("\t" + ex.getStackTrace()[i].toString());
+                        }
 		}
 		return null;
 	}
@@ -669,7 +672,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		measurement.appendChild(featureOfInterest);
 		
 		Element samplingPoint = doc.createElement("sa:SamplingPoint");
-		samplingPoint.setAttribute("gml:id", "foi-pilot-rock");
+		samplingPoint.setAttribute("gml:id", station.getId());
 		featureOfInterest.appendChild(samplingPoint);
 		
 		Element description = doc.createElement("gml:description");

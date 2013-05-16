@@ -13,10 +13,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.axiomalaska.phenomena.Phenomenon;
-import com.axiomalaska.sos.data.SosNetwork;
-import com.axiomalaska.sos.data.SosSensor;
-import com.axiomalaska.sos.data.SosStation;
+import com.axiomalaska.sos.data.*;
 import com.axiomalaska.sos.tools.IdCreator;
+import java.util.*;
 
 public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 
@@ -27,6 +26,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 	private SosSensor sensor;
 	private IdCreator idCreator;
 	private SosStation station;
+        private Double depth;
 	
   // ---------------------------------------------------------------------------
   // Constructor
@@ -36,6 +36,14 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		this.sensor = sensor;
 		this.idCreator = idCreator;
 		this.station = station;
+                this.depth = Double.NaN;
+	}
+        
+        public SensorRegisterSensorBuilder(SosStation station, SosSensor sensor, IdCreator idCreator, Double depth){
+		this.sensor = sensor;
+		this.idCreator = idCreator;
+		this.station = station;
+                this.depth = depth;
 	}
 	
   // ---------------------------------------------------------------------------
@@ -56,6 +64,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			registerSensor.setAttribute("service", "SOS");
 			registerSensor.setAttribute("version", "1.0.0");
 			registerSensor.setAttribute("xmlns", "http://www.opengis.net/sos/1.0");
+			registerSensor.setAttribute("xmlns:sa", "http://www.opengis.net/sampling/1.0");
 			registerSensor.setAttribute("xmlns:swe", "http://www.opengis.net/swe/1.0.1");
 			registerSensor.setAttribute("xmlns:ows", "http://www.opengeospatial.net/ows");
 			registerSensor.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
@@ -93,16 +102,19 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			List<Phenomenon> filteredPhenomena = removeDuplicatePhenomena(phenomena);
 			
 			system.appendChild(createInputsNode(doc, filteredPhenomena));
+                        
+                        system.appendChild(createOutputsNode(doc, phenomena, station.getNetworks()));
+                        
+//			system.appendChild(createOutputsNode(doc, filteredPhenomena));
 			
-			system.appendChild(createOutputsNode(doc, filteredPhenomena));
-			
-			registerSensor.appendChild(createObservationTemplate(doc));
-			
+			registerSensor.appendChild(createObservationTemplate(doc, sensor));
+                        
 			String xmlString = getString(doc);
-			
+                        
 			return xmlString;
 		} catch (Exception ex) {
-			System.err.println(ex.getMessage());
+			System.err.println("Error in register sensor build: - ");
+                        ex.printStackTrace();
 		}
 		return null;
 	}
@@ -142,7 +154,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
           </om:Measurement>
         </ObservationTemplate>
 	 */
-	private Node createObservationTemplate(Document doc) {
+	private Node createObservationTemplate(Document doc, SosSensor sensor1) {
 		Element observationTemplate = doc.createElement("ObservationTemplate");
 		
 		Element measurement = doc.createElement("om:Measurement");
@@ -156,9 +168,45 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		
 		Element observedProperty = doc.createElement("om:observedProperty");
 		measurement.appendChild(observedProperty);
-		
-		Element featureOfInterest = doc.createElement("om:featureOfInterest");
+                
+                // need to create a featureOfInterest for the sensor
+                Element featureOfInterest = doc.createElement("om:featureOfInterest");
 		measurement.appendChild(featureOfInterest);
+		
+		Element samplingPoint = doc.createElement("sa:SamplingPoint");
+                if (depth != null && depth != Double.NaN) {
+                    samplingPoint.setAttribute("gml:id", idCreator.createObservationFeatureOfInterestId(station, sensor1, depth));
+                } else {
+                    samplingPoint.setAttribute("gml:id", idCreator.createObservationFeatureOfInterestId(station, sensor1, null));
+                }
+		featureOfInterest.appendChild(samplingPoint);
+		
+		Element description = doc.createElement("gml:description");
+		description.appendChild(doc.createTextNode(sensor1.getDescription()));
+		samplingPoint.appendChild(description);
+		
+		Element name = doc.createElement("gml:name");
+                if (depth != null && depth != Double.NaN) {
+                    name.appendChild(doc.createTextNode(idCreator.createObservationFeatureOfInterestName(station, sensor1, depth)));
+                } else {
+                    name.appendChild(doc.createTextNode(idCreator.createObservationFeatureOfInterestName(station, sensor1, null)));
+                }
+		samplingPoint.appendChild(name);
+		
+		Element sampledFeature = doc.createElement("sa:sampledFeature");
+		samplingPoint.appendChild(sampledFeature);
+		
+		Element position = doc.createElement("sa:position");
+		samplingPoint.appendChild(position);
+		
+		Element point = doc.createElement("gml:Point");
+		position.appendChild(point);
+		
+		Element pos = doc.createElement("gml:pos");
+		pos.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4326");
+		pos.appendChild(doc.createTextNode(station.getLocation().getLatitude() + 
+				" " + station.getLocation().getLongitude()));
+		point.appendChild(pos);
 		
 		Element result = doc.createElement("om:result");
 		result.setAttribute("uom", "");
@@ -199,7 +247,8 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			
 			String unitString = "";
 			if(phenomenon.getUnit() != null){
-				unitString = phenomenon.getUnit().toString();
+                                // toString generates strings w/ whitespace which is against the pattern symbol for UomSymbol, just remove them??
+				unitString = phenomenon.getUnit().toString().replaceAll("\\s+", "");
 			}
 			
 			Element uom = doc.createElement("swe:uom");
@@ -321,4 +370,59 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		
 		return capabilities;
 	}
+
+        /**
+         * Altered outputs node to include the actual networks listed for the station (rather than just network-all)
+         * @param doc
+         * @param filteredPhenomena
+         * @param id
+         * @param description
+         * @return 
+         */
+    private Node createOutputsNode(Document doc, List<Phenomenon> filteredPhenomena, List<SosNetwork> networks) {
+        Element outputs = doc.createElement("sml:outputs");
+		
+		Element outputList = doc.createElement("sml:OutputList");
+		outputs.appendChild(outputList);
+		
+                for(Phenomenon phenomenon : filteredPhenomena){
+                    Element output = doc.createElement("sml:output");
+                    output.setAttribute("name", phenomenon.getName());
+                    outputList.appendChild(output);
+
+                    Element quantity = doc.createElement("swe:Quantity");
+
+                    quantity.setAttribute("definition", phenomenon.getId());
+
+                    output.appendChild(quantity);
+                    
+                    for (SosNetwork network : networks) {
+                        Element metaDataProperty = doc.createElement("gml:metaDataProperty");
+                        quantity.appendChild(metaDataProperty);
+
+                        Element offering = doc.createElement("offering");
+                        metaDataProperty.appendChild(offering);
+
+                        Element idNode = doc.createElement("id");
+                        idNode.appendChild(doc.createTextNode(idCreator.createNetworkId(network)));
+                        offering.appendChild(idNode);
+
+                        Element name = doc.createElement("name");
+                        name.appendChild(doc.createTextNode(network.getDescription()));
+                        offering.appendChild(name);
+                    }
+
+                    String unitString = "";
+                    if(phenomenon.getUnit() != null){
+                            // toString generates strings w/ whitespace which is against the pattern symbol for UomSymbol, just remove them??
+                            unitString = phenomenon.getUnit().toString().replaceAll("\\s+", "");
+                    }
+
+                    Element uom = doc.createElement("swe:uom");
+                uom.setAttribute("code", unitString);
+                    quantity.appendChild(uom);
+                }
+		
+		return outputs;
+    }
 }

@@ -1,38 +1,20 @@
 package com.axiomalaska.sos;
 
+import com.axiomalaska.phenomena.Phenomenon;
+import com.axiomalaska.sos.data.*;
+import com.axiomalaska.sos.tools.HttpSender;
+import com.axiomalaska.sos.tools.IdCreator;
+import com.axiomalaska.sos.xmlbuilder.*;
 import java.io.ByteArrayInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-
+import java.util.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-
-import com.axiomalaska.phenomena.Phenomenon;
-import com.axiomalaska.sos.data.ObservationCollection;
-import com.axiomalaska.sos.data.PublisherInfo;
-import com.axiomalaska.sos.data.SosNetwork;
-import com.axiomalaska.sos.data.SosSensor;
-import com.axiomalaska.sos.data.SosStation;
-import com.axiomalaska.sos.tools.HttpSender;
-import com.axiomalaska.sos.tools.IdCreator;
-import com.axiomalaska.sos.xmlbuilder.DescribeSensorBuilder;
-import com.axiomalaska.sos.xmlbuilder.GetNewestObservationBuilder;
-import com.axiomalaska.sos.xmlbuilder.GetOldestObservationBuilder;
-import com.axiomalaska.sos.xmlbuilder.InsertObservationBuilder;
-import com.axiomalaska.sos.xmlbuilder.SensorRegisterSensorBuilder;
-import com.axiomalaska.sos.xmlbuilder.SosXmlBuilder;
-import com.axiomalaska.sos.xmlbuilder.StationRegisterSensorBuilder;
 
 /**
  * This class is used to push observations from a station and it's 
@@ -174,9 +156,17 @@ public class ObservationSubmitter {
 	public void update(SosNetwork network, List<SosStation> stations, 
 			ObservationRetriever observationRetriever, 
 			PublisherInfo publisherInfo) throws Exception {
-		for (SosStation station : stations) {
-			update(network, station, observationRetriever, publisherInfo);
-		}
+            // check for existence of network-all, add it if not
+            if (!networkSubmitter.checkNetworkWithSos(createNetworkAll(), publisherInfo, true)) {
+                logger.info("Error creating network " + 
+						idCreator.createNetworkId(createNetworkAll()));
+            }
+            // update the stations
+            for (int i=0; i<stations.size(); i++) {
+                SosStation station = stations.get(i);
+                // update the station
+                update(network, station, observationRetriever, publisherInfo);
+            }
 	}
 
 	/**
@@ -229,10 +219,17 @@ public class ObservationSubmitter {
 			ObservationRetriever observationRetriever, PublisherInfo publisherInfo)
 			throws Exception {
 		if(sensor.getPhenomena().size() > 0){
+                    
 			boolean isSensorCreated = isSensorCreated(station, sensor);
 			
 			if (!isSensorCreated) {
-				isSensorCreated = createNewSosSensor(station, sensor, publisherInfo);
+                            logger.info("Creating sensor: " + sensor.getId());
+                            for (Phenomenon phem : sensor.getPhenomena()) {
+                                Calendar startDateForAllDepths = getNewestObservationDateForAllDepths(network, station, sensor, phem);
+                                for (ObservationCollection oc : observationRetriever.getObservationCollection(station, sensor, phem, startDateForAllDepths)) {
+                                    isSensorCreated = createNewSosSensor(station, sensor, publisherInfo, oc.getDepth());
+                                }
+                            }
 			}
 
 			if (isSensorCreated) {
@@ -323,7 +320,7 @@ public class ObservationSubmitter {
 		SosSensor sensor = observationCollection.getSensor();
 		Phenomenon phenomenon = observationCollection.getPhenomenon();
 		Double depth = observationCollection.getDepth();
-
+                
 		ObservationCollection filteredObservationCollection = removeEnteredObservations(
 				newestObservationInSosDate, oldestObservationInSosDate, 
 				observationCollection);
@@ -339,7 +336,7 @@ public class ObservationSubmitter {
 
 				String response = httpSender.sendPostMessage(sosUrl, insertXml);
 
-				if (response == null || response.contains("Exception")) {
+				if (response == null || response.toLowerCase().contains("exception")) {
 					logger.error("Trying to input "
 							+ filteredObservationCollection.getObservationDates()
 									.size() + " observations from sensor: "
@@ -572,8 +569,8 @@ public class ObservationSubmitter {
 		String getObservationXml = sosXmlBuilder.build();
 
 		String response = httpSender.sendPostMessage(sosUrl, getObservationXml);
-
-		if (response != null) {
+                
+		if (response != null & !response.contains("HTTP Status 404")) {
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -646,12 +643,11 @@ public class ObservationSubmitter {
 				new StationRegisterSensorBuilder(station, idCreator, publisherInfo);
 
 		String xml = registerSensorBuilder.build();
-
+                
 		String response = httpSender.sendPostMessage(sosUrl, xml);
 
-		if (response == null || response.contains("Exception")) {
-			logger.error("station: " + idCreator.createStationId(station) + 
-					" = " + response);
+		if (response == null || response.toLowerCase().contains("exception")) {
+			logger.error("station: " + idCreator.createStationId(station) + " = " + response);
 			return false;
 		} else {
 			logger.info("Finished creating station: " + 
@@ -659,9 +655,14 @@ public class ObservationSubmitter {
 			return true;
 		}
 	}
+        
+        private boolean createNewSosSensor(SosStation station, 
+			SosSensor sensor, PublisherInfo publisherInfo) throws Exception {
+            return createNewSosSensor(station, sensor, publisherInfo, Double.NaN);
+        }
 	
 	private boolean createNewSosSensor(SosStation station, 
-			SosSensor sensor, PublisherInfo publisherInfo) throws Exception {
+			SosSensor sensor, PublisherInfo publisherInfo, Double depth) throws Exception {
 		logger.info("Creating sensor: " + 
 			idCreator.createSensorId(station, sensor));
 
@@ -673,13 +674,15 @@ public class ObservationSubmitter {
 		}
 		
 		SensorRegisterSensorBuilder registerSensorBuilder = 
-				new SensorRegisterSensorBuilder(station, sensor, idCreator);
+				new SensorRegisterSensorBuilder(station, sensor, idCreator, depth);
+                
 
 		String xml = registerSensorBuilder.build();
-
+                
 		String response = httpSender.sendPostMessage(sosUrl, xml);
 
-		if (response == null || response.contains("Exception")) {
+		if (response == null || response.toLowerCase().contains("exception")) {
+                        logger.error("error in response to: " + sosUrl + "\n" + xml);
 			logger.error("sensor: " + 
 					idCreator.createSensorId(station, sensor) + " = " + response);
 			return false;
@@ -690,8 +693,47 @@ public class ObservationSubmitter {
 		}
 	}
 	
-	private Boolean isSensorCreated(SosStation station, 
-			SosSensor sensor) throws Exception {
+	/**
+	 * Create a new station in the SOS
+	 * 
+	 * @param station
+	 *            - the station to be created
+	 * @return - [true] if the station was create successfully [false] if else. 
+	 */
+//	private boolean createNewSosNetwork(SosNetwork network) throws Exception {
+//		logger.info("Creating network: " + idCreator.createNetworkId(network));
+//                return false;
+//
+//		NetworkRegisterSensorBuilder registerSensorBuilder = new NetworkRegisterSensorBuilder(
+//				network, idCreator);
+//
+//		String xml = registerSensorBuilder.build();
+//
+//		String response = httpSender.sendPostMessage(sosUrl, xml);
+//
+//		if (response == null || response.toLowerCase().contains("exception")) {
+//			logger.error("network: " + idCreator.createNetworkId(network) + " = " + response);
+//			return false;
+//		} else {
+//			logger.info("Finished creating network: " + idCreator.createNetworkId(network));
+//			return true;
+//		}
+//	}
+	
+	private Boolean isNetworkCreated(SosNetwork network) throws Exception {
+		String procedureId = idCreator.createNetworkId(network);
+		DescribeSensorBuilder describeSensorBuilder = new DescribeSensorBuilder(
+				procedureId);
+
+		String text = describeSensorBuilder.build();
+
+		String output = httpSender.sendPostMessage(sosUrl, text);
+
+		return output != null && !output.toLowerCase().contains("exception");
+	}
+	
+	private Boolean isSensorCreated(SosStation station, SosSensor sensor) throws Exception {
+            logger.info("Checking sensor: " + sensor.getId());
 		String procedureId = idCreator.createSensorId(station, sensor);
 		DescribeSensorBuilder describeSensorBuilder = new DescribeSensorBuilder(
 				procedureId);
@@ -700,7 +742,7 @@ public class ObservationSubmitter {
 
 		String output = httpSender.sendPostMessage(sosUrl, text);
 
-		return output != null && output.contains("SensorML");
+		return output != null && !output.toLowerCase().contains("exception");
 	}
 
 	/**
@@ -719,7 +761,21 @@ public class ObservationSubmitter {
 		String text = describeSensorBuilder.build();
 
 		String output = httpSender.sendPostMessage(sosUrl, text);
-
-		return output != null && output.contains("SensorML");
+                
+		return output != null && !output.toLowerCase().contains("exception");
 	}
+        
+        /**
+         * Creates the network-all network which will contain all procedures
+         * @return SosNetwork containing info for network all
+         */
+        private SosNetwork createNetworkAll() {
+            SosNetworkImp netall = new SosNetworkImp();
+            netall.setDescription("Contains all procedures in the SOS Server");
+            netall.setId("all");
+            netall.setLongName("urn:ioos:network:all");
+            netall.setShortName("network-all");
+            netall.setSourceId("all");
+            return netall;
+        }
 }
