@@ -12,6 +12,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HostConfiguration;
@@ -21,6 +23,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import ucar.ma2.Array;
 
 /**
  * This class is a Helper for interfacing with servers with HTTP. 
@@ -33,7 +36,7 @@ public class HttpSender {
 	// Public Members
 	// -------------------------------------------------------------------------
 	
-	private static int TIME_OUT = 5000;
+	private static int TIME_OUT = 120000;
 			
 	/**
 	 * Send a HTTP post message 
@@ -193,6 +196,59 @@ public class HttpSender {
 		}
 		return strContent.toString();
 	}
+        
+        public String downloadFileConcurrently(String fileUrl, String filename) {
+            BufferedInputStream in = null;
+            byte[] data = null;
+            int bytesRead = 0;
+            int mallocSize = 1048576;
+            
+            FileOutputStream out = null;
+            File file = null;
+            
+            try {
+                URL u = new URL(fileUrl);
+                URLConnection uc = u.openConnection();
+                InputStream raw = uc.getInputStream();
+                in = new BufferedInputStream(raw);
+                System.out.println("Attempting to create file: " + filename + ".zip");
+                file = File.createTempFile(filename, ".zip");
+                out = new FileOutputStream(file);
+
+                // read then write
+                data = new byte[mallocSize];
+                while (bytesRead != -1) {
+                    bytesRead = in.read(data);
+                    if (bytesRead > -1) {
+                        System.out.println("Read in " + bytesRead + " bytes .. writing out");
+                        out.write(data, 0, bytesRead);
+                    } else {
+                        out.flush();
+                    }
+                }
+            } catch (Exception ex) {
+                System.err.println(ex.toString());
+                ex.printStackTrace();
+                return null;
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException ex) {
+                        System.err.println(ex.toString());
+                    }
+                }
+                if(out != null){
+                    try {
+                        out.close();
+                    } catch (IOException ex) {
+                        System.err.println(ex.toString());
+                    }
+                }
+            }
+            
+            return file.getAbsolutePath();
+        }
 
 	public String downloadFile(String fileUrl) throws Exception {
 		URL u = new URL(fileUrl);
@@ -206,14 +262,38 @@ public class HttpSender {
 			contentLength = uc.getContentLength();
 			InputStream raw = uc.getInputStream();
 			in = new BufferedInputStream(raw);
-			data = new byte[contentLength];
-			int bytesRead = 0;
-			while (offset < contentLength && bytesRead != -1) {
-				bytesRead = in.read(data, offset, data.length - offset);
-				if (bytesRead != -1)
-					offset += bytesRead;
-			}
+                        if (contentLength > 0) {
+                            data = new byte[contentLength];
+                            int bytesRead = 0;
+                            while (offset < contentLength && bytesRead != -1) {
+                                    bytesRead = in.read(data, offset, data.length - offset);
+                                    if (bytesRead != -1)
+                                            offset += bytesRead;
+                            }
+                        } else {
+                            // don't know the content length, need to read in 1mb at a time
+                            int mallocSize = 1048576;
+                            data = new byte[mallocSize];
+                            int bytesRead = 0;
+                            while (bytesRead != -1) {
+                                bytesRead = in.read(data, offset, data.length - offset);
+                                if (bytesRead > -1) {
+                                    offset += bytesRead;
+                                    System.out.println("offset now at: " + offset);
+                                    if (offset >= data.length) {
+                                        // increase buffer
+                                        System.out.println("Increasing buffer size by 1mb");
+                                        byte[] temp = java.util.Arrays.copyOf(data, data.length);
+                                        data = java.util.Arrays.copyOf(temp, temp.length + mallocSize);
+                                        // for GC
+                                        temp = null;
+                                    }
+                                }
+                            }
+                        }
 		} catch(Exception e){
+                        System.err.println(e.toString());
+                        e.printStackTrace();
 			return null;
 		}
 		finally {
@@ -222,9 +302,11 @@ public class HttpSender {
 			}
 		}
 
-		if (offset != contentLength) {
+		if (contentLength > 0 && offset != contentLength) {
 //			throw new IOException("Only read " + offset + " bytes; Expected "
 //					+ contentLength + " bytes");
+                        System.err.println("Only read " + offset + " bytes; Expected "
+					+ contentLength + " bytes");
 			return null;
 		}
 
@@ -238,6 +320,8 @@ public class HttpSender {
 			out.write(data);
 			out.flush();
 		} catch(Exception e){
+                        System.err.println(e.toString());
+                        e.printStackTrace();
 			return null;
 		}
 		finally {

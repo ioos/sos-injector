@@ -65,6 +65,8 @@ public interface SosStation {
 	 * @return
 	 */
 	public List<SosNetwork> getNetworks();
+        
+        public void setNetworks(List<SosNetwork> networks);
 
 	public String getDescription();
 
