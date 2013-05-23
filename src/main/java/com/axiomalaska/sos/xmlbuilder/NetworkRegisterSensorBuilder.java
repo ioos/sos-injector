@@ -2,6 +2,8 @@ package com.axiomalaska.sos.xmlbuilder;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -9,7 +11,6 @@ import org.w3c.dom.Node;
 
 import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosNetwork;
-import com.axiomalaska.sos.tools.IdCreator;
 
 public class NetworkRegisterSensorBuilder extends SosXmlBuilder  {
 
@@ -18,17 +19,14 @@ public class NetworkRegisterSensorBuilder extends SosXmlBuilder  {
   // ---------------------------------------------------------------------------
 
 	private SosNetwork network;
-	private IdCreator idCreator;
 	private PublisherInfo publisherInfo;
 	
   // ---------------------------------------------------------------------------
   // Constructor
   // ---------------------------------------------------------------------------
 
-	public NetworkRegisterSensorBuilder(SosNetwork network, IdCreator idCreator, 
-			PublisherInfo publisherInfo){
+	public NetworkRegisterSensorBuilder(SosNetwork network, PublisherInfo publisherInfo){
 		this.network = network;
-		this.idCreator = idCreator;
 		this.publisherInfo = publisherInfo;
 	}
 	
@@ -113,8 +111,10 @@ public class NetworkRegisterSensorBuilder extends SosXmlBuilder  {
 		    </om:Measurement>
 		  </ObservationTemplate>
 		</RegisterSensor>
+	 * @throws TransformerException 
+	 * @throws ParserConfigurationException 
 	 */
-	public String build() {
+	public String build(){
 		try {
 			DocumentBuilderFactory docFactory = 
 					DocumentBuilderFactory.newInstance();
@@ -243,18 +243,21 @@ public class NetworkRegisterSensorBuilder extends SosXmlBuilder  {
 		identification.appendChild(identifierList);
 		
 		//networkId
-		String procedureId = idCreator.createNetworkId(network);
 		identifierList.appendChild(createIdentifier(doc, "networkID", 
-				"http://mmisw.org/ont/ioos/definition/networkID", procedureId));
+				"http://mmisw.org/ont/ioos/definition/networkID", network.getId()));
 		
 		//shortName
-		identifierList.appendChild(createIdentifier(doc, "shortName", 
-				"http://mmisw.org/ont/ioos/definition/shortName", network.getShortName()));
-		
+		if (network.getShortName() != null) {
+    		identifierList.appendChild(createIdentifier(doc, "shortName", 
+    				"http://mmisw.org/ont/ioos/definition/shortName", network.getShortName()));
+		}
+
 		//shortName
-		identifierList.appendChild(createIdentifier(doc, "longName", 
-				"http://mmisw.org/ont/ioos/definition/longName", network.getLongName()));
-		
+		if (network.getLongName() != null) {
+    		identifierList.appendChild(createIdentifier(doc, "longName", 
+    				"http://mmisw.org/ont/ioos/definition/longName", network.getLongName()));
+		}
+
 		return identification;
 	}
 	
@@ -407,7 +410,7 @@ public class NetworkRegisterSensorBuilder extends SosXmlBuilder  {
 	 */
 	private Node createDescriptionNode(Document doc, SosNetwork network) {
 		Element description = doc.createElement("gml:description");
-		description.appendChild(doc.createTextNode(network.getDescription()));
+		description.appendChild(doc.createTextNode(network.getLongName()));
 		return description;
 	}
 	
@@ -416,7 +419,7 @@ public class NetworkRegisterSensorBuilder extends SosXmlBuilder  {
 	 */
 	private Node createNameNode(Document doc, SosNetwork network) {
 		Element name = doc.createElement("gml:name");
-		name.appendChild(doc.createTextNode(idCreator.createNetworkProcedure(network)));
+		name.appendChild(doc.createTextNode(network.getId()));
 		return name;
 	}
 }

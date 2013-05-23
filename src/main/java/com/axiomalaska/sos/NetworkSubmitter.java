@@ -9,7 +9,6 @@ import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.tools.HttpPart;
 import com.axiomalaska.sos.tools.HttpSender;
-import com.axiomalaska.sos.tools.IdCreator;
 import com.axiomalaska.sos.xmlbuilder.DescribeSensorBuilder;
 import com.axiomalaska.sos.xmlbuilder.NetworkRegisterSensorBuilder;
 
@@ -20,14 +19,12 @@ import com.axiomalaska.sos.xmlbuilder.NetworkRegisterSensorBuilder;
  */
 public class NetworkSubmitter {
 	private Logger logger;
-	private IdCreator idCreator;
 	private String sosUrl;
 	private HttpSender httpSender = new HttpSender();
 	
-	public NetworkSubmitter(String sosUrl, Logger logger, IdCreator idCreator){
+	public NetworkSubmitter(String sosUrl, Logger logger){
 		this.sosUrl = sosUrl;
 		this.logger = logger;
-		this.idCreator = idCreator;
 	}
         
         public Boolean checkNetworkWithSos(SosNetwork network, PublisherInfo publisherInfo) throws Exception {
@@ -50,23 +47,21 @@ public class NetworkSubmitter {
 	private Boolean createNewSosNetwork(SosNetwork network, 
 			PublisherInfo publisherInfo) throws Exception {
 		if (!isNetworkCreated(network)) {
-			logger.info("Creating network: "
-					+ idCreator.createNetworkId(network));
+			logger.info("Creating network: " + network.getId());
 
 			NetworkRegisterSensorBuilder registerSensorBuilder = new NetworkRegisterSensorBuilder(
-					network, idCreator, publisherInfo);
+					network, publisherInfo);
 
 			String xml = registerSensorBuilder.build();
 
 			String response = httpSender.sendPostMessage(sosUrl, xml);
 
 			if (response == null || response.contains("Exception")) {
-				logger.error("network: " + idCreator.createNetworkId(network)
+				logger.error("network: " + network.getId()
 						+ " = " + response);
 				return false;
 			} else {
-				logger.info("Finished creating network: "
-						+ idCreator.createNetworkId(network));
+				logger.info("Finished creating network: " + network.getId());
 				return true;
 			}
 		} else {
@@ -77,25 +72,23 @@ public class NetworkSubmitter {
 	private Boolean createOffering(SosNetwork network, boolean networkAll) throws Exception {
 		if (!isOfferingCreated(network)) {
 			if (isNetworkCreated(network)) {
-				String networkId = idCreator.createNetworkId(network);
-                                
-                                logger.info("Creating offering: " + networkId + "  sourceid: " + network.getSourceId());
-                                        
+                logger.info("Creating offering: " + network.getId());
 				List<HttpPart> httpParts = new ArrayList<HttpPart>();
 				httpParts.add(new HttpPart("request", "CreateOffering"));
-				httpParts.add(new HttpPart("id", networkId));
+				httpParts.add(new HttpPart("id", network.getId()));
 				httpParts.add(new HttpPart("name", network.getLongName()));
+				httpParts.add(new HttpPart("procedures", network.getId()));
 				httpParts.add(new HttpPart("allObservedProperties", "true"));
 				httpParts.add(new HttpPart("allFeaturesOfInterest", "true"));
                                 if (networkAll)
                                     httpParts.add(new HttpPart("allProcedures", "true"));
                                 else
-                                    httpParts.add(new HttpPart("procedures", idCreator.createNetworkProcedure(network)));
+                                    httpParts.add(new HttpPart("procedures", network.getId()));
                                     
 				String response = httpSender.sendGetMessage(getSosAdminUrl(),
 						httpParts);
 
-				if (response != null && response.equals("\"Offering " + networkId + " created\"")) {
+				if (response != null && response.equals("\"Offering " + network.getId() + " created\"")) {
 					return true;
 				} else {
                                     System.err.println(response);
@@ -111,10 +104,9 @@ public class NetworkSubmitter {
 	}
 	
 	private Boolean isOfferingCreated(SosNetwork network) throws Exception {
-		String procedureId = idCreator.createNetworkId(network);
 		List<HttpPart> httpParts = new ArrayList<HttpPart>();
 		httpParts.add(new HttpPart("request", "OfferingExists"));
-		httpParts.add(new HttpPart("id", procedureId));
+		httpParts.add(new HttpPart("id", network.getId()));
 		
 		String response = httpSender.sendGetMessage(getSosAdminUrl(), httpParts);
 		
@@ -127,9 +119,7 @@ public class NetworkSubmitter {
 	}
 	
 	private Boolean isNetworkCreated(SosNetwork network) throws Exception {
-		String procedureId = idCreator.createNetworkId(network);
-		DescribeSensorBuilder describeSensorBuilder = new DescribeSensorBuilder(
-				procedureId);
+		DescribeSensorBuilder describeSensorBuilder = new DescribeSensorBuilder(network.getId());
 
 		String text = describeSensorBuilder.build();
 

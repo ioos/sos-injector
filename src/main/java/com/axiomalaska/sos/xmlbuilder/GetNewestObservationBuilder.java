@@ -28,7 +28,6 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	private SosStation station;
 	private SosSensor sensor;
 	private SosNetwork network;
-	private IdCreator idCreator;
 	private Phenomenon phenomenon;
 	private Double depth;
 	private boolean useFoi = true;
@@ -38,22 +37,19 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	// -------------------------------------------------------------------------
 
 	public GetNewestObservationBuilder(SosStation station, SosSensor sensor, 
-			Phenomenon phenomenon, IdCreator idCreator, SosNetwork network) {
+			Phenomenon phenomenon, SosNetwork network) {
 		this.station = station;
 		this.sensor = sensor;
 		this.phenomenon = phenomenon;
-		this.idCreator = idCreator;
 		this.network = network;
 		this.useFoi = false;
 	}
 	
 	public GetNewestObservationBuilder(SosStation station, SosSensor sensor, 
-			Phenomenon phenomenon, IdCreator idCreator, SosNetwork network, 
-			Double depth) {
+			Phenomenon phenomenon, SosNetwork network, Double depth) {
 		this.station = station;
 		this.sensor = sensor;
 		this.phenomenon = phenomenon;
-		this.idCreator = idCreator;
 		this.network = network;
 		this.depth = depth;
 		this.useFoi = true;
@@ -138,8 +134,8 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	private Node createFeatureOfInterest(Document doc) {
 		Element featureOfInterest = doc.createElement("featureOfInterest");
 		
-	    String featureOfInterestId = idCreator.createObservationFeatureOfInterestId(
-				station, sensor, depth);
+	    String featureOfInterestId = IdCreator.createObservationFeatureOfInterestId(
+				sensor, depth);
 		
 		Element offering = doc.createElement("ObjectID");
 		offering.appendChild(doc.createTextNode(featureOfInterestId));
@@ -182,9 +178,8 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	 * <offering>urn:ioos:network:aoos:all</offering>
 	 */
 	private Node createOffering(Document doc) {
-		String networkId = idCreator.createNetworkId(network);
 		Element offering = doc.createElement("offering");
-		offering.appendChild(doc.createTextNode(networkId));
+		offering.appendChild(doc.createTextNode(network.getId()));
 		
 		return offering;
 	}
@@ -215,10 +210,7 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	 */
 	private Node createProcedure(Document doc) {
 		Element procedure = doc.createElement("procedure");
-		
-		String procedureId = idCreator.createSensorId(station, sensor);
-		procedure.appendChild(doc.createTextNode(procedureId));
-
+		procedure.appendChild(doc.createTextNode(sensor.getId()));
 		return procedure;
 	}
 

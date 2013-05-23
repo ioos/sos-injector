@@ -13,9 +13,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.axiomalaska.phenomena.Phenomenon;
-import com.axiomalaska.sos.data.*;
+import com.axiomalaska.sos.data.SosNetwork;
+import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.tools.IdCreator;
-import java.util.*;
 
 public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 
@@ -24,26 +24,20 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
   // ---------------------------------------------------------------------------
 
 	private SosSensor sensor;
-	private IdCreator idCreator;
-	private SosStation station;
-        private Double depth;
+	private Double depth;
 	
   // ---------------------------------------------------------------------------
   // Constructor
   // ---------------------------------------------------------------------------
 
-	public SensorRegisterSensorBuilder(SosStation station, SosSensor sensor, IdCreator idCreator){
+	public SensorRegisterSensorBuilder(SosSensor sensor){
 		this.sensor = sensor;
-		this.idCreator = idCreator;
-		this.station = station;
-                this.depth = Double.NaN;
+		this.depth = Double.NaN;
 	}
         
-        public SensorRegisterSensorBuilder(SosStation station, SosSensor sensor, IdCreator idCreator, Double depth){
+    public SensorRegisterSensorBuilder(SosSensor sensor, Double depth){
 		this.sensor = sensor;
-		this.idCreator = idCreator;
-		this.station = station;
-                this.depth = depth;
+		this.depth = depth;
 	}
 	
   // ---------------------------------------------------------------------------
@@ -89,9 +83,9 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			Element system = doc.createElement("sml:System");
 			member.appendChild(system);
 			
-			system.appendChild(createDescriptionNode(doc, station, sensor));
+			system.appendChild(createDescriptionNode(doc, sensor));
 			
-			system.appendChild(createNameNode(doc, station, sensor));
+			system.appendChild(createNameNode(doc, sensor));
 			
 			system.appendChild(createIdentificationNode(doc));
 			
@@ -103,7 +97,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 			
 			system.appendChild(createInputsNode(doc, filteredPhenomena));
                         
-                        system.appendChild(createOutputsNode(doc, phenomena, station.getNetworks()));
+			system.appendChild(createOutputsNode(doc, phenomena, sensor.getStation().getNetworks()));
                         
 //			system.appendChild(createOutputsNode(doc, filteredPhenomena));
 			
@@ -174,23 +168,15 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		measurement.appendChild(featureOfInterest);
 		
 		Element samplingPoint = doc.createElement("sa:SamplingPoint");
-                if (depth != null && depth != Double.NaN) {
-                    samplingPoint.setAttribute("gml:id", idCreator.createObservationFeatureOfInterestId(station, sensor1, depth));
-                } else {
-                    samplingPoint.setAttribute("gml:id", idCreator.createObservationFeatureOfInterestId(station, sensor1, null));
-                }
+		samplingPoint.setAttribute("gml:id", IdCreator.createObservationFeatureOfInterestId(sensor1, depth));
 		featureOfInterest.appendChild(samplingPoint);
 		
 		Element description = doc.createElement("gml:description");
-		description.appendChild(doc.createTextNode(sensor1.getDescription()));
+		description.appendChild(doc.createTextNode(sensor1.getLongName()));
 		samplingPoint.appendChild(description);
 		
 		Element name = doc.createElement("gml:name");
-                if (depth != null && depth != Double.NaN) {
-                    name.appendChild(doc.createTextNode(idCreator.createObservationFeatureOfInterestName(station, sensor1, depth)));
-                } else {
-                    name.appendChild(doc.createTextNode(idCreator.createObservationFeatureOfInterestName(station, sensor1, null)));
-                }
+		name.appendChild(doc.createTextNode(IdCreator.createObservationFeatureOfInterestName(sensor1, depth)));
 		samplingPoint.appendChild(name);
 		
 		Element sampledFeature = doc.createElement("sa:sampledFeature");
@@ -204,8 +190,8 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		
 		Element pos = doc.createElement("gml:pos");
 		pos.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4326");
-		pos.appendChild(doc.createTextNode(station.getLocation().getLatitude() + 
-				" " + station.getLocation().getLongitude()));
+		pos.appendChild(doc.createTextNode(sensor.getStation().getLocation().getLatitude() + 
+				" " + sensor.getStation().getLocation().getLongitude()));
 		point.appendChild(pos);
 		
 		Element result = doc.createElement("om:result");
@@ -315,8 +301,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		identifier.appendChild(term);
 		
 		Element value = doc.createElement("sml:value");
-		String procedureId = idCreator.createSensorId(station, sensor);
-		value.appendChild(doc.createTextNode(procedureId));
+		value.appendChild(doc.createTextNode(sensor.getId()));
 		term.appendChild(value);
 		
 		return identification;
@@ -325,18 +310,18 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 	/**
 	 * <gml:description>STATION DESCRIPTION</gml:description>
 	 */
-	private Node createDescriptionNode(Document doc, SosStation station, SosSensor sensor) {
+	private Node createDescriptionNode(Document doc, SosSensor sensor) {
 		Element description = doc.createElement("gml:description");
-		description.appendChild(doc.createTextNode(station.getDescription() + ", " + sensor.getDescription()));
+		description.appendChild(doc.createTextNode(sensor.getStation().getLongName() + ", " + sensor.getLongName()));
 		return description;
 	}
 	
 	/**
 	 * <gml:name>urn:ogc:object:feature:Sensor:IFGI:ifgi-sensor-90</gml:name>
 	 */
-	private Node createNameNode(Document doc, SosStation station, SosSensor sensor) {
+	private Node createNameNode(Document doc, SosSensor sensor) {
 		Element name = doc.createElement("gml:name");
-		name.appendChild(doc.createTextNode(idCreator.createSensorId(station, sensor)));
+		name.appendChild(doc.createTextNode(sensor.getId()));
 		return name;
 	}
 	
@@ -359,12 +344,12 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		capabilities.appendChild(simpleDataRecord);
 		
 		Element metaDataProperty = doc.createElement("gml:metaDataProperty");
-		metaDataProperty.setAttribute("xlink:title", idCreator.createStationId(station));
+		metaDataProperty.setAttribute("xlink:title", sensor.getStation().getId());
 		simpleDataRecord.appendChild(metaDataProperty);
 		
 		for(SosNetwork network : sensor.getNetworks()){
 			metaDataProperty = doc.createElement("gml:metaDataProperty");
-			metaDataProperty.setAttribute("xlink:title", idCreator.createNetworkId(network));
+			metaDataProperty.setAttribute("xlink:title", network.getId());
 			simpleDataRecord.appendChild(metaDataProperty);
 		}
 		
@@ -404,11 +389,11 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
                         metaDataProperty.appendChild(offering);
 
                         Element idNode = doc.createElement("id");
-                        idNode.appendChild(doc.createTextNode(idCreator.createNetworkId(network)));
+                        idNode.appendChild(doc.createTextNode(network.getId()));
                         offering.appendChild(idNode);
 
                         Element name = doc.createElement("name");
-                        name.appendChild(doc.createTextNode(network.getDescription()));
+                        name.appendChild(doc.createTextNode(network.getShortName()));
                         offering.appendChild(name);
                     }
 

@@ -30,7 +30,6 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	private SosStation station;
 	private SosSensor sensor;
 	private ObservationCollection observationCollection;
-	private IdCreator idCreator;
 	private Phenomenon phenomenon;
 	private Double depth;
 	
@@ -40,12 +39,11 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	
 	public InsertObservationBuilder(SosStation station, SosSensor sensor, 
 			Phenomenon phenomenon, ObservationCollection observationCollection, 
-			IdCreator idCreator, Double depth){
+			Double depth){
 		this.station = station;
 		this.sensor = sensor;
 		this.phenomenon = phenomenon;
 		this.observationCollection = observationCollection;
-		this.idCreator = idCreator;
 		this.depth = depth;
 	}
 	
@@ -144,10 +142,8 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		insertObservation.setAttribute("version", "1.0.0");
 		doc.appendChild(insertObservation);
 		
-		String procedureId = idCreator.createSensorId(station, sensor);
-		
 		Element assignedSensorId = doc.createElement("AssignedSensorId");
-		assignedSensorId.appendChild(doc.createTextNode(procedureId));
+		assignedSensorId.appendChild(doc.createTextNode(sensor.getId()));
 		insertObservation.appendChild(assignedSensorId);
 		
 		Element observation = doc.createElement("om:Observation");
@@ -155,7 +151,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		insertObservation.appendChild(observation);
 		
 		Element procedure = doc.createElement("om:procedure");
-		procedure.setAttribute("xlink:href", procedureId);
+		procedure.setAttribute("xlink:href", sensor.getId());
 		observation.appendChild(procedure);
 		
 		observation.appendChild(createObservedProperty(doc));
@@ -302,8 +298,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		int size = getNumberOfValues();
 		
 		String featureOfInterestId = 
-				idCreator.createObservationFeatureOfInterestId(
-						station, sensor, depth);
+				IdCreator.createObservationFeatureOfInterestId(sensor, depth);
 		
 		for(int index = 0; index < size; index++){
 			Calendar date = dates.get(index);
@@ -402,13 +397,13 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		Element samplingPoint = doc.createElement("sa:SamplingPoint");
 
 		String featureOfInterestId = 
-				idCreator.createObservationFeatureOfInterestId(station, sensor, depth);
+				IdCreator.createObservationFeatureOfInterestId(sensor, depth);
 
 		samplingPoint.setAttribute("gml:id", featureOfInterestId);
 		featureOfInterest.appendChild(samplingPoint);
 		
 		String featureOfInterestDescription = 
-				idCreator.createObservationFeatureOfInterestName(station, sensor, depth);
+				IdCreator.createObservationFeatureOfInterestName(sensor, depth);
 		
 		Element description = doc.createElement("gml:description");
 		description.appendChild(doc.createTextNode(featureOfInterestDescription));

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.axiomalaska</groupId>
   <artifactId>sos-injection</artifactId>
-  <version>1.0.5-SNAPSHOT</version>
+  <version>1.5.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <distributionManagement>
@@ -29,13 +29,14 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <n52.xml.version>1.1.4</n52.xml.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.8.1</version>
+      <version>4.11</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -56,9 +57,28 @@
     <dependency>
       <groupId>org.n52.sensorweb</groupId>
       <artifactId>52n-xml-sos-v100</artifactId>
-      <version>1.1.1</version>
-      <scope>test</scope>
-    </dependency>      
+      <version>${n52.xml.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.n52.sensorweb</groupId>
+      <artifactId>52n-xml-sos-v20</artifactId>
+      <version>${n52.xml.version}</version>
+    </dependency>    
+    <dependency>
+      <groupId>org.n52.sensorweb</groupId>
+      <artifactId>52n-xml-swes-v20</artifactId>
+      <version>${n52.xml.version}</version>
+    </dependency>          
+    <dependency>
+      <groupId>org.n52.sensorweb</groupId>
+      <artifactId>52n-xml-sensorML-v101</artifactId>
+      <version>${n52.xml.version}</version>
+    </dependency>          
+    <dependency>
+      <groupId>com.axiomalaska</groupId>
+      <artifactId>ioos-sos-common</artifactId>
+      <version>0.1-SNAPSHOT</version>    
+    </dependency>
   </dependencies>
 
   <build>
@@ -73,6 +93,11 @@
           <target>1.6</target>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.14.1</version>
+      </plugin>      
     </plugins>
   </build>
 

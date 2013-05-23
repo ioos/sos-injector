@@ -1,13 +1,14 @@
 package com.axiomalaska.sos;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.junit.Test;
+import org.n52.sos.ioos.asset.SensorAsset;
+import org.n52.sos.ioos.asset.StationAsset;
 
 import com.axiomalaska.phenomena.Phenomena;
 import com.axiomalaska.phenomena.Phenomenon;
@@ -15,17 +16,9 @@ import com.axiomalaska.phenomena.PhenomenonImp;
 import com.axiomalaska.phenomena.UnitCreationException;
 import com.axiomalaska.phenomena.UnitResolver;
 import com.axiomalaska.sos.data.Location;
-import com.axiomalaska.sos.data.PublisherInfoImp;
-import com.axiomalaska.sos.data.SosNetwork;
-import com.axiomalaska.sos.data.SosNetworkImp;
-import com.axiomalaska.sos.data.SosSensor;
-import com.axiomalaska.sos.data.SosSensorImp;
-import com.axiomalaska.sos.data.SosSourceImp;
-import com.axiomalaska.sos.data.SosStationImp;
-import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.data.ObservationCollection;
-import com.axiomalaska.sos.example.CnfaicObservationUpdaterFactory;
-import com.axiomalaska.sos.tools.IdCreator;
+import com.axiomalaska.sos.data.SosSensor;
+import com.axiomalaska.sos.data.SosStation;
 
 public class AppTest {
 	@Test
@@ -144,9 +137,9 @@ public class AppTest {
 	}
 	
 	private SosSensor createSensor() throws Exception {
-		SosSensorImp sensor = new SosSensorImp();
-		sensor.setDescription("description");
-		sensor.setId("ground_temp");
+		SosSensor sensor = new SosSensor();
+		sensor.setAsset(new SensorAsset("authority","station","ground_temp"));
+		sensor.setLongName("description");
 		
 		ArrayList<Phenomenon> phenomena = new ArrayList<Phenomenon>();
 		
@@ -235,9 +228,9 @@ public class AppTest {
 		airTemPhenomenonDepth20.setName("Air Temperature");
 		airTemPhenomenonDepth20.setUnit(unitResolver.resolveUnit("C"));
 		phenomena.add(airTemPhenomenonDepth20);
-		SosSensorImp airTem20Sensor = new SosSensorImp();
-		airTem20Sensor.setId("Air Temperature");
-		airTem20Sensor.setDescription("Air Temperature at 20 meters");
+		SosSensor airTem20Sensor = new SosSensor();
+		airTem20Sensor.setAsset(new SensorAsset("authority","station","air_temperature_20"));
+		airTem20Sensor.setLongName("Air Temperature at 20 meters");
 		airTem20Sensor.setPhenomena(phenomena);
 		
 		sensors.add(airTem20Sensor);
@@ -248,18 +241,17 @@ public class AppTest {
 		airTemPhenomenonDepth10.setName("Air Temperature");
 		airTemPhenomenonDepth10.setUnit(unitResolver.resolveUnit("C"));
 		phenomena.add(airTemPhenomenonDepth10);
-		SosSensorImp airTem10Sensor = new SosSensorImp();
-		airTem10Sensor.setId("Air Temperature");
-		airTem10Sensor.setDescription("Air Temperature at 10 meters");
+		SosSensor airTem10Sensor = new SosSensor();
+		airTem20Sensor.setAsset(new SensorAsset("authority","station","air_temperature_10"));
+		airTem10Sensor.setLongName("Air Temperature at 10 meters");
 		airTem10Sensor.setPhenomena(phenomena);
 		
 		sensors.add(airTem10Sensor);
 		
-		SosStationImp station = new SosStationImp();
-		
+		SosStation station = new SosStation();
+		station.setAsset(new StationAsset("authority","station6"));
 		station.setLocation(new Location(63.0, -143.0));
 		station.setFeatureOfInterestName("Sonoma House - AOOS");
-		station.setId("6");
 		station.setSensors(sensors);
 		
 		return station;

@@ -1,32 +1,25 @@
 package com.axiomalaska.sos.data;
 
-/**
- * This interface represents a Network in an SOS. A Network is a tag used to 
- * collect sensors or stations across all the stations and sources. For example 
- * one can create a Network for all the Air temperature sensors.
- * 
- * @author Lance Finfrock
- */
-public interface SosNetwork {
+import org.n52.sos.ioos.asset.NetworkAsset;
 
-	/**
-	 * This ID should be unique for each network
-	 * 
-	 * example "oceanacidif"
-	 * @return
-	 */
-	public String getId();
+public class SosNetwork extends AbstractSosAsset {
+	private NetworkAsset asset;
+	private PublisherInfo publisherInfo;
 	
-	public String getDescription();
-	
-	/**
-	 * The ID of the Network's source
-	 * example "nanoos"
-	 * @return
-	 */
-	public String getSourceId();
+	@Override
+	public NetworkAsset getAsset() {
+		return asset;
+	}
 
-	public String getLongName();
+	public void setAsset(NetworkAsset asset) {
+		this.asset = asset;
+	}
 
-	public String getShortName();
+    public PublisherInfo getPublisherInfo() {
+        return publisherInfo;
+    }
+
+    public void setPublisherInfo(PublisherInfo publisherInfo) {
+        this.publisherInfo = publisherInfo;
+    }
 }

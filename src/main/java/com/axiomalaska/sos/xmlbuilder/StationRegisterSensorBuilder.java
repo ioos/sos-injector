@@ -15,7 +15,6 @@ import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.data.SosSource;
 import com.axiomalaska.sos.data.SosStation;
-import com.axiomalaska.sos.tools.IdCreator;
 
 public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 
@@ -24,17 +23,14 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
   // ---------------------------------------------------------------------------
 
 	private SosStation station;
-	private IdCreator idCreator;
 	private PublisherInfo publisherInfo;
 	
   // ---------------------------------------------------------------------------
   // Constructor
   // ---------------------------------------------------------------------------
 
-	public StationRegisterSensorBuilder(SosStation station, IdCreator idCreator, 
-			PublisherInfo publisherInfo){
+	public StationRegisterSensorBuilder(SosStation station, PublisherInfo publisherInfo){
 		this.station = station;
-		this.idCreator = idCreator;
 		this.publisherInfo = publisherInfo;
 	}
 	
@@ -617,7 +613,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 	 */
 	private Node createDescriptionNode(Document doc, SosStation station) {
 		Element description = doc.createElement("gml:description");
-		description.appendChild(doc.createTextNode(station.getDescription()));
+		description.appendChild(doc.createTextNode(station.getLongName()));
 		return description;
 	}
 	
@@ -626,7 +622,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 	 */
 	private Node createNameNode(Document doc, SosStation station) {
 		Element name = doc.createElement("gml:name");
-		name.appendChild(doc.createTextNode(idCreator.createStationId(station)));
+		name.appendChild(doc.createTextNode(station.getId()));
 		return name;
 	}
 	
@@ -676,11 +672,11 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		featureOfInterest.appendChild(samplingPoint);
 		
 		Element description = doc.createElement("gml:description");
-		description.appendChild(doc.createTextNode(station.getDescription()));
+		description.appendChild(doc.createTextNode(station.getLongName()));
 		samplingPoint.appendChild(description);
 		
 		Element name = doc.createElement("gml:name");
-		name.appendChild(doc.createTextNode(station.getName()));
+		name.appendChild(doc.createTextNode(station.getShortName()));
 		samplingPoint.appendChild(name);
 		
 		Element sampledFeature = doc.createElement("sa:sampledFeature");
@@ -763,16 +759,13 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		identification.appendChild(identifierList);
 		
 		identifierList.appendChild(createIdentifierNode(doc, "stationID", 
-				"http://mmisw.org/ont/ioos/definition/stationID", 
-				idCreator.createStationId(station)));
+				"http://mmisw.org/ont/ioos/definition/stationID", station.getId()));
 		
 		identifierList.appendChild(createIdentifierNode(doc, "shortName", 
-				"http://mmisw.org/ont/ioos/definition/shortName", 
-				idCreator.createStationShortName(station)));
+				"http://mmisw.org/ont/ioos/definition/shortName", station.getShortName()));
 		
 		identifierList.appendChild(createIdentifierNode(doc, "longName", 
-				"http://mmisw.org/ont/ioos/definition/longName", 
-				station.getName()));
+				"http://mmisw.org/ont/ioos/definition/longName", station.getLongName())); 
 		
 		if(station.getWmoId() != null && station.getWmoId().length() > 0){
 			identifierList.appendChild(createIdentifierNode(doc, "wmoID", 
@@ -828,7 +821,7 @@ public class StationRegisterSensorBuilder extends SosXmlBuilder  {
 		
 		for(SosNetwork network : networks){
 			Element metaDataProperty = doc.createElement("gml:metaDataProperty");
-			metaDataProperty.setAttribute("xlink:title", idCreator.createNetworkId(network));
+			metaDataProperty.setAttribute("xlink:title", network.getId());
 			simpleDataRecord.appendChild(metaDataProperty);
 		}
 		

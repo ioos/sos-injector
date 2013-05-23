@@ -1,6 +1,5 @@
 package com.axiomalaska.sos.data;
 
-import java.util.Calendar;
 
 /**
  * Used in creating the history element for the station sensorML

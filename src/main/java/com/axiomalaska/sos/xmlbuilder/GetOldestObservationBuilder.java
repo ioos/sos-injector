@@ -27,7 +27,6 @@ public class GetOldestObservationBuilder extends SosXmlBuilder {
 
 	private SosStation station;
 	private SosSensor sensor;
-	private IdCreator idCreator;
 	private Phenomenon phenomenon;
 	private SosNetwork network;
 	private Double depth;
@@ -37,12 +36,10 @@ public class GetOldestObservationBuilder extends SosXmlBuilder {
 	// -------------------------------------------------------------------------
 
 	public GetOldestObservationBuilder(SosStation station, SosSensor sensor, 
-			Phenomenon phenomenon, IdCreator idCreator, SosNetwork network, 
-			Double depth) {
+			Phenomenon phenomenon, SosNetwork network, Double depth) {
 		this.station = station;
 		this.sensor = sensor;
 		this.phenomenon = phenomenon;
-		this.idCreator = idCreator;
 		this.network = network;
 		this.depth = depth;
 	}
@@ -124,8 +121,7 @@ public class GetOldestObservationBuilder extends SosXmlBuilder {
 	private Node createFeatureOfInterest(Document doc) {
 		Element featureOfInterest = doc.createElement("featureOfInterest");
 		
-	    String featureOfInterestId = idCreator.createObservationFeatureOfInterestId(
-				station, sensor, depth);
+	    String featureOfInterestId = IdCreator.createObservationFeatureOfInterestId(sensor, depth);
 		
 		Element offering = doc.createElement("ObjectID");
 		offering.appendChild(doc.createTextNode(featureOfInterestId));
@@ -168,9 +164,8 @@ public class GetOldestObservationBuilder extends SosXmlBuilder {
 	 * <offering>urn:ioos:network:aoos:all</offering>
 	 */
 	private Node createOffering(Document doc) {
-		String networkId = idCreator.createNetworkId(network);
 		Element offering = doc.createElement("offering");
-		offering.appendChild(doc.createTextNode(networkId));
+		offering.appendChild(doc.createTextNode(network.getId()));
 		
 		return offering;
 	}
@@ -201,10 +196,7 @@ public class GetOldestObservationBuilder extends SosXmlBuilder {
 	 */
 	private Node createProcedure(Document doc) {
 		Element procedure = doc.createElement("procedure");
-		
-		String procedureId = idCreator.createSensorId(station, sensor);
-		procedure.appendChild(doc.createTextNode(procedureId));
-
+		procedure.appendChild(doc.createTextNode(sensor.getId()));
 		return procedure;
 	}
 
