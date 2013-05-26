@@ -84,6 +84,11 @@
       <artifactId>ioos-sos-common</artifactId>
       <version>0.1-SNAPSHOT</version>    
     </dependency>
+	<dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>2.2</version>
+	</dependency>
   </dependencies>
 
   <build>
