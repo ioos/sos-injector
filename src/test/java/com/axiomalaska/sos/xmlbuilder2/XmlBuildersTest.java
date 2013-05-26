@@ -53,4 +53,14 @@ public class XmlBuildersTest extends AbstractXmlBuildersTest {
     public void testGetResultTemplateBuilder() throws Exception {
         validateXmlDocument( new GetResultTemplateBuilder(TEST_SENSOR, TEST_PHENOMENON).build() );
     }
+
+    @Test
+    public void testGetNewestObservationBuilder() throws Exception {
+        validateXmlDocument( new GetNewestObservationBuilder(TEST_SENSOR, TEST_PHENOMENON, -5.0).build() );
+    }
+
+    @Test
+    public void testGetLatestTemplateBuilder() throws Exception {
+        validateXmlDocument( new GetOldestObservationBuilder(TEST_SENSOR, TEST_PHENOMENON, -5.0).build() );
+    }    
 }

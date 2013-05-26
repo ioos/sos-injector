@@ -85,7 +85,7 @@ public class ObservationSubmitter {
 	}
 
 	/**
-	 * ObservationUpdater built with a custom logger
+	 * ObservationSubmitter built with a custom logger
 	 * 
 	 * @param sosUrl - the URL to the SOS server
 	 * @param logger - custom logger. Used to log information from the update process
@@ -211,13 +211,13 @@ public class ObservationSubmitter {
 			boolean isSensorCreated = isSensorCreated(station, sensor);
 			
 			if (!isSensorCreated) {
-                            logger.info("Creating sensor: " + sensor.getId());
-                            for (Phenomenon phem : sensor.getPhenomena()) {
-                                Calendar startDateForAllDepths = getNewestObservationDateForAllDepths(network, station, sensor, phem);
-                                for (ObservationCollection oc : observationRetriever.getObservationCollection(station, sensor, phem, startDateForAllDepths)) {
-                                    isSensorCreated = createNewSosSensor(sensor, publisherInfo, oc.getHeight());
-                                }
-                            }
+                logger.info("Creating sensor: " + sensor.getId());
+                for (Phenomenon phem : sensor.getPhenomena()) {
+                    Calendar startDateForAllDepths = getNewestObservationDateForAllDepths(network, station, sensor, phem);
+                    for (ObservationCollection oc : observationRetriever.getObservationCollection(station, sensor, phem, startDateForAllDepths)) {
+                        isSensorCreated = createNewSosSensor(sensor, publisherInfo, oc.getHeight());
+                    }
+                }
 			}
 
 			if (isSensorCreated) {

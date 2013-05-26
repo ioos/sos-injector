@@ -38,4 +38,6 @@ public class XmlNamespaceConstants {
     public static final String NS_GML = "http://www.opengis.net/gml";
     public static final String NS_GML_32 = "http://www.opengis.net/gml/3.2";
     public static final String NS_GML_PREFIX = "gml";
+    public static final String NS_FES_2 = "http://www.opengis.net/fes/2.0";
+    public static final String NS_FES_2_PREFIX = "fes";    
 }

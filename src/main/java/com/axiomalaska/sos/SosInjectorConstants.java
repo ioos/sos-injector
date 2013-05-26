@@ -21,6 +21,9 @@ public class SosInjectorConstants {
     public static final String RESULT_TEMPLATE_BLOCK_SEPARATOR = "#";
     public static final String RESULT_TEMPLATE_DECIMAL_SEPARATOR = ".";
     
+    public static final String LATEST = "latest";
+    public static final String FIRST = "first";
+    
     public static final QName QN_SOSINSERTIONMETADATA = new QName(
             XmlNamespaceConstants.NS_SOS_20, "SosInsertionMetadata", XmlNamespaceConstants.NS_SOS_PREFIX);
     
@@ -53,5 +56,7 @@ public class SosInjectorConstants {
 
     public static final QName QN_SWE_QUANTITY_SWE2 = new QName(
             XmlNamespaceConstants.NS_SWE_20, "Quantity", XmlNamespaceConstants.NS_SWE_PREFIX);
-    
+
+    public static final QName QN_TEQUALS = new QName(
+            XmlNamespaceConstants.NS_FES_2, "TEquals", XmlNamespaceConstants.NS_FES_2_PREFIX);
 }

@@ -74,6 +74,7 @@ public final class XmlOptionsHelper {
         prefixMap.put(XmlNamespaceConstants.NS_GML_32, XmlNamespaceConstants.NS_GML_PREFIX);
         prefixMap.put(XmlNamespaceConstants.NS_SAMS, XmlNamespaceConstants.NS_SAMS_PREFIX);
         prefixMap.put(XmlNamespaceConstants.NS_SF, XmlNamespaceConstants.NS_SF_PREFIX);
+        prefixMap.put(XmlNamespaceConstants.NS_FES_2, XmlNamespaceConstants.NS_FES_2_PREFIX);
         return prefixMap;
     }
 

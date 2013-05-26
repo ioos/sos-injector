@@ -8,7 +8,7 @@ import com.axiomalaska.sos.data.SosNetwork;
 import java.util.logging.Level;
 
 /**
- * This class is used to update the a SOS server
+ * This class is used to update the SOS server
  * 
  * @author lance Finfrock
  */
