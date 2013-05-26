@@ -24,7 +24,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
   // ---------------------------------------------------------------------------
 
 	private SosSensor sensor;
-	private Double depth;
+	private Double height;
 	
   // ---------------------------------------------------------------------------
   // Constructor
@@ -32,12 +32,12 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 
 	public SensorRegisterSensorBuilder(SosSensor sensor){
 		this.sensor = sensor;
-		this.depth = Double.NaN;
+		this.height = Double.NaN;
 	}
         
-    public SensorRegisterSensorBuilder(SosSensor sensor, Double depth){
+    public SensorRegisterSensorBuilder(SosSensor sensor, Double height){
 		this.sensor = sensor;
-		this.depth = depth;
+		this.height = height;
 	}
 	
   // ---------------------------------------------------------------------------
@@ -118,7 +118,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
   // ---------------------------------------------------------------------------
 
 	/**
-	 * A station can have more than one phenomenon with the same id, but the depth
+	 * A station can have more than one phenomenon with the same id, but the height
 	 * of the phenomenon must be different. 
 	 * 
 	 * @param phenomena - the list of phenomena to remove duplicates from
@@ -168,7 +168,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		measurement.appendChild(featureOfInterest);
 		
 		Element samplingPoint = doc.createElement("sa:SamplingPoint");
-		samplingPoint.setAttribute("gml:id", IdCreator.createObservationFeatureOfInterestId(sensor1, depth));
+		samplingPoint.setAttribute("gml:id", IdCreator.createObservationFeatureOfInterestId(sensor1, height));
 		featureOfInterest.appendChild(samplingPoint);
 		
 		Element description = doc.createElement("gml:description");
@@ -176,7 +176,7 @@ public class SensorRegisterSensorBuilder extends SosXmlBuilder  {
 		samplingPoint.appendChild(description);
 		
 		Element name = doc.createElement("gml:name");
-		name.appendChild(doc.createTextNode(IdCreator.createObservationFeatureOfInterestName(sensor1, depth)));
+		name.appendChild(doc.createTextNode(IdCreator.createObservationFeatureOfInterestName(sensor1, height)));
 		samplingPoint.appendChild(name);
 		
 		Element sampledFeature = doc.createElement("sa:sampledFeature");

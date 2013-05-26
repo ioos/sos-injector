@@ -27,7 +27,7 @@ public class ObservationCollection {
 	private Phenomenon phenomenon;
 	private List<Double> observationValues = new ArrayList<Double>();
 	private List<Calendar> observationDates = new ArrayList<Calendar>();
-	private Double depth = null;
+	private Double height = null;
 	
 	// -------------------------------------------------------------------------
 	// Public Members
@@ -38,12 +38,12 @@ public class ObservationCollection {
 	 * 
 	 * @return
 	 */
-	public Double getDepth() {
-		return depth;
+	public Double getHeight() {
+		return height;
 	}
 
-	public void setDepth(Double depth) {
-		this.depth = depth;
+	public void setHeight(Double height) {
+		this.height = height;
 	}
 	
 	public Phenomenon getPhenomenon() {

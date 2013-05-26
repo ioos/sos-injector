@@ -29,4 +29,26 @@ public class XmlHelper {
         }       
     }
 
+    /**
+     * Utility method to append the contents of the child docment to the end of
+     * the parent XmlObject. This is useful when dealing with elements without
+     * generated methods (like elements with xs:any)
+     * 
+     * @param parent
+     *            Parent to append contents to
+     * @param childDoc
+     *            Xml document containing contents to be appended
+     */
+    public static void append(XmlObject parent, XmlObject childDoc) {
+        XmlCursor parentCursor = parent.newCursor();
+        parentCursor.toEndToken();
+
+        XmlCursor childCursor = childDoc.newCursor();
+        childCursor.toFirstChild();
+
+        childCursor.moveXml(parentCursor);
+        parentCursor.dispose();
+        childCursor.dispose();
+    }    
+    
 }

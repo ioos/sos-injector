@@ -29,19 +29,19 @@ public class GetOldestObservationBuilder extends SosXmlBuilder {
 	private SosSensor sensor;
 	private Phenomenon phenomenon;
 	private SosNetwork network;
-	private Double depth;
+	private Double height;
 	
 	// -------------------------------------------------------------------------
 	// Constructor
 	// -------------------------------------------------------------------------
 
 	public GetOldestObservationBuilder(SosStation station, SosSensor sensor, 
-			Phenomenon phenomenon, SosNetwork network, Double depth) {
+			Phenomenon phenomenon, SosNetwork network, Double height) {
 		this.station = station;
 		this.sensor = sensor;
 		this.phenomenon = phenomenon;
 		this.network = network;
-		this.depth = depth;
+		this.height = height;
 	}
 
 	// -------------------------------------------------------------------------
@@ -116,12 +116,12 @@ public class GetOldestObservationBuilder extends SosXmlBuilder {
 	/**
  	  <featureOfInterest>
 		  <ObjectID>foi_13774</ObjectID>
-	  </featureOfInterest>
+	  </featureOfInterest>w
 	 */
 	private Node createFeatureOfInterest(Document doc) {
 		Element featureOfInterest = doc.createElement("featureOfInterest");
 		
-	    String featureOfInterestId = IdCreator.createObservationFeatureOfInterestId(sensor, depth);
+	    String featureOfInterestId = IdCreator.createObservationFeatureOfInterestId(sensor, height);
 		
 		Element offering = doc.createElement("ObjectID");
 		offering.appendChild(doc.createTextNode(featureOfInterestId));

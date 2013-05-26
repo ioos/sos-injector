@@ -14,20 +14,44 @@ public class SosInjectorConstants {
     public static final String MEASUREMENT_DEF = "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement";
     public static final String SAMPLING_POINT_DEF = "http://www.opengis.net/def/samplingFeatureType/OGC-OM/2.0/SF_SamplingPoint";
     public static final String PHENOMENON_TIME = "phenomenonTime";
+    public static final String UNKNOWN_DEF = "http://www.opengis.net/def/nil/OGC/0/unknown";
+
+    public static final String TEMPLATE = "template";
+    public static final String RESULT_TEMPLATE_TOKEN_SEPARATOR = "@";
+    public static final String RESULT_TEMPLATE_BLOCK_SEPARATOR = "#";
+    public static final String RESULT_TEMPLATE_DECIMAL_SEPARATOR = ".";
     
-    public static final QName QN_SOS_INSERTION_METADATA = new QName(
+    public static final QName QN_SOSINSERTIONMETADATA = new QName(
             XmlNamespaceConstants.NS_SOS_20, "SosInsertionMetadata", XmlNamespaceConstants.NS_SOS_PREFIX);
     
     public static final QName QN_SYSTEM = new QName(
             XmlNamespaceConstants.NS_SML, "System", XmlNamespaceConstants.NS_SML_PREFIX);
 
+    public static final QName QN_DATARECORD_SWE2 = new QName(
+            XmlNamespaceConstants.NS_SWE_20, "DataRecord", XmlNamespaceConstants.NS_SWE_PREFIX);
+    
     public static final QName QN_SIMPLEDATARECORD = new QName(
             XmlNamespaceConstants.NS_SWE_101, "SimpleDataRecord", XmlNamespaceConstants.NS_SWE_PREFIX);
 
     public static final QName QN_POINT = new QName(
-            XmlNamespaceConstants.NS_GML, "Point", XmlNamespaceConstants.NS_GML_PREFIX);
+            XmlNamespaceConstants.NS_GML_32, "Point", XmlNamespaceConstants.NS_GML_PREFIX);
 
     public static final QName QN_TIMEINSTANT = new QName(
             XmlNamespaceConstants.NS_GML, "TimeInstant", XmlNamespaceConstants.NS_GML_PREFIX);
+
+    public static final QName QN_TEXTENCODING = new QName(
+            XmlNamespaceConstants.NS_SWE_20, "TextEncoding", XmlNamespaceConstants.NS_SWE_PREFIX);
+
+    public static final QName QN_SF_SAMPLINGFEATURE = new QName(
+            XmlNamespaceConstants.NS_SF, "SF_SamplingFeature", XmlNamespaceConstants.NS_SF_PREFIX);
+
+    public static final QName QN_SF_SPATIALSAMPLINGFEATURE = new QName(
+            XmlNamespaceConstants.NS_SAMS, "SF_SpatialSamplingFeature", XmlNamespaceConstants.NS_SAMS_PREFIX);
+
+    public static final QName QN_SWE_TIME_SWE2 = new QName(
+            XmlNamespaceConstants.NS_SWE_20, "Time", XmlNamespaceConstants.NS_SWE_PREFIX);
+
+    public static final QName QN_SWE_QUANTITY_SWE2 = new QName(
+            XmlNamespaceConstants.NS_SWE_20, "Quantity", XmlNamespaceConstants.NS_SWE_PREFIX);
     
 }

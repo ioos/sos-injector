@@ -1,5 +1,6 @@
 package com.axiomalaska.sos.tools;
 
+import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
@@ -12,6 +13,8 @@ import com.axiomalaska.sos.data.SosStation;
  * 
  */
 public class IdCreator {
+    //TODO review feature of interest id/name functions. do we really want lat/lng in the id?
+    //can't we just have one function with optional height?
 	public static String createFeatureOfInterestId(SosSensor sensor, Location location){
 		return sensor.getId() + ":" + location.getLatitude() + ":" + location.getLongitude();
 	}
@@ -24,15 +27,19 @@ public class IdCreator {
 	    return station.getId();
 	}
 
-    public static String createObservationFeatureOfInterestId(SosSensor sensor, Double depth) {
-        if (depth != null && !Double.isNaN(depth)) {
-            return sensor.getId() + depth + "m";
+    public static String createObservationFeatureOfInterestId(SosSensor sensor, Double height) {
+        if (height != null && !Double.isNaN(height)) {
+            return sensor.getId() + height + "m";
         } else {
             return sensor.getId();
         }
     }
 
-    public static String createObservationFeatureOfInterestName(SosSensor sensor, Double depth) {
-        return createObservationFeatureOfInterestId(sensor, depth);
+    public static String createObservationFeatureOfInterestName(SosSensor sensor, Double height) {
+        return createObservationFeatureOfInterestId(sensor, height);
+    }
+
+    public static String createResultTemplateId(SosSensor sensor, Phenomenon phenomenon, Double height) {
+        return createObservationFeatureOfInterestId(sensor, height) + ":" + phenomenon.getId();       
     }
 }

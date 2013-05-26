@@ -37,5 +37,20 @@ public class XmlBuildersTest extends AbstractXmlBuildersTest {
     @Test
     public void testUpdateSensorDescriptionBuilder() throws Exception {
         validateXmlDocument( new UpdateSensorDescriptionBuilder(TEST_NETWORK).build() );
-    }     
+    }
+
+    @Test
+    public void testInsertResultTemplateBuilder() throws Exception {
+        validateXmlDocument( new InsertResultTemplateBuilder(TEST_SENSOR, TEST_PHENOMENON, -5.0).build() );
+    }
+    
+    @Test
+    public void testInsertResultBuilder() throws Exception {
+        validateXmlDocument( new InsertResultBuilder(TEST_OBSERVATION_COLLECTION).build() );
+    }
+
+    @Test
+    public void testGetResultTemplateBuilder() throws Exception {
+        validateXmlDocument( new GetResultTemplateBuilder(TEST_SENSOR, TEST_PHENOMENON).build() );
+    }
 }

@@ -6,6 +6,7 @@ public class XmlNamespaceConstants {
     public static final String NS_OGC = "http://www.opengis.net/ogc";
     public static final String NS_OGC_PREFIX = "ogc";
     public static final String NS_OM = "http://www.opengis.net/om/1.0";
+    public static final String NS_OM_2 = "http://www.opengis.net/om/2.0";
     public static final String NS_OM_PREFIX = "om";
     public static final String NS_SA = "http://www.opengis.net/sampling/1.0";
     public static final String NS_SA_PREFIX = "sa";

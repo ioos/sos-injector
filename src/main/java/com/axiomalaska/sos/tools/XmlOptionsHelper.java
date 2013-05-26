@@ -60,6 +60,7 @@ public final class XmlOptionsHelper {
         prefixMap.put(XmlNamespaceConstants.NS_OGC, XmlNamespaceConstants.NS_OGC_PREFIX);
         prefixMap.put(XmlNamespaceConstants.NS_SML, XmlNamespaceConstants.NS_SML_PREFIX);
         prefixMap.put(XmlNamespaceConstants.NS_OM, XmlNamespaceConstants.NS_OM_PREFIX);
+        prefixMap.put(XmlNamespaceConstants.NS_OM_2, XmlNamespaceConstants.NS_OM_PREFIX);
         prefixMap.put(XmlNamespaceConstants.NS_SA, XmlNamespaceConstants.NS_SA_PREFIX);
         prefixMap.put(XmlNamespaceConstants.NS_SOS, XmlNamespaceConstants.NS_SOS_PREFIX);
         prefixMap.put(XmlNamespaceConstants.NS_SOS_20, XmlNamespaceConstants.NS_SOS_PREFIX);
@@ -67,8 +68,12 @@ public final class XmlOptionsHelper {
         prefixMap.put(XmlNamespaceConstants.NS_XSI, XmlNamespaceConstants.NS_XSI_PREFIX);
         prefixMap.put(XmlNamespaceConstants.NS_XS, XmlNamespaceConstants.NS_XS_PREFIX);
         prefixMap.put(XmlNamespaceConstants.NS_SWE_101, XmlNamespaceConstants.NS_SWE_PREFIX);
+        prefixMap.put(XmlNamespaceConstants.NS_SWE_20, XmlNamespaceConstants.NS_SWE_PREFIX);
         prefixMap.put(XmlNamespaceConstants.NS_SWES_20, XmlNamespaceConstants.NS_SWES_PREFIX);
         prefixMap.put(XmlNamespaceConstants.NS_GML, XmlNamespaceConstants.NS_GML_PREFIX);
+        prefixMap.put(XmlNamespaceConstants.NS_GML_32, XmlNamespaceConstants.NS_GML_PREFIX);
+        prefixMap.put(XmlNamespaceConstants.NS_SAMS, XmlNamespaceConstants.NS_SAMS_PREFIX);
+        prefixMap.put(XmlNamespaceConstants.NS_SF, XmlNamespaceConstants.NS_SF_PREFIX);
         return prefixMap;
     }
 

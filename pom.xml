@@ -75,6 +75,11 @@
       <version>${n52.xml.version}</version>
     </dependency>          
     <dependency>
+      <groupId>org.n52.sensorweb</groupId>
+      <artifactId>52n-xml-sampling-v20</artifactId>
+      <version>${n52.xml.version}</version>
+    </dependency>          
+    <dependency>
       <groupId>com.axiomalaska</groupId>
       <artifactId>ioos-sos-common</artifactId>
       <version>0.1-SNAPSHOT</version>    

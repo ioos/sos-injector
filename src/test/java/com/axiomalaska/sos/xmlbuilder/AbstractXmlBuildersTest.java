@@ -146,10 +146,14 @@ public class AbstractXmlBuildersTest {
         obsCol.setSensor( TEST_SENSOR );
         obsCol.setPhenomenon( TEST_PHENOMENON );
         List<Calendar> dates = new ArrayList<Calendar>();
-        dates.add( Calendar.getInstance() );
-        obsCol.setObservationDates( dates );
         List<Double> values = new ArrayList<Double>();
-        values.add( 10.3 );
+        for (int i = 0; i < 50; i++) {
+            Calendar date = Calendar.getInstance();
+            date.roll(Calendar.HOUR, -i);
+            dates.add(date);            
+            values.add(Math.random());
+        }        
+        obsCol.setObservationDates( dates );
         obsCol.setObservationValues( values );        
         return obsCol;                
     }
@@ -172,6 +176,7 @@ public class AbstractXmlBuildersTest {
         List<String> excludeErrors = new ArrayList<String>();
         excludeErrors.add("Expected element '_Feature@http://www.opengis.net/gml' instead of");
         excludeErrors.add("Expected element 'InsertionMetadata@http://www.opengis.net/swes/2.0'");
+        excludeErrors.add("Expected element 'AbstractFeature@http://www.opengis.net/gml/3.2' instead of 'SF_SpatialSamplingFeature@http://www.opengis.net/samplingSpatial/2.0'");
         for( XmlError validationError : validationErrors ){
             boolean skip = false;
             for( String excludeError : excludeErrors ){

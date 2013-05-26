@@ -29,7 +29,7 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	private SosSensor sensor;
 	private SosNetwork network;
 	private Phenomenon phenomenon;
-	private Double depth;
+	private Double height;
 	private boolean useFoi = true;
 	
 	// -------------------------------------------------------------------------
@@ -46,12 +46,12 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 	}
 	
 	public GetNewestObservationBuilder(SosStation station, SosSensor sensor, 
-			Phenomenon phenomenon, SosNetwork network, Double depth) {
+			Phenomenon phenomenon, SosNetwork network, Double height) {
 		this.station = station;
 		this.sensor = sensor;
 		this.phenomenon = phenomenon;
 		this.network = network;
-		this.depth = depth;
+		this.height = height;
 		this.useFoi = true;
 	}
 
@@ -135,7 +135,7 @@ public class GetNewestObservationBuilder extends SosXmlBuilder {
 		Element featureOfInterest = doc.createElement("featureOfInterest");
 		
 	    String featureOfInterestId = IdCreator.createObservationFeatureOfInterestId(
-				sensor, depth);
+				sensor, height);
 		
 		Element offering = doc.createElement("ObjectID");
 		offering.appendChild(doc.createTextNode(featureOfInterestId));

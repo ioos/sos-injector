@@ -31,7 +31,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	private SosSensor sensor;
 	private ObservationCollection observationCollection;
 	private Phenomenon phenomenon;
-	private Double depth;
+	private Double height;
 	
 	// -------------------------------------------------------------------------
 	// Constructor
@@ -39,12 +39,12 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 	
 	public InsertObservationBuilder(SosStation station, SosSensor sensor, 
 			Phenomenon phenomenon, ObservationCollection observationCollection, 
-			Double depth){
+			Double height){
 		this.station = station;
 		this.sensor = sensor;
 		this.phenomenon = phenomenon;
 		this.observationCollection = observationCollection;
-		this.depth = depth;
+		this.height = height;
 	}
 	
 	// -------------------------------------------------------------------------
@@ -298,7 +298,7 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		int size = getNumberOfValues();
 		
 		String featureOfInterestId = 
-				IdCreator.createObservationFeatureOfInterestId(sensor, depth);
+				IdCreator.createObservationFeatureOfInterestId(sensor, height);
 		
 		for(int index = 0; index < size; index++){
 			Calendar date = dates.get(index);
@@ -397,13 +397,13 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		Element samplingPoint = doc.createElement("sa:SamplingPoint");
 
 		String featureOfInterestId = 
-				IdCreator.createObservationFeatureOfInterestId(sensor, depth);
+				IdCreator.createObservationFeatureOfInterestId(sensor, height);
 
 		samplingPoint.setAttribute("gml:id", featureOfInterestId);
 		featureOfInterest.appendChild(samplingPoint);
 		
 		String featureOfInterestDescription = 
-				IdCreator.createObservationFeatureOfInterestName(sensor, depth);
+				IdCreator.createObservationFeatureOfInterestName(sensor, height);
 		
 		Element description = doc.createElement("gml:description");
 		description.appendChild(doc.createTextNode(featureOfInterestDescription));
@@ -426,9 +426,9 @@ public class InsertObservationBuilder extends SosXmlBuilder {
 		pos.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4979");
 		
 		String locationText = "";
-		if (depth != null && depth != 0.0) {
+		if (height != null && height != 0.0) {
 			locationText = station.getLocation().getLatitude() + " "
-					+ station.getLocation().getLongitude() + " " + depth;
+					+ station.getLocation().getLongitude() + " " + height;
 		} else {
 			locationText = station.getLocation().getLatitude() + " "
 					+ station.getLocation().getLongitude() + " 0.0";

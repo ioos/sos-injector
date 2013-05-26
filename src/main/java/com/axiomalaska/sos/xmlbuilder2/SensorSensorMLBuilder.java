@@ -59,7 +59,7 @@ public class SensorSensorMLBuilder extends AbstractSensorMLBuilder  {
   // ---------------------------------------------------------------------------
 
 	/**
-	 * A station can have more than one phenomenon with the same id, but the depth
+	 * A station can have more than one phenomenon with the same id, but the height
 	 * of the phenomenon must be different. 
 	 * 
 	 * @param phenomena - the list of phenomena to remove duplicates from

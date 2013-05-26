@@ -215,7 +215,7 @@ public class ObservationSubmitter {
                             for (Phenomenon phem : sensor.getPhenomena()) {
                                 Calendar startDateForAllDepths = getNewestObservationDateForAllDepths(network, station, sensor, phem);
                                 for (ObservationCollection oc : observationRetriever.getObservationCollection(station, sensor, phem, startDateForAllDepths)) {
-                                    isSensorCreated = createNewSosSensor(sensor, publisherInfo, oc.getDepth());
+                                    isSensorCreated = createNewSosSensor(sensor, publisherInfo, oc.getHeight());
                                 }
                             }
 			}
@@ -245,15 +245,15 @@ public class ObservationSubmitter {
 	 */
 	private void update(SosNetwork network, SosStation station, SosSensor sensor, 
 			Phenomenon phenomenon, ObservationRetriever observationRetriever) throws Exception {
-		Calendar startDateForAllDepths = getNewestObservationDateForAllDepths(network, station, sensor, phenomenon);
+		Calendar startDateForAllHeights = getNewestObservationDateForAllDepths(network, station, sensor, phenomenon);
 		
 		List<ObservationCollection> observationCollections = observationRetriever
 				.getObservationCollection(station, sensor, phenomenon,
-						startDateForAllDepths);
+						startDateForAllHeights);
 
 		for(ObservationCollection observationCollection : observationCollections){
 			Calendar startDate = getNewestObservationDate(network, station, sensor, 
-					phenomenon, observationCollection.getDepth());
+					phenomenon, observationCollection.getHeight());
 			insertObservations(network, observationCollection, startDate);
 		}
 	}
@@ -269,7 +269,7 @@ public class ObservationSubmitter {
 		Calendar newestObservationInSosDate = getNewestObservationDate(network,
 				observationCollection.getStation(),
 				observationCollection.getSensor(),
-				observationCollection.getPhenomenon(), observationCollection.getDepth());
+				observationCollection.getPhenomenon(), observationCollection.getHeight());
 
 		insertObservations(network, observationCollection, newestObservationInSosDate);
 	}
@@ -287,7 +287,7 @@ public class ObservationSubmitter {
 		if (isObservationCollectionValid(observationCollection)) {
 			Calendar oldestDate = getOldestObservationDate(network,
 					observationCollection.getStation(), observationCollection.getSensor(), 
-					observationCollection.getPhenomenon(), observationCollection.getDepth());
+					observationCollection.getPhenomenon(), observationCollection.getHeight());
 			
 			insertObservations(observationCollection, 
 					startDate, oldestDate);
@@ -307,7 +307,7 @@ public class ObservationSubmitter {
 		SosStation station = observationCollection.getStation();
 		SosSensor sensor = observationCollection.getSensor();
 		Phenomenon phenomenon = observationCollection.getPhenomenon();
-		Double depth = observationCollection.getDepth();
+		Double height = observationCollection.getHeight();
                 
 		ObservationCollection filteredObservationCollection = removeEnteredObservations(
 				newestObservationInSosDate, oldestObservationInSosDate, 
@@ -318,7 +318,7 @@ public class ObservationSubmitter {
 				InsertObservationBuilder insertObservationBuilder = 
 						new InsertObservationBuilder(
 						station, sensor, phenomenon,
-						filteredObservationCollection, depth);
+						filteredObservationCollection, height);
 
 				String insertXml = insertObservationBuilder.build();
 
