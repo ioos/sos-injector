@@ -1,7 +1,5 @@
 package com.axiomalaska.sos.xmlbuilder;
 
-import java.util.Collections;
-
 import net.opengis.sensorML.x101.ClassificationDocument.Classification.ClassifierList;
 import net.opengis.sensorML.x101.ContactDocument.Contact;
 import net.opengis.sensorML.x101.ContactInfoDocument.ContactInfo;

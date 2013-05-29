@@ -44,7 +44,8 @@ public class ResultTemplateSubmitter {
             Double height) throws IOException, XmlException{
         //XXX currently there's no way to do a GetResultTemplate check for a specific foi/depth or template url
         //always try to create the result template and ignore 
-        return false;        
+        return false;
+        //save this code in case a better way to check for specific result templates appears later
 //        XmlObject xbResponse = XmlObject.Factory.parse(
 //                HttpSender.sendPostMessage(sosUrl, new GetResultTemplateBuilder(sensor, phenomenon).build()));
 //        if (xbResponse == null || !(xbResponse instanceof GetResultTemplateResponseDocument)){
@@ -61,7 +62,7 @@ public class ResultTemplateSubmitter {
 		        HttpSender.sendPostMessage(sosUrl, new InsertResultTemplateBuilder(sensor, phenomenon, height).build())); 
 		if (xbResponse == null || ResponseInterpretter.isError(xbResponse)) {
 		    //XXX ugly hack to work around inability to check for a specific foi or result template id in GetResultTemplate
-		    if (ResponseInterpretter.getFirstExceptionText((ExceptionReportDocument) xbResponse).equals(
+		    if (ResponseInterpretter.onlyExceptionContains((ExceptionReportDocument) xbResponse,
 		            "The requested resultTemplate identifier (" + resultTemplateId
 		            + ") is already registered at this service")){
 		        resultTemplatesInSos.add(resultTemplateId);

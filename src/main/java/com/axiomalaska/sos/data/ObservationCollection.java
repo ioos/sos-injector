@@ -92,7 +92,8 @@ public class ObservationCollection {
         for (Iterator<Entry<DateTime,Double>> it = observationValues.entrySet().iterator(); it.hasNext();) {
             Entry<DateTime,Double> entry = it.next();
             DateTime obsDate = entry.getKey();
-            if (obsDate.isAfter(startDate) && obsDate.isBefore(endDate)) {
+            if ((obsDate.isAfter(startDate) || obsDate.isEqual(startDate))
+                    && (obsDate.isBefore(endDate) || obsDate.isEqual(endDate))) {
                 it.remove();
             }
         }

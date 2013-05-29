@@ -4,7 +4,6 @@ import net.opengis.gml.x32.AbstractTimeObjectType;
 import net.opengis.gml.x32.TimeInstantType;
 import net.opengis.gml.x32.TimePeriodType;
 import net.opengis.om.x20.OMObservationType;
-import net.opengis.om.x20.TimeObjectPropertyType;
 import net.opengis.ows.x11.ExceptionReportDocument;
 import net.opengis.sos.x20.GetObservationResponseDocument;
 import net.opengis.sos.x20.GetObservationResponseType;
@@ -18,12 +17,14 @@ public class ResponseInterpretter {
         return xmlObject instanceof ExceptionReportDocument;
     }
 
-    public static String getFirstExceptionText(ExceptionReportDocument xbExceptionReportDoc) {
-        try {
-            return xbExceptionReportDoc.getExceptionReport().getExceptionArray(0).getExceptionTextArray(0);
-        } catch (NullPointerException e) {
-            return "[No exception text]";
-        }
+    public static boolean onlyExceptionContains(ExceptionReportDocument xbExceptionReportDoc, String text) {
+        return xbExceptionReportDoc.getExceptionReport() != null
+                && xbExceptionReportDoc.getExceptionReport().getExceptionArray() != null
+                && xbExceptionReportDoc.getExceptionReport().getExceptionArray().length == 1
+                && xbExceptionReportDoc.getExceptionReport().getExceptionArray(0).getExceptionTextArray() != null
+                && xbExceptionReportDoc.getExceptionReport().getExceptionArray(0).getExceptionTextArray().length == 1
+                && xbExceptionReportDoc.getExceptionReport().getExceptionArray(0).getExceptionTextArray(0)
+                    .contains(text);
     }    
     
     public static DateTime parseDateFromGetObservationResponse(GetObservationResponseDocument xbGetObsResposeDoc) {

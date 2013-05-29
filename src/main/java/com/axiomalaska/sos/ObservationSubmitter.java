@@ -178,11 +178,7 @@ public class ObservationSubmitter {
 	private DateTime getNewestObservationDate(SosSensor sensor, Phenomenon phenomenon, Double height)
 	        throws ObservationRetrievalException, SosCommunicationException {
         DateTime dateTime = getObservationDateExtrema(sensor, phenomenon, height, ObservationExtremaType.NEWEST);
-        if (dateTime == null) {
-            return new DateTime(1970,1,1,0,0);
-        } else {
-            return dateTime.plusMinutes(1);
-        }
+        return dateTime != null ? dateTime : new DateTime(1970,1,1,0,0);        
 	}
 
 	/**
@@ -200,11 +196,7 @@ public class ObservationSubmitter {
 	private DateTime getOldestObservationDate(SosSensor sensor, Phenomenon phenomenon,
 	        Double height) throws ObservationRetrievalException, SosCommunicationException{
 	    DateTime dateTime = getObservationDateExtrema(sensor, phenomenon, height, ObservationExtremaType.OLDEST);
-	    if (dateTime == null) {	        
-	        return DateTime.now().plusYears(1);
-	    } else {
-	        return dateTime.minusMinutes(1);
-	    }
+	    return dateTime != null ? dateTime : new DateTime(1,1,1,0,0); 
 	}
 	
     /**
@@ -243,7 +235,8 @@ public class ObservationSubmitter {
         DateTime dateTime = null;        
         if (ResponseInterpretter.isError(xbResponse) || !(xbResponse instanceof GetObservationResponseDocument)) {
             //ignore foi errors, since the foi won't be valid until the first result is inserted
-            if( !ResponseInterpretter.getFirstExceptionText((ExceptionReportDocument) xbResponse).endsWith("of the parameter 'featureOfInterest' is invalid")) {
+            if( !ResponseInterpretter.onlyExceptionContains((ExceptionReportDocument) xbResponse,
+                    "of the parameter 'featureOfInterest' is invalid")) {
                 throw new ObservationRetrievalException(sensor, phenomenon, height, type);
             }
         } else {
