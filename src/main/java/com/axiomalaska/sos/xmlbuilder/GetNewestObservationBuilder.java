@@ -1,246 +1,46 @@
 package com.axiomalaska.sos.xmlbuilder;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import net.opengis.sos.x20.GetObservationDocument;
 
 import com.axiomalaska.phenomena.Phenomenon;
-import com.axiomalaska.sos.data.SosNetwork;
+import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.data.SosSensor;
-import com.axiomalaska.sos.data.SosStation;
-import com.axiomalaska.sos.tools.IdCreator;
 
-/**
- * Builds a SOS GetObservation XML String for the newest observation from a station
- * and phenomenon
- * 
- * @author Lance Finfrock
- */
-public class GetNewestObservationBuilder extends SosXmlBuilder {
+public class GetNewestObservationBuilder extends GetObservationBuilder {
+    public GetNewestObservationBuilder(SosSensor sensor, Phenomenon phenomenon, Double height) {
+        super(sensor, phenomenon, height);
+    }
 
-	// -------------------------------------------------------------------------
-	// Private Data
-	// -------------------------------------------------------------------------
-
-	private SosStation station;
-	private SosSensor sensor;
-	private SosNetwork network;
-	private Phenomenon phenomenon;
-	private Double height;
-	private boolean useFoi = true;
-	
-	// -------------------------------------------------------------------------
-	// Constructor
-	// -------------------------------------------------------------------------
-
-	public GetNewestObservationBuilder(SosStation station, SosSensor sensor, 
-			Phenomenon phenomenon, SosNetwork network) {
-		this.station = station;
-		this.sensor = sensor;
-		this.phenomenon = phenomenon;
-		this.network = network;
-		this.useFoi = false;
-	}
-	
-	public GetNewestObservationBuilder(SosStation station, SosSensor sensor, 
-			Phenomenon phenomenon, SosNetwork network, Double height) {
-		this.station = station;
-		this.sensor = sensor;
-		this.phenomenon = phenomenon;
-		this.network = network;
-		this.height = height;
-		this.useFoi = true;
-	}
-
-	// -------------------------------------------------------------------------
-	// Public Member
-	// -------------------------------------------------------------------------
-
-	/**
-	 * Build the GetObservation XML String to pull the newest observation
-	 * 
-	<GetObservation xmlns="http://www.opengis.net/sos/1.0"
-	  xmlns:ows="http://www.opengis.net/ows/1.1"
-	  xmlns:gml="http://www.opengis.net/gml"
-	  xmlns:ogc="http://www.opengis.net/ogc"
-	  xmlns:om="http://www.opengis.net/om/1.0"
-	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	  xsi:schemaLocation="http://www.opengis.net/sos/1.0
-	  http://schemas.opengis.net/sos/1.0.0/sosGetObservation.xsd"
-	  service="SOS" version="1.0.0" srsName="urn:ogc:def:crs:EPSG::4326">
-
-	  <offering>urn:ioos:network:aoos:all</offering>
-
-	  <eventTime>
-	    <ogc:TM_Equals>
-	      <ogc:PropertyName>om:samplingTime</ogc:PropertyName>
-	      <gml:TimeInstant>
-	        <gml:timePosition>latest</gml:timePosition>
-	      </gml:TimeInstant>
-	    </ogc:TM_Equals>
-	  </eventTime>
-	  <procedure>urn:ogc:object:feature:Sensor:13774</procedure>
-	  <observedProperty>urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature</observedProperty>
-	  <featureOfInterest>
-		  <ObjectID>urn:ioos:sensor:aoos:pilotrock:seawatertemp-10m</ObjectID>
-	  </featureOfInterest>
-	  <responseFormat>text/xml;subtype="om/1.0.0"</responseFormat>   
-	</GetObservation>
-	 *
-	 */
-	public String build() {
-		try {
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory
-					.newInstance();
-			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-			Document doc = docBuilder.newDocument();
-			Element getObservation = createGetObservation(doc);
-			doc.appendChild(getObservation);
-
-			getObservation.appendChild(createOffering(doc));
-
-			getObservation.appendChild(createEventTime(doc));
-
-			getObservation.appendChild(createProcedure(doc));
-
-			getObservation.appendChild(createObservedProperty(doc));
-
-			if(useFoi){
-				getObservation.appendChild(createFeatureOfInterest(doc));
-			}
-
-			getObservation.appendChild(createResponseFormat(doc));
-
-			return getString(doc);
-		} catch (Exception ex) {
-			System.err.println(ex.getMessage());
-		}
-		return null;
-	}
-	
-	// -------------------------------------------------------------------------
-	// Private Member
-	// -------------------------------------------------------------------------
-	
-	/**
- 	  <featureOfInterest>
-		  <ObjectID>foi_13774</ObjectID>
-	  </featureOfInterest>
-	 */
-	private Node createFeatureOfInterest(Document doc) {
-		Element featureOfInterest = doc.createElement("featureOfInterest");
-		
-	    String featureOfInterestId = IdCreator.createObservationFeatureOfInterestId(
-				sensor, height);
-		
-		Element offering = doc.createElement("ObjectID");
-		offering.appendChild(doc.createTextNode(featureOfInterestId));
-		featureOfInterest.appendChild(offering);
-		
-		return featureOfInterest;
-	}
-
-	/**
-	 * 
-		<GetObservation xmlns="http://www.opengis.net/sos/1.0"
-		  xmlns:ows="http://www.opengis.net/ows/1.1"
-		  xmlns:gml="http://www.opengis.net/gml"
-		  xmlns:ogc="http://www.opengis.net/ogc"
-		  xmlns:om="http://www.opengis.net/om/1.0"
-		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		  xsi:schemaLocation="http://www.opengis.net/sos/1.0
-		  http://schemas.opengis.net/sos/1.0.0/sosGetObservation.xsd"
-		  service="SOS" version="1.0.0" srsName="urn:ogc:def:crs:EPSG::4326">
-		</GetObservation>
-	 */
-	private Element createGetObservation(Document doc){
-		Element getObservation = doc.createElement("GetObservation");
-		getObservation.setAttribute("xmlns", "http://www.opengis.net/sos/1.0");
-		getObservation.setAttribute("xmlns:ows", "http://www.opengis.net/ows/1.1");
-		getObservation.setAttribute("xmlns:gml", "http://www.opengis.net/gml");
-		getObservation.setAttribute("xmlns:ogc", "http://www.opengis.net/ogc");
-		getObservation.setAttribute("xmlns:om","http://www.opengis.net/om/1.0");
-		getObservation.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-		getObservation.setAttribute("xsi:schemaLocation", 
-				"http://www.opengis.net/sos/1.0 http://schemas.opengis.net/sos/1.0.0/sosGetObservation.xsd");
-		getObservation.setAttribute("service", "SOS");
-		getObservation.setAttribute("version", "1.0.0");
-		getObservation.setAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/4326");
-		
-		return getObservation;
-	}
-
-	/**
-	 * <offering>urn:ioos:network:aoos:all</offering>
-	 */
-	private Node createOffering(Document doc) {
-		Element offering = doc.createElement("offering");
-		offering.appendChild(doc.createTextNode(network.getId()));
-		
-		return offering;
-	}
-
-	/**
-	 * <responseFormat>text/xml;subtype="om/1.0.0"</responseFormat> 
-	 */
-	private Node createResponseFormat(Document doc) {
-		Element responseFormat = doc.createElement("responseFormat");
-		responseFormat.appendChild(doc.createTextNode("text/xml;subtype=\"om/1.0.0\""));
-		
-		return responseFormat;
-	}
-
-	/**
-	 * <observedProperty>urn:x-ogc:def:phenomenon:IOOS:0.0.1:air_temperature</observedProperty>
-	 */
-	private Node createObservedProperty(Document doc) {
-		Element observedProperty = doc.createElement("observedProperty");
-
-		observedProperty.appendChild(doc.createTextNode(phenomenon.getId()));
-		
-		return observedProperty;
-	}
-
-	/**
-	 * <procedure>urn:ogc:object:feature:Sensor:13774</procedure>
-	 */
-	private Node createProcedure(Document doc) {
-		Element procedure = doc.createElement("procedure");
-		procedure.appendChild(doc.createTextNode(sensor.getId()));
-		return procedure;
-	}
-
-	/**
-	  <eventTime>
-	    <ogc:TM_Equals>
-	      <ogc:PropertyName>om:samplingTime</ogc:PropertyName>
-	      <gml:TimeInstant>
-	        <gml:timePosition>latest</gml:timePosition>
-	      </gml:TimeInstant>
-	    </ogc:TM_Equals>
-	  </eventTime>
-	 */
-	private Node createEventTime(Document doc) {
-		Element eventTime = doc.createElement("eventTime");
-		
-		Element ogcTMEquals = doc.createElement("ogc:TM_Equals");
-		eventTime.appendChild(ogcTMEquals);
-		
-		Element ogcPropertyName = doc.createElement("ogc:PropertyName");
-		ogcPropertyName.appendChild(doc.createTextNode("om:samplingTime"));
-		ogcTMEquals.appendChild(ogcPropertyName);
-		
-		Element gmlTimeInstant = doc.createElement("gml:TimeInstant");
-		ogcTMEquals.appendChild(gmlTimeInstant);
-		
-		Element gmlTimePosition = doc.createElement("gml:timePosition");
-		gmlTimePosition.appendChild(doc.createTextNode("latest"));
-		gmlTimeInstant.appendChild(gmlTimePosition);
-		
-		return eventTime;
-	}
+    /**
+     * Build the GetObservationDocument
+     * 
+    <?xml version="1.0" encoding="UTF-8"?>
+    <sos:GetObservation service="SOS" version="2.0.0"
+        xmlns:sos="http://www.opengis.net/sos/2.0"
+        xmlns:fes="http://www.opengis.net/fes/2.0"
+        xmlns:gml="http://www.opengis.net/gml/3.2"
+        xmlns:swe="http://www.opengis.net/swe/2.0"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns:swes="http://www.opengis.net/swes/2.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.opengis.net/sos/2.0 http://schemas.opengis.net/sos/2.0/sos.xsd">
+        <sos:procedure>http://www.52north.org/test/procedure/1</sos:procedure>
+        <sos:observedProperty>http://www.52north.org/test/observableProperty/1</sos:observedProperty>
+        <sos:featureOfInterest>http://www.52north.org/test/featureOfInterest/1</sos:featureOfInterest>
+        <sos:temporalFilter>
+            <fes:TEquals>
+                <fes:ValueReference>phenomenonTime</fes:ValueReference>
+                <gml:TimeInstant gml:id="ti">
+                    <gml:timePosition>latest</gml:timePosition>
+                </gml:TimeInstant>
+            </fes:TEquals>
+        </sos:temporalFilter>
+    </sos:GetObservation>
+     *
+     */
+    public GetObservationDocument build() {
+        GetObservationDocument xbGetObservationDoc = super.build();
+        addTimeInstantFilter(xbGetObservationDoc, SosInjectorConstants.LATEST);
+        return xbGetObservationDoc;
+    }
 }

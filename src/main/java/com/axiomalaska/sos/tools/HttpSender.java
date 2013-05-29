@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -21,20 +22,26 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.log4j.Logger;
+import org.apache.xmlbeans.XmlObject;
 
 /**
  * This class is a Helper for interfacing with servers with HTTP. 
  * 
  * @author Lance Finfrock
  */
-public class HttpSender {
-
+public class HttpSender {    
 	// -------------------------------------------------------------------------
 	// Public Members
 	// -------------------------------------------------------------------------
 	
 	private static int TIME_OUT = 120000;
-			
+    private static final Logger LOGGER = Logger.getLogger(HttpSender.class);	
+	
+    public static String sendPostMessage(String serviceURL, XmlObject xmlObject) throws IOException {	
+        return sendPostMessage(serviceURL, XmlHelper.xmlText(xmlObject));
+    }
+
 	/**
 	 * Send a HTTP post message 
 	 * 
@@ -42,7 +49,7 @@ public class HttpSender {
 	 * @param message - the message to send to the URL
 	 * @return the response from the post message sent
 	 */
-	public String sendPostMessage(String serviceURL, String message)
+	public static String sendPostMessage(String serviceURL, String message)
 			throws IOException {
 
 		InputStream is = null;
@@ -55,7 +62,10 @@ public class HttpSender {
 
 			HostConfiguration hostConfig = getHostConfiguration(new URL(serviceURL));
 			httpClient.setHostConfiguration(hostConfig);
-			httpClient.executeMethod(method);
+			if( HttpStatus.SC_OK != httpClient.executeMethod(method)) {
+                LOGGER.error("Error while sending post message: " + method.getStatusLine());
+			    return null;
+			}
 			is = method.getResponseBodyAsStream();
 			return getStringResult(is);
 		} catch (Exception e) {
@@ -67,7 +77,7 @@ public class HttpSender {
 		}
 	}
 	
-	public String sendGetMessage(String urlText) throws IOException {
+	public static String sendGetMessage(String urlText) throws IOException {
 		HttpClient client = new HttpClient();
 		GetMethod method = new GetMethod(urlText);   
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
@@ -76,7 +86,7 @@ public class HttpSender {
 		
 		try {
 			if (client.executeMethod(method) != HttpStatus.SC_OK) {
-				System.err.println("Method failed: " + method.getStatusLine());
+			    LOGGER.error("Error while sending get message: " + method.getStatusLine());
 				return null;
 			}
 			return getStringResult(method.getResponseBodyAsStream());
@@ -87,14 +97,14 @@ public class HttpSender {
 		} 
 	}
 
-	public String sendGetMessage(String serviceURL, List<HttpPart> httpParts)
-			throws Exception {
+	public static String sendGetMessage(String serviceURL, List<HttpPart> httpParts)
+	        throws IOException{
 		String buildUrl = buildUrl(serviceURL, httpParts, true);
 		return sendGetMessage(buildUrl);
 	}
 	
 	public String sendPostMessage(String serviceURL, List<HttpPart> httpParts)
-			throws Exception {
+	        throws IOException{
 		URL siteUrl = new URL(serviceURL);
 
 		DataOutputStream out = null;
@@ -139,7 +149,7 @@ public class HttpSender {
 		}
 	}
 	
-	public boolean doesUrlExists(String serviceURL) {
+	public static boolean doesUrlExist(String serviceURL) {
 		try {
 			URL url = new URL(serviceURL);
 			HttpURLConnection huc = null;
@@ -172,7 +182,7 @@ public class HttpSender {
 		}
 	}
 	
-	public String downloadReadFile(String url) throws Exception {
+	public static String downloadReadFile(String url) throws IOException {
 		StringBuffer strContent = new StringBuffer("");
 		FileInputStream fin = null;
 		try {
@@ -194,60 +204,60 @@ public class HttpSender {
 		return strContent.toString();
 	}
         
-        public String downloadFileConcurrently(String fileUrl, String filename) {
-            BufferedInputStream in = null;
-            byte[] data = null;
-            int bytesRead = 0;
-            int mallocSize = 1048576;
-            
-            FileOutputStream out = null;
-            File file = null;
-            
-            try {
-                URL u = new URL(fileUrl);
-                URLConnection uc = u.openConnection();
-                InputStream raw = uc.getInputStream();
-                in = new BufferedInputStream(raw);
-                System.out.println("Attempting to create file: " + filename + ".zip");
-                file = File.createTempFile(filename, ".zip");
-                out = new FileOutputStream(file);
+    public static String downloadFileConcurrently(String fileUrl, String filename) {
+        BufferedInputStream in = null;
+        byte[] data = null;
+        int bytesRead = 0;
+        int mallocSize = 1048576;
+        
+        FileOutputStream out = null;
+        File file = null;
+        
+        try {
+            URL u = new URL(fileUrl);
+            URLConnection uc = u.openConnection();
+            InputStream raw = uc.getInputStream();
+            in = new BufferedInputStream(raw);
+            System.out.println("Attempting to create file: " + filename + ".zip");
+            file = File.createTempFile(filename, ".zip");
+            out = new FileOutputStream(file);
 
-                // read then write
-                data = new byte[mallocSize];
-                while (bytesRead != -1) {
-                    bytesRead = in.read(data);
-                    if (bytesRead > -1) {
-                        System.out.println("Read in " + bytesRead + " bytes .. writing out");
-                        out.write(data, 0, bytesRead);
-                    } else {
-                        out.flush();
-                    }
-                }
-            } catch (Exception ex) {
-                System.err.println(ex.toString());
-                ex.printStackTrace();
-                return null;
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException ex) {
-                        System.err.println(ex.toString());
-                    }
-                }
-                if(out != null){
-                    try {
-                        out.close();
-                    } catch (IOException ex) {
-                        System.err.println(ex.toString());
-                    }
+            // read then write
+            data = new byte[mallocSize];
+            while (bytesRead != -1) {
+                bytesRead = in.read(data);
+                if (bytesRead > -1) {
+                    System.out.println("Read in " + bytesRead + " bytes .. writing out");
+                    out.write(data, 0, bytesRead);
+                } else {
+                    out.flush();
                 }
             }
-            
-            return file.getAbsolutePath();
+        } catch (Exception ex) {
+            System.err.println(ex.toString());
+            ex.printStackTrace();
+            return null;
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException ex) {
+                    System.err.println(ex.toString());
+                }
+            }
+            if(out != null){
+                try {
+                    out.close();
+                } catch (IOException ex) {
+                    System.err.println(ex.toString());
+                }
+            }
         }
+        
+        return file.getAbsolutePath();
+    }
 
-	public String downloadFile(String fileUrl) throws Exception {
+	public static String downloadFile(String fileUrl) throws IOException {
 		URL u = new URL(fileUrl);
 
 		int offset = 0;
@@ -333,8 +343,8 @@ public class HttpSender {
 	// Private Members
 	// -------------------------------------------------------------------------
 
-	private String buildUrl(String serviceURL, List<HttpPart> httpParts,
-			boolean needsEncoded) throws Exception {
+	private static String buildUrl(String serviceURL, List<HttpPart> httpParts,
+			boolean needsEncoded) throws UnsupportedEncodingException {
 		String url = serviceURL + "?";
 
 		for (HttpPart httpPart : httpParts) {
@@ -351,7 +361,7 @@ public class HttpSender {
 		return url;
 	}
 	
-	private HostConfiguration getHostConfiguration(URL serviceURL) {
+	private static HostConfiguration getHostConfiguration(URL serviceURL) {
 		HostConfiguration hostConfig = new HostConfiguration();
 
 		// apply proxy settings:
@@ -381,7 +391,7 @@ public class HttpSender {
 		return hostConfig;
 	}
 
-	private String getStringResult(InputStream incomingStream)
+	private static String getStringResult(InputStream incomingStream)
 			throws IOException {
 		int bufferSize = 128000;
 		byte[] buffer = new byte[bufferSize];

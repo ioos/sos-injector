@@ -1,4 +1,6 @@
-package com.axiomalaska.sos.xmlbuilder2;
+package com.axiomalaska.sos.xmlbuilder;
+
+import java.util.Collections;
 
 import net.opengis.sensorML.x101.ClassificationDocument.Classification.ClassifierList;
 import net.opengis.sensorML.x101.ContactDocument.Contact;
@@ -9,6 +11,7 @@ import net.opengis.sensorML.x101.ResponsiblePartyDocument.ResponsibleParty;
 import net.opengis.sensorML.x101.SensorMLDocument;
 
 import com.axiomalaska.ioos.sos.IoosSosConstants;
+import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosNetwork;
 
 public class NetworkSensorMLBuilder extends AbstractSensorMLBuilder {
@@ -18,13 +21,16 @@ public class NetworkSensorMLBuilder extends AbstractSensorMLBuilder {
   // ---------------------------------------------------------------------------
 
 	private SosNetwork network;
+	private PublisherInfo publisherInfo;
+	
 	
   // ---------------------------------------------------------------------------
   // Constructor
   // ---------------------------------------------------------------------------
 
-	public NetworkSensorMLBuilder(SosNetwork network){
+	public NetworkSensorMLBuilder(SosNetwork network, PublisherInfo publisherInfo){
 		this.network = network;
+		this.publisherInfo = publisherInfo;
 	}
 	
   // ---------------------------------------------------------------------------
@@ -90,6 +96,7 @@ public class NetworkSensorMLBuilder extends AbstractSensorMLBuilder {
 	    createIdentification();
 	    createClassification();
 	    createContactOperator();
+	    createOffering(network);
 	    return xbSensorMLDocument;
 	}
 	
@@ -169,16 +176,16 @@ public class NetworkSensorMLBuilder extends AbstractSensorMLBuilder {
       </sml:classification>
 	 */
 	private void createClassification() {
-	    if (network.getPublisherInfo() != null) {
+	    if (publisherInfo != null) {
     	    ClassifierList xbClassifierList = xbSystem.addNewClassification().addNewClassifierList();
     		
     		createClassifier(xbClassifierList, IoosSosConstants.PUBLISHER, 
     				IoosSosConstants.PUBLISHER_DEF, IoosSosConstants.ORGANIZATION_CODE_SPACE,
-    				network.getPublisherInfo().getName());
+    				publisherInfo.getName());
     		
     		createClassifier(xbClassifierList, IoosSosConstants.PARENT_NETWORK, 
     		        IoosSosConstants.PARENT_NETWORK_DEF, IoosSosConstants.ORGANIZATION_CODE_SPACE,
-    				network.getPublisherInfo().getName());
+    		        publisherInfo.getName());
 	    }
 	}
 	
@@ -201,16 +208,16 @@ public class NetworkSensorMLBuilder extends AbstractSensorMLBuilder {
       </sml:contact>
 	 */
 	private void createContactOperator(){
-	    if (network.getPublisherInfo() != null) {
+	    if (publisherInfo != null) {
     	    Contact xbContact = xbSystem.addNewContact();
     	    xbContact.setRole("http://mmisw.org/ont/ioos/definition/publisher");
     	    ResponsibleParty xbResponsibleParty = xbContact.addNewResponsibleParty();
-    	    xbResponsibleParty.setOrganizationName(network.getPublisherInfo().getName());
+    	    xbResponsibleParty.setOrganizationName(publisherInfo.getName());
     	    ContactInfo xbContactInfo = xbResponsibleParty.addNewContactInfo();
     	    Address xbAddress = xbContactInfo.addNewAddress();
-    	    xbAddress.setCountry(network.getPublisherInfo().getCountry());
-    	    xbAddress.setElectronicMailAddress(network.getPublisherInfo().getEmail());
-    	    xbContactInfo.addNewOnlineResource().setHref(network.getPublisherInfo().getWebAddress());
+    	    xbAddress.setCountry(publisherInfo.getCountry());
+    	    xbAddress.setElectronicMailAddress(publisherInfo.getEmail());
+    	    xbContactInfo.addNewOnlineResource().setHref(publisherInfo.getWebAddress());
 	    }
     }
 }

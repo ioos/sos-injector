@@ -1,4 +1,4 @@
-package com.axiomalaska.sos.xmlbuilder2;
+package com.axiomalaska.sos.xmlbuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,6 +51,7 @@ public class SensorSensorMLBuilder extends AbstractSensorMLBuilder  {
 	    List<Phenomenon> phenomena = removeDuplicatePhenomena(sensor.getPhenomena());      
 	    createInputs(phenomena);
 	    createOutputs(phenomena);
+        createOffering(sensor);
 	    return xbSensorMLDocument;
 	}
 	

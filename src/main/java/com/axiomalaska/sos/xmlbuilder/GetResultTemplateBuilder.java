@@ -1,4 +1,4 @@
-package com.axiomalaska.sos.xmlbuilder2;
+package com.axiomalaska.sos.xmlbuilder;
 
 import net.opengis.sos.x20.GetResultTemplateDocument;
 import net.opengis.sos.x20.GetResultTemplateType;
@@ -31,13 +31,13 @@ public class GetResultTemplateBuilder {
       <sos:offering>urn:ioos:sensor:wmo:41001:watertemp1</sos:offering>
       <sos:observedProperty>http://mmisw.org/ont/cf/parameter/sea_water_temperature</sos:observedProperty>
     </sos:GetResultTemplate> 
-     * @throws Exception 
+     * @ 
 	 */
 	public GetResultTemplateDocument build(){
 	    GetResultTemplateDocument xbGetResultTemplateDoc = GetResultTemplateDocument.Factory.newInstance();
 	    GetResultTemplateType xbGetResultTemplate = xbGetResultTemplateDoc.addNewGetResultTemplate();
 	    xbGetResultTemplate.setService(SosInjectorConstants.SOS_SERVICE);
-	    xbGetResultTemplate.setVersion(SosInjectorConstants.SOS_V20);
+	    xbGetResultTemplate.setVersion(SosInjectorConstants.SOS_V200);
 	    xbGetResultTemplate.setOffering(sensor.getId());
 	    xbGetResultTemplate.setObservedProperty(phenomenon.getId());
 	    return xbGetResultTemplateDoc;

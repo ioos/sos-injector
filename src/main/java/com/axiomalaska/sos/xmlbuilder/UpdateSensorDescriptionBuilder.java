@@ -1,23 +1,27 @@
-package com.axiomalaska.sos.xmlbuilder2;
+package com.axiomalaska.sos.xmlbuilder;
 
 import net.opengis.swes.x20.UpdateSensorDescriptionDocument;
 import net.opengis.swes.x20.UpdateSensorDescriptionType;
 
 import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.data.AbstractSosAsset;
+import com.axiomalaska.sos.data.PublisherInfo;
+import com.axiomalaska.sos.exception.UnsupportedSosAssetTypeException;
 
 public class UpdateSensorDescriptionBuilder extends AbstractSwesBuilder {
     // ---------------------------------------------------------------------------
     // Private Members
     // ---------------------------------------------------------------------------
     AbstractSosAsset asset;
+    PublisherInfo publisherInfo;
     
     // ---------------------------------------------------------------------------
     // Public Members
     // ---------------------------------------------------------------------------
 	
-    public UpdateSensorDescriptionBuilder(AbstractSosAsset asset) {
+    public UpdateSensorDescriptionBuilder(AbstractSosAsset asset, PublisherInfo publisherInfo) {
         this.asset = asset;
+        this.publisherInfo = publisherInfo;
     }
 
     /**
@@ -42,21 +46,22 @@ public class UpdateSensorDescriptionBuilder extends AbstractSwesBuilder {
             </swes:SensorDescription>
         </swes:description>
     </swes:UpdateSensorDescription>           
-     * @throws Exception 
+     * @throws UnsupportedSosAssetTypeException 
+     * @ 
 	 */
-	public UpdateSensorDescriptionDocument build() throws Exception {
+	public UpdateSensorDescriptionDocument build() throws UnsupportedSosAssetTypeException  {
 	    UpdateSensorDescriptionDocument xbUpdateSensorDescriptionDoc = 
 	            UpdateSensorDescriptionDocument.Factory.newInstance();
 	    UpdateSensorDescriptionType xbUpdateSensorDescription = 
 	            xbUpdateSensorDescriptionDoc.addNewUpdateSensorDescription();
 	    xbUpdateSensorDescription.setService(SosInjectorConstants.SOS_SERVICE);
-	    xbUpdateSensorDescription.setVersion(SosInjectorConstants.SOS_V20);
+	    xbUpdateSensorDescription.setVersion(SosInjectorConstants.SOS_V200);
 	    xbUpdateSensorDescription.setProcedure(asset.getId());
 	    xbUpdateSensorDescription.setProcedureDescriptionFormat(SosInjectorConstants.IOOS_SML_FORMAT);
 
 	    //add sensorml
 	    xbUpdateSensorDescription.addNewDescription().addNewSensorDescription()
-	        .addNewData().set(buildSensorMLDocument(asset));
+	        .addNewData().set(buildSensorMLDocument(asset, publisherInfo));
 	    return xbUpdateSensorDescriptionDoc;
 	}
 }

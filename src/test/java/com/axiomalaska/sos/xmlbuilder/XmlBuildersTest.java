@@ -1,58 +1,74 @@
 package com.axiomalaska.sos.xmlbuilder;
 
-import net.opengis.sos.x10.DescribeSensorDocument;
-import net.opengis.sos.x10.GetObservationDocument;
-import net.opengis.sos.x10.InsertObservationDocument;
-import net.opengis.sos.x10.RegisterSensorDocument;
-
 import org.apache.xmlbeans.XmlException;
 import org.junit.Test;
 
-public class XmlBuildersTest extends AbstractXmlBuildersTest {    
+import com.axiomalaska.sos.exception.UnsupportedSosAssetTypeException;
+import com.axiomalaska.sos.xmlbuilder.DescribeSensorBuilder;
+import com.axiomalaska.sos.xmlbuilder.GetNewestObservationBuilder;
+import com.axiomalaska.sos.xmlbuilder.GetOldestObservationBuilder;
+import com.axiomalaska.sos.xmlbuilder.GetResultTemplateBuilder;
+import com.axiomalaska.sos.xmlbuilder.InsertResultBuilder;
+import com.axiomalaska.sos.xmlbuilder.InsertResultTemplateBuilder;
+import com.axiomalaska.sos.xmlbuilder.InsertSensorBuilder;
+import com.axiomalaska.sos.xmlbuilder.NetworkSensorMLBuilder;
+import com.axiomalaska.sos.xmlbuilder.SensorSensorMLBuilder;
+import com.axiomalaska.sos.xmlbuilder.StationSensorMLBuilder;
+import com.axiomalaska.sos.xmlbuilder.UpdateSensorDescriptionBuilder;
+
+public class XmlBuildersTest extends AbstractXmlBuildersTest {
     @Test
     public void testDescribeSensorBuilder() throws XmlException {
-        String xmlString = new DescribeSensorBuilder( TEST_STATION.getId() ).build();
-        DescribeSensorDocument describeSensorDoc = DescribeSensorDocument.Factory.parse( xmlString );
-        validateXmlDocument( describeSensorDoc );
-    }
-
-    @Test
-    public void testGetNewestObservationBuilder() throws XmlException {
-        String xmlString = new GetNewestObservationBuilder( TEST_STATION, TEST_SENSOR,
-                TEST_PHENOMENON, TEST_ROOT_NETWORK).build();
-        GetObservationDocument getObsDoc = GetObservationDocument.Factory.parse( xmlString );
-        validateXmlDocument( getObsDoc );
-    }
-
-    @Test
-    public void testInsertObservationBuilder() throws XmlException {
-        String xmlString = new InsertObservationBuilder( TEST_STATION, TEST_SENSOR, TEST_PHENOMENON,
-                TEST_OBSERVATION_COLLECTION, null ).build();
-        InsertObservationDocument insObsDoc = InsertObservationDocument.Factory.parse( xmlString );
-        validateXmlDocument( insObsDoc );
+        validateXmlDocument( new DescribeSensorBuilder(TEST_STATION).build() );
     }
     
     @Test
-    public void testNetworkRegisterSensorBuilder() throws XmlException {
-        String xmlString = new NetworkRegisterSensorBuilder( TEST_NETWORK, 
-        		TEST_PUBLISHER_INFO ).build();
-        RegisterSensorDocument registerSensorDoc = RegisterSensorDocument.Factory.parse( xmlString );
-        validateXmlDocument( registerSensorDoc );
+    public void testNetworkSensorMLBuilder() throws XmlException {
+        validateXmlDocument( new NetworkSensorMLBuilder(TEST_NETWORK, TEST_PUBLISHER_INFO).build() );
     }
 
-    //Test fails because a null xmlString is produced, probably because of an unset value
-//    @Test
-//    public void testStationRegisterSensorBuilder() throws XmlException {
-//        String xmlString = new StationRegisterSensorBuilder( TEST_STATION, ID_CREATOR,
-//                TEST_PUBLISHER_INFO ).build();
-//        RegisterSensorDocument registerSensorDoc = RegisterSensorDocument.Factory.parse( xmlString );
-//        validateXmlDocument( registerSensorDoc );
-//    }
+    @Test
+    public void testStationSensorMLBuilder() throws XmlException {
+        validateXmlDocument( new StationSensorMLBuilder(TEST_STATION, TEST_PUBLISHER_INFO).build() );
+    }
+
+    @Test
+    public void testSensorSensorMLBuilder() throws XmlException {
+        validateXmlDocument( new SensorSensorMLBuilder(TEST_SENSOR).build() );
+    }
+
+    @Test
+    public void testInsertSensorBuilder() throws UnsupportedSosAssetTypeException  {
+        validateXmlDocument( new InsertSensorBuilder(TEST_SENSOR, TEST_PUBLISHER_INFO).build() );
+    }
     
     @Test
-    public void testSensorRegisterSensorBuilder() throws XmlException {
-        String xmlString = new SensorRegisterSensorBuilder(TEST_SENSOR).build();
-        RegisterSensorDocument registerSensorDoc = RegisterSensorDocument.Factory.parse( xmlString );
-        validateXmlDocument( registerSensorDoc );
+    public void testUpdateSensorDescriptionBuilder() throws UnsupportedSosAssetTypeException  {
+        validateXmlDocument( new UpdateSensorDescriptionBuilder(TEST_NETWORK, TEST_PUBLISHER_INFO).build() );
     }
+
+    @Test
+    public void testInsertResultTemplateBuilder()  {
+        validateXmlDocument( new InsertResultTemplateBuilder(TEST_SENSOR, TEST_PHENOMENON, -5.0).build() );
+    }
+    
+    @Test
+    public void testInsertResultBuilder()  {
+        validateXmlDocument( new InsertResultBuilder(TEST_OBSERVATION_COLLECTION).build() );
+    }
+
+    @Test
+    public void testGetResultTemplateBuilder()  {
+        validateXmlDocument( new GetResultTemplateBuilder(TEST_SENSOR, TEST_PHENOMENON).build() );
+    }
+
+    @Test
+    public void testGetNewestObservationBuilder()  {
+        validateXmlDocument( new GetNewestObservationBuilder(TEST_SENSOR, TEST_PHENOMENON, -5.0).build() );
+    }
+
+    @Test
+    public void testGetLatestTemplateBuilder()  {
+        validateXmlDocument( new GetOldestObservationBuilder(TEST_SENSOR, TEST_PHENOMENON, -5.0).build() );
+    }    
 }

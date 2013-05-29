@@ -3,7 +3,6 @@ package com.axiomalaska.sos.xmlbuilder;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,6 +13,7 @@ import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
+import org.joda.time.DateTime;
 import org.n52.sos.ioos.asset.NetworkAsset;
 import org.n52.sos.ioos.asset.SensorAsset;
 import org.n52.sos.ioos.asset.StationAsset;
@@ -24,7 +24,6 @@ import com.axiomalaska.phenomena.PhenomenonImp;
 import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.ObservationCollection;
 import com.axiomalaska.sos.data.PublisherInfo;
-import com.axiomalaska.sos.data.PublisherInfoImp;
 import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosSource;
@@ -66,7 +65,6 @@ public class AbstractXmlBuildersTest {
         rootNetwork.setAsset(new NetworkAsset("aoos","all"));
         rootNetwork.setLongName(TEST_LONG_NAME);
         rootNetwork.setShortName("All observations");
-        rootNetwork.setPublisherInfo(TEST_PUBLISHER_INFO);
         return rootNetwork;
     }
     
@@ -86,7 +84,6 @@ public class AbstractXmlBuildersTest {
     
     private SosNetwork buildTestNetwork(){
         SosNetwork testNetwork = new SosNetwork();
-        testNetwork.setPublisherInfo(TEST_PUBLISHER_INFO);
         testNetwork.setAsset(new NetworkAsset(TEST_SOURCE_ID, TEST_NETWORK_ID));
         testNetwork.setShortName( TEST_SHORT_NAME );
         testNetwork.setLongName( TEST_LONG_NAME );
@@ -95,7 +92,6 @@ public class AbstractXmlBuildersTest {
     
     private SosStation buildTestStation(){    
         SosStation testStation = new SosStation();
-        testStation.setPublisherInfo(TEST_PUBLISHER_INFO);
         testStation.setAsset(new StationAsset(TEST_SOURCE_ID, TEST_STATION_ID));
         testStation.setShortName( TEST_SHORT_NAME );
         testStation.setLongName( TEST_LONG_NAME );
@@ -142,24 +138,16 @@ public class AbstractXmlBuildersTest {
     
     private ObservationCollection buildTestObservationCollection(){
         ObservationCollection obsCol = new ObservationCollection();
-        obsCol.setStation( TEST_STATION );
         obsCol.setSensor( TEST_SENSOR );
         obsCol.setPhenomenon( TEST_PHENOMENON );
-        List<Calendar> dates = new ArrayList<Calendar>();
-        List<Double> values = new ArrayList<Double>();
         for (int i = 0; i < 50; i++) {
-            Calendar date = Calendar.getInstance();
-            date.roll(Calendar.HOUR, -i);
-            dates.add(date);            
-            values.add(Math.random());
+            obsCol.addObservationValue(DateTime.now().minusHours(i), Math.random());
         }        
-        obsCol.setObservationDates( dates );
-        obsCol.setObservationValues( values );        
         return obsCol;                
     }
     
     private PublisherInfo buildTestPublisherInfo(){
-        PublisherInfoImp testPublisherInfo = new PublisherInfoImp();
+        PublisherInfo testPublisherInfo = new PublisherInfo();
         testPublisherInfo.setEmail( TEST_EMAIL );
         testPublisherInfo.setName( TEST_PUBLISHER_NAME );
         testPublisherInfo.setCountry( TEST_COUNTRY );

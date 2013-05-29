@@ -1,5 +1,6 @@
-package com.axiomalaska.sos.xmlbuilder2;
+package com.axiomalaska.sos.xmlbuilder;
 
+import net.opengis.gml.x32.CodeWithAuthorityType;
 import net.opengis.gml.x32.DirectPositionType;
 import net.opengis.gml.x32.PointType;
 import net.opengis.om.x20.OMObservationType;
@@ -103,13 +104,13 @@ public class InsertResultTemplateBuilder {
             </sos:ResultTemplate>
         </sos:proposedTemplate>
     </sos:InsertResultTemplate>
-     * @throws Exception 
+     * @ 
 	 */
 	public InsertResultTemplateDocument build(){
 	    InsertResultTemplateDocument xbInsertResultTemplateDoc = InsertResultTemplateDocument.Factory.newInstance();
 	    InsertResultTemplateType xbInsertResultTemplate = xbInsertResultTemplateDoc.addNewInsertResultTemplate();
 	    xbInsertResultTemplate.setService(SosInjectorConstants.SOS_SERVICE);
-	    xbInsertResultTemplate.setVersion(SosInjectorConstants.SOS_V20);
+	    xbInsertResultTemplate.setVersion(SosInjectorConstants.SOS_V200);
 	    
 	    ResultTemplateType xbResultTemplate = xbInsertResultTemplate.addNewProposedTemplate().addNewResultTemplate();
 	    xbResultTemplate.setIdentifier(IdCreator.createResultTemplateId(sensor, phenomenon, height));
@@ -128,8 +129,9 @@ public class InsertResultTemplateBuilder {
 	            SFSpatialSamplingFeatureDocument.Factory.newInstance();
 	    SFSpatialSamplingFeatureType xbSfSpatialSamplingFeature = xbSfSpatialSamplingFeatureDoc.addNewSFSpatialSamplingFeature();
 	    xbSfSpatialSamplingFeature.setId("foi"); 
-	    xbSfSpatialSamplingFeature.addNewIdentifier().setStringValue(
-	            IdCreator.createObservationFeatureOfInterestId(sensor, height));
+	    CodeWithAuthorityType xbFoiGmlIdentifier = xbSfSpatialSamplingFeature.addNewIdentifier();
+	    xbFoiGmlIdentifier.setCodeSpace("");
+	    xbFoiGmlIdentifier.setStringValue(IdCreator.createObservationFeatureOfInterestId(sensor, height));
 	    xbSfSpatialSamplingFeature.addNewName().setStringValue(
 	            IdCreator.createObservationFeatureOfInterestName(sensor, height));
 	    xbSfSpatialSamplingFeature.addNewType().setHref(SosInjectorConstants.SAMPLING_POINT_DEF);

@@ -1,8 +1,12 @@
 package com.axiomalaska.sos.data;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 import com.axiomalaska.phenomena.Phenomenon;
 
@@ -21,12 +25,10 @@ public class ObservationCollection {
 	// -------------------------------------------------------------------------
 	// Private Data
 	// -------------------------------------------------------------------------
-	
-	private SosStation station;
+	private static final Logger LOGGER = Logger.getLogger(ObservationCollection.class);
 	private SosSensor sensor;
 	private Phenomenon phenomenon;
-	private List<Double> observationValues = new ArrayList<Double>();
-	private List<Calendar> observationDates = new ArrayList<Calendar>();
+	private Map<DateTime,Double> observationValues = new HashMap<DateTime,Double>();
 	private Double height = null;
 	
 	// -------------------------------------------------------------------------
@@ -61,40 +63,78 @@ public class ObservationCollection {
 		return sensor;
 	}
 
-	/**
-	 * The associated station to the observations
-	 */
-	public SosStation getStation() {
-		return station;
-	}
-
-	/**
-	 * The values of the observations
-	 */
-	public List<Double> getObservationValues() {
-		return observationValues;
-	}
+    public void setSensor(SosSensor sensor) {
+        this.sensor = sensor;
+    }
 	
-	/**
-	 * The dates of the observations
-	 */
-	public List<Calendar> getObservationDates() {
-		return observationDates;
-	}
-	
-	public void setStation(SosStation station) {
-		this.station = station;
-	}
-	
-	public void setSensor(SosSensor sensor) {
-		this.sensor = sensor;
-	}
+    public Map<DateTime, Double> getObservationValues() {
+        return observationValues;
+    }
 
-	public void setObservationValues(List<Double> dataValues) {
-		this.observationValues = dataValues;
-	}
+    public void setObservationValues(Map<DateTime, Double> observationValues) {
+        this.observationValues = observationValues;
+    }
 
-	public void setObservationDates(List<Calendar> dateValues) {
-		this.observationDates = dateValues;
-	}
+    public boolean hasObservationValue(DateTime dateTime) {
+        return this.observationValues.containsKey(dateTime);
+    }    
+    
+    public void addObservationValue(DateTime dateTime, Double value) {
+        this.observationValues.put(dateTime, value);
+    }
+    
+    /**
+     * Remove observations that are between the start and end dates 
+     * @param startDate - start date of observations to remove
+     * @param endDate - end date of observations to remove
+     */
+    public void filterObservations(DateTime startDate, DateTime endDate) {
+        for (Iterator<Entry<DateTime,Double>> it = observationValues.entrySet().iterator(); it.hasNext();) {
+            Entry<DateTime,Double> entry = it.next();
+            DateTime obsDate = entry.getKey();
+            if (obsDate.isAfter(startDate) && obsDate.isBefore(endDate)) {
+                it.remove();
+            }
+        }
+    }
+    
+    /**
+     * A method to validate the ObservationCollection object. 
+     * 
+     * @return [True] if the ObservationCollection object is valid. [False] if the
+     * ObservationCollection is not valid
+     */
+    public boolean isValid() {
+        if(sensor == null){
+            LOGGER.info("Sensor was null in ObservationCollection");
+            return false;
+        }
+        
+        if(phenomenon == null){
+            LOGGER.info("Phenomenon was null in ObservationCollection");            
+            return false;
+        }
+        
+        if(sensor.getStation() == null){
+            LOGGER.info("Station was null in ObservationCollection");           
+            return false;
+        }
+
+        if(observationValues.isEmpty()){
+            LOGGER.info("No values for sensor " + sensor.getId() 
+                    + " phenomenon: " + phenomenon.getId());
+            return false;
+        }
+
+        return true;
+    }    
+    
+    public String toString(){
+        return "ObservationCollection["
+                + "sensor: " + (sensor == null ? "null" : sensor.getId())
+                + ",phenomenon: " + (phenomenon == null ? "null" : phenomenon.getId())
+                + ",height: " + (height == null ? "null" : Double.toString(height))
+                + ",size: " + observationValues.size()
+                + "]";
+    }
 }

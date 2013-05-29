@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.n52.sos.ioos.asset.SensorAsset;
 import org.n52.sos.ioos.asset.StationAsset;
@@ -27,7 +28,7 @@ public class AppTest {
 	}
 	
 //	@Test
-//	public void testCnfaic() throws Exception{
+//	public void testCnfaic() {
 //		PublisherInfoImp publisherInfo = new PublisherInfoImp();
 //		publisherInfo.setCountry("USA");
 //		publisherInfo.setEmail("john.doe@gmail.com");
@@ -51,7 +52,7 @@ public class AppTest {
 //	}
 //	
 //	@Test
-//	public void testWithDepth() throws Exception {
+//	public void testWithDepth()  {
 //		String sosUrl = "http://staging1.axiom:8080/52n-sos-ioos-dev/sos";
 //		ObservationSubmitter observationSubmitter = new ObservationSubmitter(sosUrl);
 //		
@@ -136,7 +137,7 @@ public class AppTest {
 		return values;
 	}
 	
-	private SosSensor createSensor() throws Exception {
+	private SosSensor createSensor() throws UnitCreationException  {
 		SosSensor sensor = new SosSensor();
 		sensor.setAsset(new SensorAsset("authority","station","ground_temp"));
 		sensor.setLongName("description");
@@ -151,7 +152,7 @@ public class AppTest {
 	}
 	
 //	@Test
-//	public void test3() throws Exception {
+//	public void test3()  {
 //		ObservationRetriever observationRetriever = createObservationRetriever();
 //		
 //		ObservationUpdater sosSensorBuilder = 
@@ -178,34 +179,17 @@ public class AppTest {
 	
 	private ObservationRetriever createObservationRetriever(){
 		ObservationRetriever observationRetriever = new ObservationRetriever(){
-			public List<ObservationCollection> getObservationCollection(SosStation station, 
-					SosSensor sensor, Phenomenon phenomenon, Calendar startDate){
+			public List<ObservationCollection> getObservationCollection(SosSensor sensor,
+			        Phenomenon phenomenon, DateTime startDate){
 				ObservationCollection valuesCollection = new ObservationCollection();
 				
 				valuesCollection.setSensor(sensor);
-				valuesCollection.setStation(station);
 				valuesCollection.setPhenomenon(phenomenon);
-				
-				List<Double> values = new ArrayList<Double>();
-				values.add(10.0);
-				values.add(11.0);
-				values.add(12.0);
-				valuesCollection.setObservationValues(values);
-				
-				List<Calendar> dateValues = new ArrayList<Calendar>();
-				
-				Calendar baseDate = Calendar.getInstance();
-				baseDate.set(2012, Calendar.MAY, 7, 11, 11, 11);
-				baseDate.getTime();
-				
+				DateTime baseDate = DateTime.parse("20120507T11:11:11");				
 				for (int count = 0; count < 3; count++) {
-					Calendar date = (Calendar)baseDate.clone();
-					date.add(Calendar.HOUR_OF_DAY, -4 * count);
-					dateValues.add(date);
+				    valuesCollection.addObservationValue(baseDate.minusHours(-4 * count), Math.random());
 				}
-				
-				valuesCollection.setObservationDates(dateValues);
-				
+
 				ArrayList<ObservationCollection> observationCollections = 
 						new ArrayList<ObservationCollection>();
 				

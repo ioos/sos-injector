@@ -1,4 +1,4 @@
-package com.axiomalaska.sos.xmlbuilder2;
+package com.axiomalaska.sos.xmlbuilder;
 
 import net.opengis.gml.PointType;
 import net.opengis.sensorML.x101.ClassificationDocument.Classification.ClassifierList;
@@ -18,6 +18,7 @@ import net.opengis.sensorML.x101.SmlLocation.SmlLocation2;
 import com.axiomalaska.ioos.sos.IoosSosConstants;
 import com.axiomalaska.sos.data.DocumentMember;
 import com.axiomalaska.sos.data.HistoryEvent;
+import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosStation;
 
 public class StationSensorMLBuilder extends AbstractSensorMLBuilder  {
@@ -27,13 +28,15 @@ public class StationSensorMLBuilder extends AbstractSensorMLBuilder  {
   // ---------------------------------------------------------------------------
 
 	private SosStation station;
+	private PublisherInfo publisherInfo;
 	
   // ---------------------------------------------------------------------------
   // Constructor
   // ---------------------------------------------------------------------------
 
-	public StationSensorMLBuilder(SosStation station){
+	public StationSensorMLBuilder(SosStation station, PublisherInfo publisherInfo){
 		this.station = station;
+		this.publisherInfo = publisherInfo;
 	}
 	
   // ---------------------------------------------------------------------------
@@ -211,7 +214,8 @@ public class StationSensorMLBuilder extends AbstractSensorMLBuilder  {
 	        createHistory();
         }
 
-        createLocation();	    
+        createLocation();
+        createOffering(station);        
 	    return xbSensorMLDocument;
 	}
 	
@@ -349,16 +353,16 @@ public class StationSensorMLBuilder extends AbstractSensorMLBuilder  {
     </sml:contact>
 	 */
 	private void createContactPublisher(){
-	    if (station.getPublisherInfo() != null) {
+	    if (publisherInfo != null) {
     	    Contact xbContact = xbSystem.addNewContact();
     	    xbContact.setRole("http://mmisw.org/ont/ioos/definition/publisher");
     	    ResponsibleParty xbResponsibleParty = xbContact.addNewResponsibleParty();
-    	    xbResponsibleParty.setOrganizationName(station.getPublisherInfo().getName());
+    	    xbResponsibleParty.setOrganizationName(publisherInfo.getName());
     	    ContactInfo xbContactInfo = xbResponsibleParty.addNewContactInfo();
     	    Address xbAddress = xbContactInfo.addNewAddress();
-    	    xbAddress.setCountry(station.getPublisherInfo().getCountry());
-    	    xbAddress.setElectronicMailAddress(station.getPublisherInfo().getEmail());
-    	    xbContactInfo.addNewOnlineResource().setHref(station.getPublisherInfo().getWebAddress());
+    	    xbAddress.setCountry(publisherInfo.getCountry());
+    	    xbAddress.setElectronicMailAddress(publisherInfo.getEmail());
+    	    xbContactInfo.addNewOnlineResource().setHref(publisherInfo.getWebAddress());
 	    }
     }
 	
@@ -418,10 +422,10 @@ public class StationSensorMLBuilder extends AbstractSensorMLBuilder  {
 		        IoosSosConstants.SPONSOR_DEF, IoosSosConstants.ORGANIZATION_CODE_SPACE,
 				station.getSponsor());
 		
-		if (station.getPublisherInfo() != null) {
+		if (publisherInfo != null) {
     		createClassifier(xbClassifierList, IoosSosConstants.PARENT_NETWORK, 
     		        IoosSosConstants.PARENT_NETWORK_DEF, IoosSosConstants.ORGANIZATION_CODE_SPACE,
-    				station.getPublisherInfo().getName());
+    		        publisherInfo.getName());
 		}
 	}
 

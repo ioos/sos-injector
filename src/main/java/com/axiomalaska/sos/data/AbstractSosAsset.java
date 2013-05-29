@@ -44,4 +44,25 @@ public abstract class AbstractSosAsset implements SosAsset{
     public String toString(){
         return getAsset().toString();
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((getAsset() == null) ? 0 : getAsset().hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        AbstractSosAsset other = (AbstractSosAsset) obj;
+        return getAsset().equals(other.getAsset());
+    }
 }

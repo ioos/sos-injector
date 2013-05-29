@@ -11,7 +11,6 @@ public class SosStation extends AbstractSosAsset {
 	// -------------------------------------------------------------------------
 	
     private StationAsset asset;
-    private PublisherInfo publisherInfo;    
 	private Location location;
 	private String featureOfInterestName;
 	private SosSource source;
@@ -34,14 +33,6 @@ public class SosStation extends AbstractSosAsset {
 	
     public void setAsset(StationAsset asset) {
         this.asset = asset;
-    }
-
-	public PublisherInfo getPublisherInfo() {
-        return publisherInfo;
-    }
-
-    public void setPublisherInfo(PublisherInfo publisherInfo) {
-        this.publisherInfo = publisherInfo;
     }
 
     /**

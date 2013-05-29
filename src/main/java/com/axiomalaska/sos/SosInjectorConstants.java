@@ -6,7 +6,7 @@ import javax.xml.namespace.QName;
 public class SosInjectorConstants {
     public static final String SOS_SERVICE = "SOS";
     public static final String SOS_V100 = "1.0.0";
-    public static final String SOS_V20 = "2.0";
+    public static final String SOS_V200 = "2.0.0";
     public static final String SML_V101 = "1.0.1";
     
     public static final String IOOS_SML_FORMAT = "text/xml;subtype=\"sensorML/1.0.1/profiles/ioos_sos/1.0\"";

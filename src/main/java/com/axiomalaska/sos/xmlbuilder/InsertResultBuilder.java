@@ -1,4 +1,8 @@
-package com.axiomalaska.sos.xmlbuilder2;
+package com.axiomalaska.sos.xmlbuilder;
+
+import java.util.Map.Entry;
+
+import org.joda.time.DateTime;
 
 import net.opengis.sos.x20.InsertResultDocument;
 import net.opengis.sos.x20.InsertResultType;
@@ -33,13 +37,13 @@ public class InsertResultBuilder {
         <sos:resultValues>15.12@2012-11-19T13:30:00+02:00#15.15@2012-11-19T13:31:00+02:00#15.15@2012-11-19T13:32:00+02:00#15.85@2012-11-19T13:33:00+02:00#16.5@2012-11-19T13:34:00+02:00#16.9@2012-11-19T13:35:00+02:00#16.7@2012-11-19T13:36:00+02:00#16.5@2012-11-19T13:37:00+02:00#16.6@2012-11-19T13:38:00+02:00#16.5@2012-11-19T13:39:00+02:00#16.4@2012-11-19T13:40:00+02:00#16.34@2012-11-19T13:41:00+02:00#16.25@2012-11-19T13:42:00+02:00#15.79@2012-11-19T13:43:00+02:00#15.56@2012-11-19T13:44:00+02:00#15.25@</sos:resultValues>
     </sos:InsertResult>
 
-     * @throws Exception 
+     * @ 
 	 */
 	public InsertResultDocument build(){
 	    InsertResultDocument xbInsertResultDoc = InsertResultDocument.Factory.newInstance();
 	    InsertResultType xbInsertResult = xbInsertResultDoc.addNewInsertResult();
 	    xbInsertResult.setService(SosInjectorConstants.SOS_SERVICE);
-	    xbInsertResult.setVersion(SosInjectorConstants.SOS_V20);
+	    xbInsertResult.setVersion(SosInjectorConstants.SOS_V200);
 	    
 	    
 	    xbInsertResult.setTemplate(IdCreator.createResultTemplateId(obsCollection.getSensor(),
@@ -50,13 +54,15 @@ public class InsertResultBuilder {
 
 	private String encodeResultValues(ObservationCollection obsCollection) {
 	    StringBuilder str = new StringBuilder();
-	    for (int i = 0; i < obsCollection.getObservationDates().size(); i++) {
-	        if (i > 0) {
-	            str.append(SosInjectorConstants.RESULT_TEMPLATE_BLOCK_SEPARATOR);
+	    boolean first = true;
+	    for (Entry<DateTime,Double> value : obsCollection.getObservationValues().entrySet()) {
+	        if (!first) {
+                str.append(SosInjectorConstants.RESULT_TEMPLATE_BLOCK_SEPARATOR);	            
 	        }
-	        str.append(obsCollection.getObservationDates().get(i));
-	        str.append(SosInjectorConstants.RESULT_TEMPLATE_TOKEN_SEPARATOR);
-            str.append(obsCollection.getObservationValues().get(i));
+	        first = false;
+            str.append(value.getKey());
+            str.append(SosInjectorConstants.RESULT_TEMPLATE_TOKEN_SEPARATOR);
+            str.append(value.getValue());	        
 	    }
 	    return str.toString();
 	}

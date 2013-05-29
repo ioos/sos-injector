@@ -1,4 +1,4 @@
-package com.axiomalaska.sos.xmlbuilder2;
+package com.axiomalaska.sos.xmlbuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +12,9 @@ import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.XmlNamespaceConstants;
 import com.axiomalaska.sos.data.AbstractSosAsset;
+import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosSensor;
+import com.axiomalaska.sos.exception.UnsupportedSosAssetTypeException;
 import com.axiomalaska.sos.tools.XmlHelper;
 
 public class InsertSensorBuilder extends AbstractSwesBuilder {
@@ -20,13 +22,15 @@ public class InsertSensorBuilder extends AbstractSwesBuilder {
     // Private Members
     // ---------------------------------------------------------------------------
     AbstractSosAsset asset;
+    PublisherInfo publisherInfo;
     
     // ---------------------------------------------------------------------------
     // Public Members
     // ---------------------------------------------------------------------------
 	
-    public InsertSensorBuilder(AbstractSosAsset asset) {
+    public InsertSensorBuilder(AbstractSosAsset asset, PublisherInfo publisherInfo) {
         this.asset = asset;
+        this.publisherInfo = publisherInfo;
     }
 
     /**
@@ -53,13 +57,13 @@ public class InsertSensorBuilder extends AbstractSwesBuilder {
                 </sos:SosInsertionMetadata>
             </swes:metadata>
         </swes:InsertSensor>            
-     * @throws Exception 
+     * @throws UnsupportedSosAssetTypeException 
 	 */
-	public InsertSensorDocument build() throws Exception {
+	public InsertSensorDocument build() throws UnsupportedSosAssetTypeException{
 	    InsertSensorDocument xbInsertSensorDoc = InsertSensorDocument.Factory.newInstance();
 	    InsertSensorType xbInsertSensor = xbInsertSensorDoc.addNewInsertSensor();
 	    xbInsertSensor.setService(SosInjectorConstants.SOS_SERVICE);
-	    xbInsertSensor.setVersion(SosInjectorConstants.SOS_V20);
+	    xbInsertSensor.setVersion(SosInjectorConstants.SOS_V200);
 	    xbInsertSensor.setProcedureDescriptionFormat(SosInjectorConstants.IOOS_SML_FORMAT);
 
 	    SosInsertionMetadataDocument xbSosInsertionMetadataDoc = SosInsertionMetadataDocument.Factory.newInstance();
@@ -80,7 +84,7 @@ public class InsertSensorBuilder extends AbstractSwesBuilder {
 	    }
 	    
 	    //add sensorml
-	    xbInsertSensor.addNewProcedureDescription().set(buildSensorMLDocument(asset));
+	    xbInsertSensor.addNewProcedureDescription().set(buildSensorMLDocument(asset, publisherInfo));
 	    addInsertSensorSchemaLocations(xbInsertSensorDoc);
 	    return xbInsertSensorDoc;
 	}

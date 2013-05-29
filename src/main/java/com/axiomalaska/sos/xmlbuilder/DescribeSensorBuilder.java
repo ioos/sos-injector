@@ -1,30 +1,31 @@
 package com.axiomalaska.sos.xmlbuilder;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import net.opengis.sos.x10.DescribeSensorDocument;
+import net.opengis.sos.x10.DescribeSensorDocument.DescribeSensor;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import com.axiomalaska.sos.SosInjectorConstants;
+import com.axiomalaska.sos.data.AbstractSosAsset;
+import com.axiomalaska.sos.tools.XmlOptionsHelper;
 
 /**
  * Builds a SOS DescribeSensor XML String with a passed in Station
  * 
  * @author Lance Finfrock
  */
-public class DescribeSensorBuilder extends SosXmlBuilder {
+public class DescribeSensorBuilder {
 
   // ---------------------------------------------------------------------------
   // Private Data
   // ---------------------------------------------------------------------------
 
-	private String procedureId;
+	private AbstractSosAsset asset;
 
   // ---------------------------------------------------------------------------
   // Constructor
   // ---------------------------------------------------------------------------
 	
-	public DescribeSensorBuilder(String procedureId) {
-		this.procedureId = procedureId;
+	public DescribeSensorBuilder(AbstractSosAsset asset) {
+		this.asset = asset;
 	}
 
   // ---------------------------------------------------------------------------
@@ -36,48 +37,19 @@ public class DescribeSensorBuilder extends SosXmlBuilder {
 	 * 
 		<DescribeSensor version="1.0.0" service="SOS"
 			xmlns="http://www.opengis.net/sos/1.0"
-			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			xsi:schemaLocation="http://www.opengis.net/sos/1.0
-			http://schemas.opengis.net/sos/1.0.0/sosDescribeSensor.xsd"
-			outputFormat="text/xml;subtype=&quot;sensorML/1.0.1&quot;">
-			
+			outputFormat="text/xml;subtype=&quot;sensorML/1.0.1&quot;">			
 			<procedure>urn:ogc:object:feature:Sensor:IFGI:ifgi-sensor-1</procedure>
-			
 		</DescribeSensor>
 	 * 
 	 */
-	public String build() {
-		try {
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory
-					.newInstance();
-			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-			Document doc = docBuilder.newDocument();
-			Element describeSensor = doc.createElement("DescribeSensor");
-			describeSensor.setAttribute("service", "SOS");
-			describeSensor.setAttribute("version", "1.0.0");
-			describeSensor.setAttribute("xmlns",
-					"http://www.opengis.net/sos/1.0");
-			describeSensor.setAttribute("xmlns:xsi",
-					"http://www.w3.org/2001/XMLSchema-instance");
-			describeSensor
-					.setAttribute(
-							"xsi:schemaLocation",
-							"http://www.opengis.net/sos/1.0 http://schemas.opengis.net/sos/1.0.0/sosDescribeSensor.xsd");
-			describeSensor.setAttribute("outputFormat",
-					"text/xml;subtype=\"sensorML/1.0.1\"");
-			doc.appendChild(describeSensor);
-
-			Element procedure = doc.createElement("procedure");
-
-			procedure.appendChild(doc.createTextNode(procedureId));
-			
-			describeSensor.appendChild(procedure);
-
-			return getString(doc);
-		} catch (Exception ex) {
-			System.err.println(ex.getMessage());
-		}
-		return null;
+	public DescribeSensorDocument build() {
+	    DescribeSensorDocument xbDescribeSensorDoc = DescribeSensorDocument.Factory.newInstance(
+	            XmlOptionsHelper.getInstance().getXmlOptions());
+	    DescribeSensor xbDescribeSensor = xbDescribeSensorDoc.addNewDescribeSensor();
+	    xbDescribeSensor.setService(SosInjectorConstants.SOS_SERVICE);
+	    xbDescribeSensor.setVersion(SosInjectorConstants.SOS_V100);
+	    xbDescribeSensor.setOutputFormat(SosInjectorConstants.IOOS_SML_FORMAT);
+	    xbDescribeSensor.setProcedure(asset.getId());
+	    return xbDescribeSensorDoc;
 	}
 }

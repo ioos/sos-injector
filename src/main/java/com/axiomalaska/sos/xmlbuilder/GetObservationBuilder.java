@@ -1,4 +1,4 @@
-package com.axiomalaska.sos.xmlbuilder2;
+package com.axiomalaska.sos.xmlbuilder;
 
 import net.opengis.fes.x20.BinaryTemporalOpType;
 import net.opengis.gml.x32.TimeInstantDocument;
@@ -29,6 +29,7 @@ public abstract class GetObservationBuilder {
 	public GetObservationBuilder(SosSensor sensor, Phenomenon phenomenon, Double height) {
 		this.sensor = sensor;
 		this.phenomenon = phenomenon;
+		this.height = height;
 	}
 	
 	// -------------------------------------------------------------------------
@@ -58,7 +59,7 @@ public abstract class GetObservationBuilder {
 	    GetObservationDocument xbGetObservationDoc = GetObservationDocument.Factory.newInstance();
 	    GetObservationType xbGetObservation = xbGetObservationDoc.addNewGetObservation();
 	    xbGetObservation.setService(SosInjectorConstants.SOS_SERVICE);
-	    xbGetObservation.setVersion(SosInjectorConstants.SOS_V20);
+	    xbGetObservation.setVersion(SosInjectorConstants.SOS_V200);
 	    xbGetObservation.addProcedure(sensor.getId());
 	    xbGetObservation.addObservedProperty(phenomenon.getId());
 	    xbGetObservation.addFeatureOfInterest(IdCreator.createObservationFeatureOfInterestId(sensor, height));	    
