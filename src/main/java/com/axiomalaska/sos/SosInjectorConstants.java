@@ -39,6 +39,9 @@ public class SosInjectorConstants {
     public static final QName QN_POINT = new QName(
             XmlNamespaceConstants.NS_GML_32, "Point", XmlNamespaceConstants.NS_GML_PREFIX);
 
+    public static final QName QN_LINESTRING = new QName(
+            XmlNamespaceConstants.NS_GML_32, "LineString", XmlNamespaceConstants.NS_GML_PREFIX);
+    
     public static final QName QN_TIMEINSTANT = new QName(
             XmlNamespaceConstants.NS_GML, "TimeInstant", XmlNamespaceConstants.NS_GML_PREFIX);
 

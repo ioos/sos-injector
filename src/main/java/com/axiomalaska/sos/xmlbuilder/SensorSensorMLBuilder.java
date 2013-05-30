@@ -44,10 +44,7 @@ public class SensorSensorMLBuilder extends AbstractSensorMLBuilder  {
 	    createDescription(sensor.getStation().getLongName() + ", " + sensor.getLongName());
 	    createName(sensor.getId());
 	    createIdentification();
-	    createParentProcedures(Collections.singletonList(sensor.getStation()),
-	            IoosSosConstants.PARENT_STATION_PROCEDURE_LABEL, IoosSosConstants.PARENT_STATION_FIELD_NAME,
-	            IoosSosConstants.STATION_ID_DEF );      
-	    
+	    createParentProcedures(Collections.singletonList(sensor.getStation()));	    
 	    List<Phenomenon> phenomena = removeDuplicatePhenomena(sensor.getPhenomena());      
 	    createInputs(phenomena);
 	    createOutputs(phenomena);

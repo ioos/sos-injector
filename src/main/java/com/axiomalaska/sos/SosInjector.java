@@ -15,6 +15,7 @@ import com.axiomalaska.sos.exception.ObservationRetrievalException;
 import com.axiomalaska.sos.exception.SosCommunicationException;
 import com.axiomalaska.sos.exception.SosInjectorConfigurationException;
 import com.axiomalaska.sos.exception.StationCreationException;
+import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.sos.exception.UnsupportedSosAssetTypeException;
 
 /**
@@ -100,9 +101,11 @@ public class SosInjector {
 	 * @throws InvalidObservationCollectionException 
 	 * @throws SosCommunicationException 
 	 * @throws StationCreationException 
+	 * @throws UnsupportedGeometryTypeException 
 	 */
 	public void update() throws InvalidObservationCollectionException,
-	        ObservationRetrievalException, UnsupportedSosAssetTypeException, StationCreationException, SosCommunicationException{
+	        ObservationRetrievalException, UnsupportedSosAssetTypeException, StationCreationException,
+	        SosCommunicationException, UnsupportedGeometryTypeException{
 	    LOGGER.info("Updating " + name);
         for (SosStation station : stationRetriever.getStations()) {
             if (station.getSensors().isEmpty()) {

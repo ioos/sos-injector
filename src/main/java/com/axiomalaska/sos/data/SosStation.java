@@ -5,13 +5,15 @@ import java.util.List;
 
 import org.n52.sos.ioos.asset.StationAsset;
 
+import com.vividsolutions.jts.geom.Point;
+
 public class SosStation extends AbstractSosAsset {
 	// -------------------------------------------------------------------------
 	// Private Members
 	// -------------------------------------------------------------------------
 	
     private StationAsset asset;
-	private Location location;
+	private Point location;
 	private String featureOfInterestName;
 	private SosSource source;
 	private String platformType;
@@ -81,11 +83,11 @@ public class SosStation extends AbstractSosAsset {
 	/**
 	 * The location of the station
 	 */
-	public Location getLocation() {
+	public Point getLocation() {
 		return location;
 	}
 
-	public void setLocation(Location location) {
+	public void setLocation(Point location) {
 		this.location = location;
 	}
 

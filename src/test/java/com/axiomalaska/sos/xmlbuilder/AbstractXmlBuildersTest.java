@@ -21,16 +21,19 @@ import org.n52.sos.ioos.asset.StationAsset;
 import com.axiomalaska.phenomena.Phenomena;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.phenomena.PhenomenonImp;
-import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.ObservationCollection;
 import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosSource;
 import com.axiomalaska.sos.data.SosStation;
+import com.axiomalaska.sos.tools.GeomHelper;
+import com.vividsolutions.jts.geom.Point;
 
 public class AbstractXmlBuildersTest {
-    protected Location TEST_LOCATION = new Location( 70.4, -148.527 );    
+    protected Point TEST_STATION_POINT = GeomHelper.createLatLngPoint(70.4, -148.527);    
+    protected Point TEST_SENSOR_POINT = GeomHelper.createLatLngPoint(70.4, -148.527, -1.0);
+    protected Point TEST_FOI_POINT = GeomHelper.createLatLngPoint(70.4, -148.527, -10.0);
     protected String TEST_SOURCE_ID = "aoos";
     protected String TEST_NETWORK_ID = "all";
     protected String TEST_STATION_ID = "prudhoe";
@@ -96,7 +99,7 @@ public class AbstractXmlBuildersTest {
         testStation.setShortName( TEST_SHORT_NAME );
         testStation.setLongName( TEST_LONG_NAME );
         testStation.setFeatureOfInterestName( TEST_FOI_NAME );
-        testStation.setLocation( TEST_LOCATION );
+        testStation.setLocation( TEST_STATION_POINT );
         testStation.setShortName( TEST_STATION_NAME );
         List<SosNetwork> networks = new ArrayList<SosNetwork>();
         networks.add( TEST_NETWORK );
@@ -115,6 +118,7 @@ public class AbstractXmlBuildersTest {
         testSensor.setStation(TEST_STATION);
         testSensor.setAsset(new SensorAsset(TEST_SOURCE_ID, TEST_STATION_ID, TEST_SENSOR_ID));
         testSensor.setLongName( TEST_LONG_NAME );
+        testSensor.setLocation(TEST_SENSOR_POINT);
         List<SosNetwork> networks = new ArrayList<SosNetwork>();
         networks.add( TEST_NETWORK );        
         testSensor.setNetworks( networks );

@@ -201,8 +201,7 @@ public class StationSensorMLBuilder extends AbstractSensorMLBuilder  {
 	    createIdentification();
 	    createClassification();	    
 	    if(station.getNetworks().size() > 0){
-	        createParentProcedures(station.getNetworks(), IoosSosConstants.PARENT_NETWORK_PROCEDURES_LABEL,
-	                IoosSosConstants.PARENT_NETWORK_FIELD_NAME, IoosSosConstants.NETWORK_ID_DEF );
+	        createParentProcedures(station.getNetworks());
         }
 	    createContactOperator();
 	    createContactPublisher();
@@ -440,8 +439,8 @@ public class StationSensorMLBuilder extends AbstractSensorMLBuilder  {
 	    SmlLocation2 xbSmlLocation = xbSystem.addNewSmlLocation();
 	    PointType xbPoint = xbSmlLocation.addNewPoint();
 	    xbPoint.setSrsName(IoosSosConstants.EPSG_4326_DEF);
-	    xbPoint.addNewPos().setStringValue(station.getLocation().getLatitude()
-	            + " " + station.getLocation().getLongitude());
+	    xbPoint.addNewPos().setStringValue(station.getLocation().getY()
+	            + " " + station.getLocation().getX());
 	}
 
 	/**

@@ -3,6 +3,7 @@ package com.axiomalaska.sos.xmlbuilder;
 import org.apache.xmlbeans.XmlException;
 import org.junit.Test;
 
+import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.sos.exception.UnsupportedSosAssetTypeException;
 import com.axiomalaska.sos.xmlbuilder.DescribeSensorBuilder;
 import com.axiomalaska.sos.xmlbuilder.GetNewestObservationBuilder;
@@ -48,12 +49,12 @@ public class XmlBuildersTest extends AbstractXmlBuildersTest {
     }
 
     @Test
-    public void testInsertResultTemplateBuilder()  {
-        validateXmlDocument( new InsertResultTemplateBuilder(TEST_SENSOR, TEST_PHENOMENON, -5.0).build() );
+    public void testInsertResultTemplateBuilder() throws UnsupportedGeometryTypeException  {
+        validateXmlDocument( new InsertResultTemplateBuilder(TEST_SENSOR, TEST_PHENOMENON, TEST_FOI_POINT).build() );
     }
     
     @Test
-    public void testInsertResultBuilder()  {
+    public void testInsertResultBuilder() throws UnsupportedGeometryTypeException  {
         validateXmlDocument( new InsertResultBuilder(TEST_OBSERVATION_COLLECTION).build() );
     }
 
@@ -63,12 +64,12 @@ public class XmlBuildersTest extends AbstractXmlBuildersTest {
     }
 
     @Test
-    public void testGetNewestObservationBuilder()  {
-        validateXmlDocument( new GetNewestObservationBuilder(TEST_SENSOR, TEST_PHENOMENON, -5.0).build() );
+    public void testGetNewestObservationBuilder() throws UnsupportedGeometryTypeException  {
+        validateXmlDocument( new GetNewestObservationBuilder(TEST_SENSOR, TEST_PHENOMENON, TEST_FOI_POINT).build() );
     }
 
     @Test
-    public void testGetLatestTemplateBuilder()  {
-        validateXmlDocument( new GetOldestObservationBuilder(TEST_SENSOR, TEST_PHENOMENON, -5.0).build() );
+    public void testGetLatestTemplateBuilder() throws UnsupportedGeometryTypeException  {
+        validateXmlDocument( new GetOldestObservationBuilder(TEST_SENSOR, TEST_PHENOMENON, TEST_FOI_POINT).build() );
     }    
 }

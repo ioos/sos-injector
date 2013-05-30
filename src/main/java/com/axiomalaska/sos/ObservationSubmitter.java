@@ -17,6 +17,7 @@ import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.exception.InvalidObservationCollectionException;
 import com.axiomalaska.sos.exception.ObservationRetrievalException;
 import com.axiomalaska.sos.exception.SosCommunicationException;
+import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.sos.tools.HttpSender;
 import com.axiomalaska.sos.tools.ResponseInterpretter;
 import com.axiomalaska.sos.tools.XmlHelper;
@@ -24,6 +25,7 @@ import com.axiomalaska.sos.xmlbuilder.GetNewestObservationBuilder;
 import com.axiomalaska.sos.xmlbuilder.GetObservationBuilder;
 import com.axiomalaska.sos.xmlbuilder.GetOldestObservationBuilder;
 import com.axiomalaska.sos.xmlbuilder.InsertResultBuilder;
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * This class is used to push observations from a station and it's 
@@ -67,17 +69,19 @@ public class ObservationSubmitter {
 	 * @throws InvalidObservationCollectionException 
 	 * @throws ObservationRetrievalException 
 	 * @throws SosCommunicationException 
+	 * @throws UnsupportedGeometryTypeException 
 	 */
 	public void update(SosSensor sensor, Phenomenon phenomenon, ObservationRetriever observationRetriever)
-	           throws InvalidObservationCollectionException, ObservationRetrievalException, SosCommunicationException{
-		DateTime startDateForAllHeights = getNewestObservationDateForAllHeights(sensor, phenomenon);
+	           throws InvalidObservationCollectionException, ObservationRetrievalException, SosCommunicationException,
+	           UnsupportedGeometryTypeException{
+		DateTime startDateForAllGeometries = getNewestObservationDateForAllGeometries(sensor, phenomenon);
 		
 		List<ObservationCollection> observationCollections = observationRetriever
-				.getObservationCollection(sensor, phenomenon, startDateForAllHeights);
+				.getObservationCollection(sensor, phenomenon, startDateForAllGeometries);
 
 		for(ObservationCollection observationCollection : observationCollections){
 			DateTime startDate = getNewestObservationDate(sensor, phenomenon,
-			        observationCollection.getHeight());
+			        observationCollection.getGeometry());
 			insertObservations(observationCollection, startDate);
 		}
 	}
@@ -89,12 +93,14 @@ public class ObservationSubmitter {
 	 * @throws InvalidObservationCollectionException 
 	 * @throws ObservationRetrievalException 
 	 * @throws SosCommunicationException 
+	 * @throws UnsupportedGeometryTypeException 
 	 */
 	public void insertObservations(ObservationCollection observationCollection) throws
-	        InvalidObservationCollectionException, ObservationRetrievalException, SosCommunicationException{
+	        InvalidObservationCollectionException, ObservationRetrievalException, SosCommunicationException,
+	        UnsupportedGeometryTypeException{
 		DateTime newestObservationInSosDate = getNewestObservationDate(
 				observationCollection.getSensor(),
-				observationCollection.getPhenomenon(), observationCollection.getHeight());
+				observationCollection.getPhenomenon(), observationCollection.getGeometry());
 
 		insertObservations(observationCollection, newestObservationInSosDate);
 	}
@@ -106,11 +112,13 @@ public class ObservationSubmitter {
 	 * @throws InvalidObservationCollectionException 
 	 * @throws ObservationRetrievalException 
 	 * @throws SosCommunicationException 
+	 * @throws UnsupportedGeometryTypeException 
 	 */
 	private void insertObservations(ObservationCollection observationCollection, DateTime startDate)
-	        throws InvalidObservationCollectionException, ObservationRetrievalException, SosCommunicationException  {		
+	        throws InvalidObservationCollectionException, ObservationRetrievalException, SosCommunicationException,
+	        UnsupportedGeometryTypeException  {		
 		DateTime oldestDate = getOldestObservationDate(observationCollection.getSensor(), 
-				observationCollection.getPhenomenon(), observationCollection.getHeight());
+				observationCollection.getPhenomenon(), observationCollection.getGeometry());
 		
 		insertObservations(observationCollection, startDate, oldestDate);
 	}
@@ -125,23 +133,25 @@ public class ObservationSubmitter {
 	 * @throws IOException 
 	 * @throws XmlException 
 	 * @throws SosCommunicationException 
+	 * @throws UnsupportedGeometryTypeException 
 	 */
 	private void insertObservations(ObservationCollection observationCollection, 
 			DateTime newestObservationInSosDate, DateTime oldestObservationInSosDate)
-			        throws InvalidObservationCollectionException, SosCommunicationException {
+			        throws InvalidObservationCollectionException, SosCommunicationException,
+			        UnsupportedGeometryTypeException {
 	    if (!observationCollection.isValid()) {
 	        throw new InvalidObservationCollectionException(observationCollection);
 	    }
 		SosSensor sensor = observationCollection.getSensor();
 		Phenomenon phenomenon = observationCollection.getPhenomenon();
-		Double height = observationCollection.getHeight();
+		Geometry geometry = observationCollection.getGeometry();
 		observationCollection.filterObservations(oldestObservationInSosDate, newestObservationInSosDate);
 		
 		if (observationCollection.getObservationValues().size() > 0) {
-		    if (resultTemplateSubmitter.checkResultTemplateWithSos(sensor, phenomenon, height)) {
+		    if (resultTemplateSubmitter.checkResultTemplateWithSos(sensor, phenomenon, geometry)) {
 		        XmlObject xbResponse;
                 try {
-                    xbResponse = XmlObject.Factory.parse(
+                    xbResponse = ResponseInterpretter.getXmlObject(
                             HttpSender.sendPostMessage(sosUrl, new InsertResultBuilder(observationCollection).build()));
                 } catch (XmlException e) {
                     throw new SosCommunicationException(e);
@@ -158,8 +168,9 @@ public class ObservationSubmitter {
 		}
 	}
 	
-	private DateTime getNewestObservationDateForAllHeights(SosSensor sensor,
-	        Phenomenon phenomenon) throws ObservationRetrievalException, SosCommunicationException  {
+	private DateTime getNewestObservationDateForAllGeometries(SosSensor sensor,
+	        Phenomenon phenomenon) throws ObservationRetrievalException, SosCommunicationException,
+	        UnsupportedGeometryTypeException  {
        return getNewestObservationDate(sensor, phenomenon, null);
 	}
 	
@@ -174,10 +185,11 @@ public class ObservationSubmitter {
 	 * the SOS it returns a date from the first century.
 	 * @throws ObservationRetrievalException 
 	 * @throws SosCommunicationException 
+	 * @throws UnsupportedGeometryTypeException 
 	 */
-	private DateTime getNewestObservationDate(SosSensor sensor, Phenomenon phenomenon, Double height)
-	        throws ObservationRetrievalException, SosCommunicationException {
-        DateTime dateTime = getObservationDateExtrema(sensor, phenomenon, height, ObservationExtremaType.NEWEST);
+	private DateTime getNewestObservationDate(SosSensor sensor, Phenomenon phenomenon, Geometry geometry)
+	        throws ObservationRetrievalException, SosCommunicationException, UnsupportedGeometryTypeException {
+        DateTime dateTime = getObservationDateExtrema(sensor, phenomenon, geometry, ObservationExtremaType.NEWEST);
         return dateTime != null ? dateTime : new DateTime(1970,1,1,0,0);        
 	}
 
@@ -192,10 +204,11 @@ public class ObservationSubmitter {
 	 * the SOS it returns a date from the first century.
 	 * @throws ObservationRetrievalException 
 	 * @throws SosCommunicationException 
+	 * @throws UnsupportedGeometryTypeException 
 	 */
-	private DateTime getOldestObservationDate(SosSensor sensor, Phenomenon phenomenon,
-	        Double height) throws ObservationRetrievalException, SosCommunicationException{
-	    DateTime dateTime = getObservationDateExtrema(sensor, phenomenon, height, ObservationExtremaType.OLDEST);
+	private DateTime getOldestObservationDate(SosSensor sensor, Phenomenon phenomenon, Geometry geometry)
+	        throws ObservationRetrievalException, SosCommunicationException, UnsupportedGeometryTypeException{
+	    DateTime dateTime = getObservationDateExtrema(sensor, phenomenon, geometry, ObservationExtremaType.OLDEST);
 	    return dateTime != null ? dateTime : new DateTime(1,1,1,0,0); 
 	}
 	
@@ -210,22 +223,24 @@ public class ObservationSubmitter {
      * the SOS it returns a date from the first century.
      * @throws ObservationRetrievalException 
      * @throws SosCommunicationException 
+     * @throws UnsupportedGeometryTypeException 
      */
-    private DateTime getObservationDateExtrema(SosSensor sensor, Phenomenon phenomenon,
-            Double height, ObservationExtremaType type) throws ObservationRetrievalException, SosCommunicationException {
+    private DateTime getObservationDateExtrema(SosSensor sensor, Phenomenon phenomenon, Geometry geometry,
+            ObservationExtremaType type) throws ObservationRetrievalException, SosCommunicationException,
+            UnsupportedGeometryTypeException {
         GetObservationBuilder builder = null;
         switch (type){
             case NEWEST:
-                builder = new GetNewestObservationBuilder(sensor, phenomenon, height);
+                builder = new GetNewestObservationBuilder(sensor, phenomenon, geometry);
                 break;
             case OLDEST:
-                builder = new GetOldestObservationBuilder(sensor, phenomenon, height);
+                builder = new GetOldestObservationBuilder(sensor, phenomenon, geometry);
                 break;
         }
         
         XmlObject xbResponse = null;
         try {
-            xbResponse = XmlObject.Factory.parse(HttpSender.sendPostMessage(sosUrl, builder.build()));
+            xbResponse = ResponseInterpretter.getXmlObject(HttpSender.sendPostMessage(sosUrl, builder.build()));
         } catch (XmlException e) {
             throw new SosCommunicationException(e);
         } catch (IOException e) {
@@ -237,7 +252,7 @@ public class ObservationSubmitter {
             //ignore foi errors, since the foi won't be valid until the first result is inserted
             if( !ResponseInterpretter.onlyExceptionContains((ExceptionReportDocument) xbResponse,
                     "of the parameter 'featureOfInterest' is invalid")) {
-                throw new ObservationRetrievalException(sensor, phenomenon, height, type);
+                throw new ObservationRetrievalException(sensor, phenomenon, geometry, type);
             }
         } else {
             dateTime = ResponseInterpretter.parseDateFromGetObservationResponse(

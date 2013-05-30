@@ -80,15 +80,14 @@ public abstract class AbstractSensorMLBuilder {
             </swe:SimpleDataRecord>
         </sml:capabilities>
      */
-    protected void createParentProcedures(List<? extends AbstractSosAsset> parents, String capabilitiesName,
-            String fieldName, String definition ){
+    protected void createParentProcedures(List<? extends AbstractSosAsset> parents){
         Map<String,String> nameValueMap = new HashMap<String,String>();
         int counter = 0;
         for(AbstractSosAsset parent : parents){
-            nameValueMap.put(fieldName + ++counter, parent.getId());
+            nameValueMap.put("parentProcedure" + ++counter, parent.getId());
         }
 
-        createSpecialCapabilities(capabilitiesName, definition, nameValueMap);
+        createSpecialCapabilities(IoosSosConstants.PARENT_PROCEDURES, null, nameValueMap);
     }
 
     /**

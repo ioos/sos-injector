@@ -16,10 +16,10 @@ import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.phenomena.PhenomenonImp;
 import com.axiomalaska.phenomena.UnitCreationException;
 import com.axiomalaska.phenomena.UnitResolver;
-import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.ObservationCollection;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
+import com.axiomalaska.sos.tools.GeomHelper;
 
 public class AppTest {
 	@Test
@@ -234,7 +234,7 @@ public class AppTest {
 		
 		SosStation station = new SosStation();
 		station.setAsset(new StationAsset("authority","station6"));
-		station.setLocation(new Location(63.0, -143.0));
+		station.setLocation(GeomHelper.createLatLngPoint(63.0, -143.0));
 		station.setFeatureOfInterestName("Sonoma House - AOOS");
 		station.setSensors(sensors);
 		

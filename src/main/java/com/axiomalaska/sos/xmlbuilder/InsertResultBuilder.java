@@ -9,6 +9,7 @@ import net.opengis.sos.x20.InsertResultType;
 
 import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.data.ObservationCollection;
+import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.sos.tools.IdCreator;
 
 public class InsertResultBuilder {
@@ -36,10 +37,11 @@ public class InsertResultBuilder {
         <sos:template>urn:ioos:sensor:wmo:41001:watertemp1:sea_water_temperature_template</sos:template>
         <sos:resultValues>15.12@2012-11-19T13:30:00+02:00#15.15@2012-11-19T13:31:00+02:00#15.15@2012-11-19T13:32:00+02:00#15.85@2012-11-19T13:33:00+02:00#16.5@2012-11-19T13:34:00+02:00#16.9@2012-11-19T13:35:00+02:00#16.7@2012-11-19T13:36:00+02:00#16.5@2012-11-19T13:37:00+02:00#16.6@2012-11-19T13:38:00+02:00#16.5@2012-11-19T13:39:00+02:00#16.4@2012-11-19T13:40:00+02:00#16.34@2012-11-19T13:41:00+02:00#16.25@2012-11-19T13:42:00+02:00#15.79@2012-11-19T13:43:00+02:00#15.56@2012-11-19T13:44:00+02:00#15.25@</sos:resultValues>
     </sos:InsertResult>
+     * @throws UnsupportedGeometryTypeException 
 
      * @ 
 	 */
-	public InsertResultDocument build(){
+	public InsertResultDocument build() throws UnsupportedGeometryTypeException{
 	    InsertResultDocument xbInsertResultDoc = InsertResultDocument.Factory.newInstance();
 	    InsertResultType xbInsertResult = xbInsertResultDoc.addNewInsertResult();
 	    xbInsertResult.setService(SosInjectorConstants.SOS_SERVICE);
@@ -47,7 +49,7 @@ public class InsertResultBuilder {
 	    
 	    
 	    xbInsertResult.setTemplate(IdCreator.createResultTemplateId(obsCollection.getSensor(),
-	            obsCollection.getPhenomenon(), obsCollection.getHeight()));
+	            obsCollection.getPhenomenon(), obsCollection.getGeometry()));
 	    xbInsertResult.addNewResultValues().newCursor().setTextValue(encodeResultValues(obsCollection));
 	    return xbInsertResultDoc;
 	}

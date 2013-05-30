@@ -1,7 +1,12 @@
 package com.axiomalaska.sos.xmlbuilder;
 
+import java.math.BigInteger;
+
+import net.opengis.gml.x32.DirectPositionListType;
+import net.opengis.gml.x32.AbstractGeometryType;
 import net.opengis.gml.x32.CodeWithAuthorityType;
 import net.opengis.gml.x32.DirectPositionType;
+import net.opengis.gml.x32.LineStringType;
 import net.opengis.gml.x32.PointType;
 import net.opengis.om.x20.OMObservationType;
 import net.opengis.samplingSpatial.x20.SFSpatialSamplingFeatureDocument;
@@ -18,10 +23,15 @@ import net.opengis.swe.x20.TimeType;
 import com.axiomalaska.ioos.sos.IoosSosConstants;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.SosInjectorConstants;
-import com.axiomalaska.sos.data.Location;
+import com.axiomalaska.sos.data.PosEncodedGeom;
 import com.axiomalaska.sos.data.SosSensor;
+import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
+import com.axiomalaska.sos.tools.GeomHelper;
 import com.axiomalaska.sos.tools.IdCreator;
 import com.axiomalaska.sos.tools.XmlHelper;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Point;
 
 public class InsertResultTemplateBuilder {
     // ---------------------------------------------------------------------------
@@ -29,16 +39,16 @@ public class InsertResultTemplateBuilder {
     // ---------------------------------------------------------------------------
     SosSensor sensor;
     Phenomenon phenomenon;
-    Double height;
+    Geometry foiGeometry;
     
     // ---------------------------------------------------------------------------
     // Public Members
     // ---------------------------------------------------------------------------
 	
-    public InsertResultTemplateBuilder(SosSensor sensor, Phenomenon phenomenon, Double height) {
+    public InsertResultTemplateBuilder(SosSensor sensor, Phenomenon phenomenon, Geometry foiGeometry) {
         this.sensor = sensor;
         this.phenomenon = phenomenon;
-        this.height = height;
+        this.foiGeometry = foiGeometry;
     }
 
     /**
@@ -104,16 +114,17 @@ public class InsertResultTemplateBuilder {
             </sos:ResultTemplate>
         </sos:proposedTemplate>
     </sos:InsertResultTemplate>
+     * @throws UnsupportedGeometryTypeException 
      * @ 
 	 */
-	public InsertResultTemplateDocument build(){
+	public InsertResultTemplateDocument build() throws UnsupportedGeometryTypeException{
 	    InsertResultTemplateDocument xbInsertResultTemplateDoc = InsertResultTemplateDocument.Factory.newInstance();
 	    InsertResultTemplateType xbInsertResultTemplate = xbInsertResultTemplateDoc.addNewInsertResultTemplate();
 	    xbInsertResultTemplate.setService(SosInjectorConstants.SOS_SERVICE);
 	    xbInsertResultTemplate.setVersion(SosInjectorConstants.SOS_V200);
 	    
 	    ResultTemplateType xbResultTemplate = xbInsertResultTemplate.addNewProposedTemplate().addNewResultTemplate();
-	    xbResultTemplate.setIdentifier(IdCreator.createResultTemplateId(sensor, phenomenon, height));
+	    xbResultTemplate.setIdentifier(IdCreator.createResultTemplateId(sensor, phenomenon, foiGeometry));
 	    xbResultTemplate.setOffering(sensor.getId());
 	    
 	    OMObservationType xbOMObservation = xbResultTemplate.addNewObservationTemplate().addNewOMObservation();
@@ -131,29 +142,14 @@ public class InsertResultTemplateBuilder {
 	    xbSfSpatialSamplingFeature.setId("foi"); 
 	    CodeWithAuthorityType xbFoiGmlIdentifier = xbSfSpatialSamplingFeature.addNewIdentifier();
 	    xbFoiGmlIdentifier.setCodeSpace("");
-	    xbFoiGmlIdentifier.setStringValue(IdCreator.createObservationFeatureOfInterestId(sensor, height));
+	    xbFoiGmlIdentifier.setStringValue(IdCreator.createObservationFeatureOfInterestId(sensor, foiGeometry));
 	    xbSfSpatialSamplingFeature.addNewName().setStringValue(
-	            IdCreator.createObservationFeatureOfInterestName(sensor, height));
+	            IdCreator.createObservationFeatureOfInterestName(sensor, foiGeometry));
 	    xbSfSpatialSamplingFeature.addNewType().setHref(SosInjectorConstants.SAMPLING_POINT_DEF);
 	    //TODO should this really be unknown? maybe earth?
 	    xbSfSpatialSamplingFeature.addNewSampledFeature().setHref(SosInjectorConstants.UNKNOWN_DEF);
-	    PointType xbPoint = (PointType) xbSfSpatialSamplingFeature.addNewShape().addNewAbstractGeometry()
-	            .substitute(SosInjectorConstants.QN_POINT, PointType.type);
-	    xbPoint.setId("foiPoint");
-	    //TODO use encoder to encode geometry? need to support linestrings for profile bins
-	    DirectPositionType xbPos = xbPoint.addNewPos();
-	    xbPos.setSrsName(IoosSosConstants.EPSG_4326_DEF);
-	    Location location = sensor.getStation().getLocation();
-	    String coords = location.getLatitude() + " " + location.getLongitude();
-	    if (height != null && !Double.isNaN(height)) {
-	        coords += " " + height;
-	    }
-	    xbPos.setStringValue(coords);
-
+	    encodeGeometry(xbSfSpatialSamplingFeature.addNewShape().addNewAbstractGeometry(), foiGeometry);
 	    XmlHelper.append(xbOMObservation.addNewFeatureOfInterest(), xbSfSpatialSamplingFeatureDoc);
-//	    xbOMObservation.addNewFeatureOfInterest().addNewAbstractFeature().substitute(
-//                SosInjectorConstants.QN_SF_SPATIALSAMPLINGFEATURE, SFSpatialSamplingFeatureType.type);
-//	            .set(xbSfSpatialSamplingFeature);
 
 	    DataRecordType xbDataRecord = (DataRecordType) xbResultTemplate.addNewResultStructure()
 	            .addNewAbstractDataComponent().substitute(SosInjectorConstants.QN_DATARECORD_SWE2, DataRecordType.type);
@@ -180,5 +176,39 @@ public class InsertResultTemplateBuilder {
 	    xbTextEncodingType.setDecimalSeparator(SosInjectorConstants.RESULT_TEMPLATE_DECIMAL_SEPARATOR);
 	    
 	    return xbInsertResultTemplateDoc;
+	}
+	
+	/**
+	 * Encode the geometry to gml
+	 * If geometries need to be encoded elsewhere this should be moved to GeomHelper
+	 * @param xbAbstractGeometryType AbstractGeometry to encode to
+	 * @param geometry Geometry to encode
+	 * @throws UnsupportedGeometryTypeException 
+	 */
+	private static void encodeGeometry(AbstractGeometryType xbAbstractGeometryType, Geometry geometry)
+	        throws UnsupportedGeometryTypeException {
+	    if (geometry instanceof Point) {
+	        Point point = (Point) geometry;
+            PointType xbPoint = (PointType) xbAbstractGeometryType.substitute(
+                    SosInjectorConstants.QN_POINT, PointType.type);
+            xbPoint.setId("foiPoint");
+            DirectPositionType xbPos = xbPoint.addNewPos();
+            xbPos.setSrsName(IoosSosConstants.EPSG_4326_DEF);
+            PosEncodedGeom posEncodedGeom = GeomHelper.posEncodeGeom(point);
+            xbPos.setSrsDimension(BigInteger.valueOf(posEncodedGeom.getDimension()));
+            xbPos.setStringValue(posEncodedGeom.getPosList());
+	    } else if (geometry instanceof LineString) {
+	        LineString lineString = (LineString) geometry;
+	        LineStringType xbLineString = (LineStringType) xbAbstractGeometryType.substitute(
+                    SosInjectorConstants.QN_LINESTRING, LineStringType.type);
+	        xbLineString.setId("foiLineString");
+            DirectPositionListType xbPosList = xbLineString.addNewPosList();
+            xbPosList.setSrsName(IoosSosConstants.EPSG_4326_DEF);
+            PosEncodedGeom posEncodedGeom = GeomHelper.posEncodeGeom(lineString);
+            xbPosList.setSrsDimension(BigInteger.valueOf(posEncodedGeom.getDimension()));
+            xbPosList.setStringValue(posEncodedGeom.getPosList());	        
+	    } else {
+	        throw new UnsupportedGeometryTypeException(geometry);
+	    }
 	}
 }

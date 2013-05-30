@@ -1,9 +1,11 @@
 package com.axiomalaska.sos.tools;
 
 import com.axiomalaska.phenomena.Phenomenon;
-import com.axiomalaska.sos.data.Location;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
+import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
 
 /**
  * This class is used to create the ID of the objects of the SOS. This was
@@ -13,10 +15,8 @@ import com.axiomalaska.sos.data.SosStation;
  * 
  */
 public class IdCreator {
-    //TODO review feature of interest id/name functions. do we really want lat/lng in the id?
-    //can't we just have one function with optional height?
-	public static String createFeatureOfInterestId(SosSensor sensor, Location location){
-		return sensor.getId() + ":" + location.getLatitude() + ":" + location.getLongitude();
+	public static String createFeatureOfInterestId(SosSensor sensor){
+		return sensor.getId();
 	}
 	
 	public static String createFeatureOfInterestName(SosStation station, SosSensor sensor) {
@@ -27,19 +27,33 @@ public class IdCreator {
 	    return station.getId();
 	}
 
-    public static String createObservationFeatureOfInterestId(SosSensor sensor, Double height) {
-        if (height != null && !Double.isNaN(height)) {
-            return sensor.getId() + height + "m";
+    public static String createObservationFeatureOfInterestId(SosSensor sensor, Geometry foiGeometry)
+            throws UnsupportedGeometryTypeException {
+        StringBuilder builder = new StringBuilder();
+        if (foiGeometry instanceof Point){
+            Point foiPoint = (Point) foiGeometry;
+            if (!GeomHelper.equal2d(sensor.getLocation(), foiPoint)) {
+                builder.append("lat" + foiPoint.getY());
+                builder.append("lng" + foiPoint.getX());
+            }
+            if (GeomHelper.hasHeight(foiPoint)) {
+                builder.append("height" + GeomHelper.getHeight(foiPoint) + "m");
+            }
+        }
+        if (builder.length() > 0 ){
+            return sensor.getId() + "(" + builder.toString() + ")";
         } else {
             return sensor.getId();
         }
     }
 
-    public static String createObservationFeatureOfInterestName(SosSensor sensor, Double height) {
-        return createObservationFeatureOfInterestId(sensor, height);
+    public static String createObservationFeatureOfInterestName(SosSensor sensor, Geometry foiGeometry)
+            throws UnsupportedGeometryTypeException {
+        return createObservationFeatureOfInterestId(sensor, foiGeometry);
     }
 
-    public static String createResultTemplateId(SosSensor sensor, Phenomenon phenomenon, Double height) {
-        return createObservationFeatureOfInterestId(sensor, height) + ":" + phenomenon.getId();       
+    public static String createResultTemplateId(SosSensor sensor, Phenomenon phenomenon, Geometry foiGeometry)
+            throws UnsupportedGeometryTypeException {
+        return createObservationFeatureOfInterestId(sensor, foiGeometry) + ":" + phenomenon.getId();       
     }
 }

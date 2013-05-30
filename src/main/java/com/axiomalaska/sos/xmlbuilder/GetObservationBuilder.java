@@ -9,8 +9,10 @@ import net.opengis.sos.x20.GetObservationType;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.data.SosSensor;
+import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.sos.tools.IdCreator;
 import com.axiomalaska.sos.tools.XmlHelper;
+import com.vividsolutions.jts.geom.Geometry;
 
 public abstract class GetObservationBuilder {
 
@@ -20,16 +22,16 @@ public abstract class GetObservationBuilder {
 
 	private SosSensor sensor;
 	private Phenomenon phenomenon;
-	private Double height;
+	private Geometry geometry;
 	
 	// -------------------------------------------------------------------------
 	// Constructor
 	// -------------------------------------------------------------------------
 
-	public GetObservationBuilder(SosSensor sensor, Phenomenon phenomenon, Double height) {
+	public GetObservationBuilder(SosSensor sensor, Phenomenon phenomenon, Geometry geometry) {
 		this.sensor = sensor;
 		this.phenomenon = phenomenon;
-		this.height = height;
+		this.geometry = geometry;
 	}
 	
 	// -------------------------------------------------------------------------
@@ -53,16 +55,17 @@ public abstract class GetObservationBuilder {
         <sos:observedProperty>http://www.52north.org/test/observableProperty/1</sos:observedProperty>
         <sos:featureOfInterest>http://www.52north.org/test/featureOfInterest/1</sos:featureOfInterest>
     </sos:GetObservation>
+	 * @throws UnsupportedGeometryTypeException 
 	 *
 	 */
-	public GetObservationDocument build() {
+	public GetObservationDocument build() throws UnsupportedGeometryTypeException {
 	    GetObservationDocument xbGetObservationDoc = GetObservationDocument.Factory.newInstance();
 	    GetObservationType xbGetObservation = xbGetObservationDoc.addNewGetObservation();
 	    xbGetObservation.setService(SosInjectorConstants.SOS_SERVICE);
 	    xbGetObservation.setVersion(SosInjectorConstants.SOS_V200);
 	    xbGetObservation.addProcedure(sensor.getId());
 	    xbGetObservation.addObservedProperty(phenomenon.getId());
-	    xbGetObservation.addFeatureOfInterest(IdCreator.createObservationFeatureOfInterestId(sensor, height));	    
+	    xbGetObservation.addFeatureOfInterest(IdCreator.createObservationFeatureOfInterestId(sensor, geometry));	    
 	    return xbGetObservationDoc;
 	}
 

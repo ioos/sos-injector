@@ -9,14 +9,10 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import com.axiomalaska.phenomena.Phenomenon;
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Contains a collection of observations for one associated phenomenon and station
- * 
- * The dates, locations and values of the observations are in the same order. Meaning that
- * the first value is associated to the first date and location. 
- * 
- * The location list is only fill if the station is moving. Else the list is empty
  * 
  * @author Lance Finfrock
  */
@@ -29,7 +25,7 @@ public class ObservationCollection {
 	private SosSensor sensor;
 	private Phenomenon phenomenon;
 	private Map<DateTime,Double> observationValues = new HashMap<DateTime,Double>();
-	private Double height = null;
+	private Geometry geometry = null;
 	
 	// -------------------------------------------------------------------------
 	// Public Members
@@ -40,12 +36,15 @@ public class ObservationCollection {
 	 * 
 	 * @return
 	 */
-	public Double getHeight() {
-		return height;
+	public Geometry getGeometry() {
+	    if (geometry == null && sensor != null && sensor.getLocation() != null ){
+	        return sensor.getLocation();
+	    }
+		return geometry;
 	}
 
-	public void setHeight(Double height) {
-		this.height = height;
+	public void setGeometry(Geometry geometry) {
+		this.geometry = geometry;
 	}
 	
 	public Phenomenon getPhenomenon() {
@@ -110,19 +109,24 @@ public class ObservationCollection {
             LOGGER.info("Sensor was null in ObservationCollection");
             return false;
         }
-        
+
         if(phenomenon == null){
-            LOGGER.info("Phenomenon was null in ObservationCollection");            
+            LOGGER.info("Phenomenon was null in ObservationCollection");
             return false;
         }
-        
+
         if(sensor.getStation() == null){
-            LOGGER.info("Station was null in ObservationCollection");           
+            LOGGER.info("Station was null in ObservationCollection's sensor");
+            return false;
+        }
+
+        if(getGeometry() == null){
+            LOGGER.info("Geometry was null in ObservationCollection");
             return false;
         }
 
         if(observationValues.isEmpty()){
-            LOGGER.info("No values for sensor " + sensor.getId() 
+            LOGGER.info("No values for sensor " + sensor.getId()
                     + " phenomenon: " + phenomenon.getId());
             return false;
         }
@@ -134,7 +138,7 @@ public class ObservationCollection {
         return "ObservationCollection["
                 + "sensor: " + (sensor == null ? "null" : sensor.getId())
                 + ",phenomenon: " + (phenomenon == null ? "null" : phenomenon.getId())
-                + ",height: " + (height == null ? "null" : Double.toString(height))
+                + ",geometry: " + (geometry == null ? "null" : geometry.toString())
                 + ",size: " + observationValues.size()
                 + "]";
     }

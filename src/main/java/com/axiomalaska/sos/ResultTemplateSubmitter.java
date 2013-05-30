@@ -13,10 +13,12 @@ import org.apache.xmlbeans.XmlObject;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.exception.SosCommunicationException;
+import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.sos.tools.HttpSender;
 import com.axiomalaska.sos.tools.IdCreator;
 import com.axiomalaska.sos.tools.ResponseInterpretter;
 import com.axiomalaska.sos.xmlbuilder.InsertResultTemplateBuilder;
+import com.vividsolutions.jts.geom.Geometry;
 
 public class ResultTemplateSubmitter {
     private static final Logger LOGGER = Logger.getLogger(ResultTemplateSubmitter.class);
@@ -28,25 +30,28 @@ public class ResultTemplateSubmitter {
         this.sosUrl = sosUrl;
     }
 
-	public boolean checkResultTemplateWithSos(SosSensor sensor, Phenomenon phenomenon, Double height)
-	        throws SosCommunicationException{
-	    String resultTemplateId = IdCreator.createResultTemplateId(sensor, phenomenon, height);
-	    try {
-            return resultTemplatesInSos.contains(resultTemplateId)
-                    || isResultTemplateCreated(resultTemplateId, sensor, phenomenon, height)
-                    || createResultTemplate(resultTemplateId, sensor, phenomenon, height);
-        } catch (Exception e) {
-            throw new SosCommunicationException(e);
-        }
+	public boolean checkResultTemplateWithSos(SosSensor sensor, Phenomenon phenomenon, Geometry geometry)
+	        throws SosCommunicationException, UnsupportedGeometryTypeException{
+	    String resultTemplateId = IdCreator.createResultTemplateId(sensor, phenomenon, geometry);
+	    
+            try {
+                return resultTemplatesInSos.contains(resultTemplateId)
+                        || isResultTemplateCreated(resultTemplateId, sensor, phenomenon, geometry)
+                        || createResultTemplate(resultTemplateId, sensor, phenomenon, geometry);
+            } catch (IOException e) {
+                throw new SosCommunicationException(e);
+            } catch (XmlException e) {
+                throw new SosCommunicationException(e);                
+            }
 	}
 
     private boolean isResultTemplateCreated(String resultTemplateId, SosSensor sensor, Phenomenon phenomenon,
-            Double height) throws IOException, XmlException{
-        //XXX currently there's no way to do a GetResultTemplate check for a specific foi/depth or template url
+            Geometry geometry) throws IOException, XmlException{
+        //XXX currently there's no way to do a GetResultTemplate check for a specific foi/geometry or template url
         //always try to create the result template and ignore 
         return false;
         //save this code in case a better way to check for specific result templates appears later
-//        XmlObject xbResponse = XmlObject.Factory.parse(
+//        XmlObject xbResponse = ResponseInterpretter.getXmlObject(
 //                HttpSender.sendPostMessage(sosUrl, new GetResultTemplateBuilder(sensor, phenomenon).build()));
 //        if (xbResponse == null || !(xbResponse instanceof GetResultTemplateResponseDocument)){
 //            return false;
@@ -56,10 +61,10 @@ public class ResultTemplateSubmitter {
     }
 
 	private boolean createResultTemplate(String resultTemplateId, SosSensor sensor, Phenomenon phenomenon,
-            Double height) throws IOException, XmlException{
+            Geometry geometry) throws IOException, XmlException, UnsupportedGeometryTypeException{
 		LOGGER.info("Creating result template " + resultTemplateId);
-		XmlObject xbResponse = XmlObject.Factory.parse(
-		        HttpSender.sendPostMessage(sosUrl, new InsertResultTemplateBuilder(sensor, phenomenon, height).build())); 
+        XmlObject xbResponse = ResponseInterpretter.getXmlObject(
+		        HttpSender.sendPostMessage(sosUrl, new InsertResultTemplateBuilder(sensor, phenomenon, geometry).build())); 
 		if (xbResponse == null || ResponseInterpretter.isError(xbResponse)) {
 		    //XXX ugly hack to work around inability to check for a specific foi or result template id in GetResultTemplate
 		    if (ResponseInterpretter.onlyExceptionContains((ExceptionReportDocument) xbResponse,

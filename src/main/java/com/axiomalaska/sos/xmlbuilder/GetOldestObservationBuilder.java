@@ -5,10 +5,12 @@ import net.opengis.sos.x20.GetObservationDocument;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.data.SosSensor;
+import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
+import com.vividsolutions.jts.geom.Geometry;
 
 public class GetOldestObservationBuilder extends GetObservationBuilder {
-    public GetOldestObservationBuilder(SosSensor sensor, Phenomenon phenomenon, Double height) {
-        super(sensor, phenomenon, height);
+    public GetOldestObservationBuilder(SosSensor sensor, Phenomenon phenomenon, Geometry geometry) {
+        super(sensor, phenomenon, geometry);
     }
 
     /**
@@ -36,9 +38,10 @@ public class GetOldestObservationBuilder extends GetObservationBuilder {
             </fes:TEquals>
         </sos:temporalFilter>
     </sos:GetObservation>
+     * @throws UnsupportedGeometryTypeException 
      *
      */
-    public GetObservationDocument build() {
+    public GetObservationDocument build() throws UnsupportedGeometryTypeException {
         GetObservationDocument xbGetObservationDoc = super.build();
         addTimeInstantFilter(xbGetObservationDoc, SosInjectorConstants.FIRST);
         return xbGetObservationDoc;

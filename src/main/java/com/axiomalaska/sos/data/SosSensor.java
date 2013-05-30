@@ -6,6 +6,7 @@ import java.util.List;
 import org.n52.sos.ioos.asset.SensorAsset;
 
 import com.axiomalaska.phenomena.Phenomenon;
+import com.vividsolutions.jts.geom.Point;
 
 public class SosSensor extends AbstractSosAsset{
 	// -------------------------------------------------------------------------
@@ -14,6 +15,7 @@ public class SosSensor extends AbstractSosAsset{
     
     private SosStation station;
     private SensorAsset asset;
+    private Point location;
 	private List<Phenomenon> phenomena = new ArrayList<Phenomenon>();
 	private List<SosNetwork> networks = new ArrayList<SosNetwork>();
 
@@ -60,5 +62,16 @@ public class SosSensor extends AbstractSosAsset{
 
     public void setAsset(SensorAsset asset) {
         this.asset = asset;
+    }
+
+    public Point getLocation() {
+        if (location == null && station != null) {
+            return station.getLocation();
+        }
+        return location;
+    }
+
+    public void setLocation(Point location) {        
+        this.location = location;
     }
 }
