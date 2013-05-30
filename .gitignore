@@ -3,5 +3,5 @@
 .settings
 target
 
-*log*
-*out*
+*.log
+*.out
