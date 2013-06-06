@@ -2,6 +2,7 @@ package com.axiomalaska.sos;
 
 import java.io.IOException;
 
+import org.apache.commons.validator.routines.RegexValidator;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
@@ -54,7 +55,7 @@ public class SosInjector {
         if (sosUrl == null || sosUrl.isEmpty()){
             throw new SosInjectorConfigurationException("sosUrl cannot be null or empty");
         }
-        if (!(new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(sosUrl))){
+        if (!(new UrlValidator(new RegexValidator(".*"),0).isValid(sosUrl))){
             throw new SosInjectorConfigurationException("sosUrl must be valid");
         }
         if (publisherInfo == null){
