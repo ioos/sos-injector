@@ -1,5 +1,8 @@
 package com.axiomalaska.sos.tools;
 
+import ucar.units.Unit;
+
+import com.axiomalaska.ioos.sos.IoosSosConstants;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
@@ -56,4 +59,8 @@ public class IdCreator {
             throws UnsupportedGeometryTypeException {
         return createObservationFeatureOfInterestId(sensor, foiGeometry) + ":" + phenomenon.getId();       
     }
+    
+    public static String createUnitHref(Unit unit){
+        return unit == null ? null : IoosSosConstants.UDUNITS_URN_PREFIX + unit.toString();
+    }    
 }
