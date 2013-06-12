@@ -15,6 +15,7 @@ import net.opengis.sensorML.x101.ResponsiblePartyDocument.ResponsibleParty;
 import net.opengis.sensorML.x101.SensorMLDocument;
 import net.opengis.sensorML.x101.SmlLocation.SmlLocation2;
 
+import com.axiomalaska.ioos.sos.IoosDefConstants;
 import com.axiomalaska.ioos.sos.IoosSosConstants;
 import com.axiomalaska.sos.data.DocumentMember;
 import com.axiomalaska.sos.data.HistoryEvent;
@@ -405,25 +406,25 @@ public class StationSensorMLBuilder extends AbstractSensorMLBuilder  {
 	private void createClassification() {
 	    ClassifierList xbClassifierList = xbSystem.addNewClassification().addNewClassifierList();
 		
-	    createClassifier(xbClassifierList, IoosSosConstants.PLATFORM_TYPE, 
-	            IoosSosConstants.PLATFORM_TYPE_DEF, IoosSosConstants.PLATFORM_CODESPACE,
+	    createClassifier(xbClassifierList, IoosDefConstants.PLATFORM_TYPE, 
+	            IoosDefConstants.PLATFORM_TYPE_DEF, IoosSosConstants.PLATFORM_ONTOLOGY,
 				station.getPlatformType());
 		
-		createClassifier(xbClassifierList, IoosSosConstants.OPERATOR_SECTOR, 
-		        IoosSosConstants.OPERATOR_SECTOR_DEF, IoosSosConstants.SECTOR_CODESPACE,
+		createClassifier(xbClassifierList, IoosDefConstants.OPERATOR_SECTOR, 
+		        IoosDefConstants.OPERATOR_SECTOR_DEF, IoosSosConstants.SECTOR_ONTOLOGY,
 				station.getSource().getOperatorSector());
 		
-		createClassifier(xbClassifierList, IoosSosConstants.PUBLISHER, 
-		        IoosSosConstants.PUBLISHER_DEF, IoosSosConstants.ORGANIZATION_CODE_SPACE,
+		createClassifier(xbClassifierList, IoosDefConstants.PUBLISHER, 
+		        IoosDefConstants.PUBLISHER_DEF, IoosSosConstants.ORGANIZATION_ONTOLOGY,
 				station.getSource().getName());
 		
-		createClassifier(xbClassifierList, IoosSosConstants.SPONSOR, 
-		        IoosSosConstants.SPONSOR_DEF, IoosSosConstants.ORGANIZATION_CODE_SPACE,
+		createClassifier(xbClassifierList, IoosDefConstants.SPONSOR, 
+		        IoosDefConstants.SPONSOR_DEF, IoosSosConstants.ORGANIZATION_ONTOLOGY,
 				station.getSponsor());
 		
 		if (publisherInfo != null) {
-    		createClassifier(xbClassifierList, IoosSosConstants.PARENT_NETWORK, 
-    		        IoosSosConstants.PARENT_NETWORK_DEF, IoosSosConstants.ORGANIZATION_CODE_SPACE,
+    		createClassifier(xbClassifierList, IoosDefConstants.PARENT_NETWORK, 
+    		        IoosDefConstants.PARENT_NETWORK_DEF, IoosSosConstants.ORGANIZATION_ONTOLOGY,
     		        publisherInfo.getName());
 		}
 	}
@@ -473,18 +474,18 @@ public class StationSensorMLBuilder extends AbstractSensorMLBuilder  {
 	private void createIdentification() {
 	    IdentifierList xbIdentifierList = xbSystem.addNewIdentification().addNewIdentifierList();
 
-		createIdentifier(xbIdentifierList, IoosSosConstants.STATION_ID, 
-		        IoosSosConstants.STATION_ID_DEF, station.getId());
+		createIdentifier(xbIdentifierList, IoosDefConstants.STATION_ID, 
+		        IoosDefConstants.STATION_ID_DEF, station.getId());
 
-		createIdentifier(xbIdentifierList, IoosSosConstants.SHORT_NAME, 
-		        IoosSosConstants.SHORT_NAME_DEF, station.getShortName()); 
+		createIdentifier(xbIdentifierList, IoosDefConstants.SHORT_NAME, 
+		        IoosDefConstants.SHORT_NAME_DEF, station.getShortName()); 
 
-		createIdentifier(xbIdentifierList, IoosSosConstants.LONG_NAME, 
-		        IoosSosConstants.LONG_NAME_DEF, station.getLongName());
+		createIdentifier(xbIdentifierList, IoosDefConstants.LONG_NAME, 
+		        IoosDefConstants.LONG_NAME_DEF, station.getLongName());
 
 		if(station.getWmoId() != null && station.getWmoId().length() > 0){
-			createIdentifier(xbIdentifierList, IoosSosConstants.WMO_ID,
-			        IoosSosConstants.WMO_ID_DEF, station.getWmoId());
+			createIdentifier(xbIdentifierList, IoosDefConstants.WMO_ID,
+			        IoosDefConstants.WMO_ID_DEF, station.getWmoId());
 		}
 	}
 }

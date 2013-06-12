@@ -8,6 +8,7 @@ import net.opengis.sensorML.x101.IdentificationDocument.Identification.Identifie
 import net.opengis.sensorML.x101.ResponsiblePartyDocument.ResponsibleParty;
 import net.opengis.sensorML.x101.SensorMLDocument;
 
+import com.axiomalaska.ioos.sos.IoosDefConstants;
 import com.axiomalaska.ioos.sos.IoosSosConstants;
 import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosNetwork;
@@ -130,16 +131,16 @@ public class NetworkSensorMLBuilder extends AbstractSensorMLBuilder {
 	    IdentifierList xbIdentifierList = xbSystem.addNewIdentification().addNewIdentifierList();
 		
 		//networkId
-	    createIdentifier(xbIdentifierList, IoosSosConstants.NETWORK_ID,
-	            IoosSosConstants.NETWORK_ID_DEF, network.getId());
+	    createIdentifier(xbIdentifierList, IoosDefConstants.NETWORK_ID,
+	            IoosDefConstants.NETWORK_ID_DEF, network.getId());
 
 		//shortName
-        createIdentifier(xbIdentifierList, IoosSosConstants.SHORT_NAME,
-                IoosSosConstants.SHORT_NAME_DEF, network.getShortName());	    
+        createIdentifier(xbIdentifierList, IoosDefConstants.SHORT_NAME,
+                IoosDefConstants.SHORT_NAME_DEF, network.getShortName());	    
 		
 		//longName
-        createIdentifier(xbIdentifierList, IoosSosConstants.LONG_NAME, 
-                IoosSosConstants.LONG_NAME_DEF, network.getLongName());      
+        createIdentifier(xbIdentifierList, IoosDefConstants.LONG_NAME, 
+                IoosDefConstants.LONG_NAME_DEF, network.getLongName());      
 	}
 		
 	/**
@@ -177,12 +178,12 @@ public class NetworkSensorMLBuilder extends AbstractSensorMLBuilder {
 	    if (publisherInfo != null) {
     	    ClassifierList xbClassifierList = xbSystem.addNewClassification().addNewClassifierList();
     		
-    		createClassifier(xbClassifierList, IoosSosConstants.PUBLISHER, 
-    				IoosSosConstants.PUBLISHER_DEF, IoosSosConstants.ORGANIZATION_CODE_SPACE,
+    		createClassifier(xbClassifierList, IoosDefConstants.PUBLISHER, 
+    				IoosDefConstants.PUBLISHER_DEF, IoosSosConstants.ORGANIZATION_ONTOLOGY,
     				publisherInfo.getName());
     		
-    		createClassifier(xbClassifierList, IoosSosConstants.PARENT_NETWORK, 
-    		        IoosSosConstants.PARENT_NETWORK_DEF, IoosSosConstants.ORGANIZATION_CODE_SPACE,
+    		createClassifier(xbClassifierList, IoosDefConstants.PARENT_NETWORK, 
+    		        IoosDefConstants.PARENT_NETWORK_DEF, IoosSosConstants.ORGANIZATION_ONTOLOGY,
     		        publisherInfo.getName());
 	    }
 	}
