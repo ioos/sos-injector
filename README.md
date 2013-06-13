@@ -53,7 +53,7 @@ then be built from this data.
 ### ObservationRetriever
 This interface contains a single method called “getObservationCollection” which is passed the following 
 parameters: SosStation, SosSensor, SosPhenomenon, and a start date. With these parameters an 
-ObservationCollection will be returned containing observations older than the start date. An example of an 
+ObservationCollection will be returned containing observations newer than the start date. An example of an 
 ObservationRetriever is located at com.axiomalaska.sos.cnfaic.CnfaicObservationRetriever.java. This class 
 pulls the updated real-time observations from the www.cnfaic.org website. 
 
