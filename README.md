@@ -1,8 +1,8 @@
 # SOS Observation Injector
 
 The SOS Observation Injector is a Java toolkit that can be used to enter sensor observations
-into an [https://code.google.com/p/ioostech/](IOOS customized) 
-[http://52north.org/communities/sensorweb/sos/](52&deg;North SOS).
+into an [IOOS customized](https://code.google.com/p/ioostech/) 
+[52&deg;North SOS](http://52north.org/communities/sensorweb/sos/).
 
 Applications using this toolkit should provide implementations of StationRetriever and ObservationRetriever 
 that properly construct data objects (SosStation, SosSensor, ObservationCollection, etc) for the targeted
