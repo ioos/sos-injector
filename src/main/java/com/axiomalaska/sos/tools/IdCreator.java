@@ -65,6 +65,6 @@ public class IdCreator {
     }
     
     public static String createUnitHref(Unit unit){
-        return unit == null ? null : IoosSosConstants.UDUNITS_URN_PREFIX + unit.toString();
+        return unit == null ? null : IoosSosConstants.UDUNITS_URN_PREFIX + unit.toString().replace(' ', '.');
     }
 }
