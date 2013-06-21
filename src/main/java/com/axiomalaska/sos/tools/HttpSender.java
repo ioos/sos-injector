@@ -96,11 +96,17 @@ public class HttpSender {
 			method.releaseConnection();    
 		} 
 	}
+	
+	public static String sendGetMessage(String serviceURL, List<HttpPart> httpParts, boolean needsEncoded)
+	        throws IOException{
+		String buildUrl = buildUrl(serviceURL, httpParts, needsEncoded);
+//		LOGGER.info("url build: " + buildUrl);
+		return sendGetMessage(buildUrl);
+	}
 
 	public static String sendGetMessage(String serviceURL, List<HttpPart> httpParts)
 	        throws IOException{
-		String buildUrl = buildUrl(serviceURL, httpParts, true);
-		return sendGetMessage(buildUrl);
+		return sendGetMessage(serviceURL, httpParts, true);
 	}
 	
 	public String sendPostMessage(String serviceURL, List<HttpPart> httpParts)

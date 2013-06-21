@@ -142,8 +142,16 @@ public class SosStation extends AbstractSosAsset {
 		this.platformType = platformType;
 	}
 	
-	public void addNetwork(SosNetwork network){
-		networks.add(network);
+	public void addNetwork(SosNetwork addingNetwork){
+		boolean exist = false;
+		for(SosNetwork network : networks){
+			if(network.getId().equals(addingNetwork.getId())){
+				exist = true;
+			}
+		}
+		if(!exist){
+			networks.add(addingNetwork);
+		}
 	}
 	
 	public void addHistoryEvent(HistoryEvent historyEvent) {
