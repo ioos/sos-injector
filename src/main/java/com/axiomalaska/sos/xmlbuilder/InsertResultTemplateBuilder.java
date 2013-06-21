@@ -166,8 +166,7 @@ public class InsertResultTemplateBuilder {
         QuantityType xbQuantity = (QuantityType) xbObsPropField.addNewAbstractDataComponent()
                 .substitute(SosInjectorConstants.QN_SWE_QUANTITY_SWE2, QuantityType.type);
         xbQuantity.setDefinition(phenomenon.getId());
-        //TODO check units, maybe it should be symbol or short name?
-        xbQuantity.addNewUom().setCode(phenomenon.getUnit().getSymbol());
+        xbQuantity.addNewUom().setHref(IdCreator.createUnitHref(phenomenon.getUnit()));
                 
 	    TextEncodingType xbTextEncodingType = (TextEncodingType) xbResultTemplate.addNewResultEncoding()
 	            .addNewAbstractEncoding().substitute(SosInjectorConstants.QN_TEXTENCODING, TextEncodingType.type);

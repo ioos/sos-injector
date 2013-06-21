@@ -13,9 +13,10 @@ import net.opengis.sensorML.x101.OutputsDocument.Outputs.OutputList;
 import net.opengis.sensorML.x101.SensorMLDocument;
 import net.opengis.swe.x101.QuantityDocument.Quantity;
 
-import com.axiomalaska.ioos.sos.IoosSosConstants;
+import com.axiomalaska.ioos.sos.IoosDefConstants;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.data.SosSensor;
+import com.axiomalaska.sos.tools.IdCreator;
 
 public class SensorSensorMLBuilder extends AbstractSensorMLBuilder  {
 
@@ -93,13 +94,8 @@ public class SensorSensorMLBuilder extends AbstractSensorMLBuilder  {
 		    IoComponentPropertyType xbOutput = xbOutputList.addNewOutput();
 		    xbOutput.setName(phenomenon.getName());
 		    Quantity xbQuantity = xbOutput.addNewQuantity();
-		    xbQuantity.setDefinition(phenomenon.getId());
-		    
-            String unitString = "";
-            if(phenomenon.getUnit() != null){
-                unitString = phenomenon.getUnit().toString();
-            }
-            xbQuantity.addNewUom().setCode(unitString);
+		    xbQuantity.setDefinition(phenomenon.getId());		    
+            xbQuantity.addNewUom().setHref(IdCreator.createUnitHref(phenomenon.getUnit()));
 		}
 	}
 
@@ -135,7 +131,7 @@ public class SensorSensorMLBuilder extends AbstractSensorMLBuilder  {
 	 */
 	private void createIdentification() {
 	    IdentifierList xbIdentifierList = xbSystem.addNewIdentification().addNewIdentifierList();
-	    createIdentifier(xbIdentifierList, IoosSosConstants.SENSOR_ID,
-	            IoosSosConstants.SENSOR_ID_DEF, sensor.getId());	    
+	    createIdentifier(xbIdentifierList, IoosDefConstants.SENSOR_ID,
+	            IoosDefConstants.SENSOR_ID_DEF, sensor.getId());	    
 	}
 }

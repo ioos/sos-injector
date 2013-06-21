@@ -1,8 +1,8 @@
 # SOS Observation Injector
 
 The SOS Observation Injector is a Java toolkit that can be used to enter sensor observations
-into an [https://code.google.com/p/ioostech/](IOOS customized) 
-[http://52north.org/communities/sensorweb/sos/](52&deg;North SOS).
+into an [IOOS customized](https://code.google.com/p/ioostech/) 
+[52&deg;North SOS](http://52north.org/communities/sensorweb/sos/).
 
 Applications using this toolkit should provide implementations of StationRetriever and ObservationRetriever 
 that properly construct data objects (SosStation, SosSensor, ObservationCollection, etc) for the targeted
@@ -53,7 +53,7 @@ then be built from this data.
 ### ObservationRetriever
 This interface contains a single method called “getObservationCollection” which is passed the following 
 parameters: SosStation, SosSensor, SosPhenomenon, and a start date. With these parameters an 
-ObservationCollection will be returned containing observations older than the start date. An example of an 
+ObservationCollection will be returned containing observations newer than the start date. An example of an 
 ObservationRetriever is located at com.axiomalaska.sos.cnfaic.CnfaicObservationRetriever.java. This class 
 pulls the updated real-time observations from the www.cnfaic.org website. 
 

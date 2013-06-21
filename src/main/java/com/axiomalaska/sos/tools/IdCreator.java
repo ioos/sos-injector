@@ -1,6 +1,13 @@
 package com.axiomalaska.sos.tools;
 
+import ucar.units.Unit;
+import ucar.units.UnitFormatManager;
+
+import com.axiomalaska.ioos.sos.IoosSosConstants;
+import com.axiomalaska.phenomena.Phenomena;
 import com.axiomalaska.phenomena.Phenomenon;
+import com.axiomalaska.phenomena.UnitCreationException;
+import com.axiomalaska.phenomena.UnitResolver;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
@@ -55,5 +62,9 @@ public class IdCreator {
     public static String createResultTemplateId(SosSensor sensor, Phenomenon phenomenon, Geometry foiGeometry)
             throws UnsupportedGeometryTypeException {
         return createObservationFeatureOfInterestId(sensor, foiGeometry) + ":" + phenomenon.getId();       
+    }
+    
+    public static String createUnitHref(Unit unit){
+        return unit == null ? null : IoosSosConstants.UDUNITS_URN_PREFIX + unit.toString().replace(' ', '.');
     }
 }
