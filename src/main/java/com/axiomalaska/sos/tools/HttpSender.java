@@ -12,7 +12,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.List;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HostConfiguration;
@@ -97,19 +96,19 @@ public class HttpSender {
 		} 
 	}
 	
-	public static String sendGetMessage(String serviceURL, List<HttpPart> httpParts, boolean needsEncoded)
+	public static String sendGetMessage(String serviceURL, Iterable<HttpPart> httpParts, boolean needsEncoded)
 	        throws IOException{
 		String buildUrl = buildUrl(serviceURL, httpParts, needsEncoded);
 //		LOGGER.info("url build: " + buildUrl);
 		return sendGetMessage(buildUrl);
 	}
 
-	public static String sendGetMessage(String serviceURL, List<HttpPart> httpParts)
+	public static String sendGetMessage(String serviceURL, Iterable<HttpPart> httpParts)
 	        throws IOException{
 		return sendGetMessage(serviceURL, httpParts, true);
 	}
 	
-	public String sendPostMessage(String serviceURL, List<HttpPart> httpParts)
+	public String sendPostMessage(String serviceURL, Iterable<HttpPart> httpParts)
 	        throws IOException{
 		URL siteUrl = new URL(serviceURL);
 
@@ -349,7 +348,7 @@ public class HttpSender {
 	// Private Members
 	// -------------------------------------------------------------------------
 
-	private static String buildUrl(String serviceURL, List<HttpPart> httpParts,
+	private static String buildUrl(String serviceURL, Iterable<HttpPart> httpParts,
 			boolean needsEncoded) throws UnsupportedEncodingException {
 		String url = serviceURL + "?";
 
