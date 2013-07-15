@@ -27,11 +27,13 @@ public class ProcedureSubmitter {
     private static final Logger LOGGER = Logger.getLogger(ProcedureSubmitter.class);
 
     private String sosUrl;
+    private String authorizationToken;
     private PublisherInfo publisherInfo;
     private Set<AbstractSosAsset> proceduresInSos = new HashSet<AbstractSosAsset>();
     
-    public ProcedureSubmitter(String sosUrl, PublisherInfo publisherInfo) {
+    public ProcedureSubmitter(String sosUrl, String authorizationToken, PublisherInfo publisherInfo) {
         this.sosUrl = sosUrl;
+        this.authorizationToken = authorizationToken;        
         this.publisherInfo = publisherInfo;
     }
 
@@ -54,7 +56,8 @@ public class ProcedureSubmitter {
 
     private boolean isProcedureCreated(AbstractSosAsset asset) throws XmlException, IOException{        
         XmlObject xbResponse = ResponseInterpretter.getXmlObject(
-                HttpSender.sendPostMessage(sosUrl, new DescribeSensorBuilder(asset).build()));
+                HttpSender.sendPostMessage(sosUrl, authorizationToken,
+                        new DescribeSensorBuilder(asset).build()));
         if (xbResponse == null || !(xbResponse instanceof SensorMLDocument)){
             return false;
         }
@@ -66,7 +69,8 @@ public class ProcedureSubmitter {
 	        UnsupportedSosAssetTypeException {
 		LOGGER.info("Creating procedure: " + asset.getId());
         XmlObject xbResponse = ResponseInterpretter.getXmlObject(
-		        HttpSender.sendPostMessage(sosUrl, new InsertSensorBuilder(asset, publisherInfo).build())); 
+		        HttpSender.sendPostMessage(sosUrl, authorizationToken,
+		                new InsertSensorBuilder(asset, publisherInfo).build())); 
 		if (xbResponse == null || ResponseInterpretter.isError(xbResponse)) {
 			LOGGER.error("Error creating procedure " + asset.getId() + ":\n" + xbResponse);
 			return false;

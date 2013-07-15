@@ -49,15 +49,17 @@ public class ObservationSubmitter {
 	// -------------------------------------------------------------------------
 	private static final Logger LOGGER = Logger.getLogger(ObservationSubmitter.class);
 	private String sosUrl;
+    private String authorizationToken;	
 	private ResultTemplateSubmitter resultTemplateSubmitter;
 	
 	// -------------------------------------------------------------------------
 	// Public Members
 	// -------------------------------------------------------------------------
 
-	public ObservationSubmitter(String sosUrl) {
+	public ObservationSubmitter(String sosUrl, String authorizationToken) {
 	    this.sosUrl = sosUrl;
-	    this.resultTemplateSubmitter = new ResultTemplateSubmitter(sosUrl);
+	    this.authorizationToken = authorizationToken;	    
+	    this.resultTemplateSubmitter = new ResultTemplateSubmitter(sosUrl, authorizationToken);
 	}	
 	
 	/**
@@ -152,7 +154,8 @@ public class ObservationSubmitter {
 		        XmlObject xbResponse;
                 try {
                     xbResponse = ResponseInterpretter.getXmlObject(
-                            HttpSender.sendPostMessage(sosUrl, new InsertResultBuilder(observationCollection).build()));
+                            HttpSender.sendPostMessage(sosUrl, authorizationToken,
+                                    new InsertResultBuilder(observationCollection).build()));
                 } catch (XmlException e) {
                     throw new SosCommunicationException(e);
                 } catch (IOException e) {
@@ -240,7 +243,8 @@ public class ObservationSubmitter {
         
         XmlObject xbResponse = null;
         try {
-            xbResponse = ResponseInterpretter.getXmlObject(HttpSender.sendPostMessage(sosUrl, builder.build()));
+            xbResponse = ResponseInterpretter.getXmlObject(HttpSender.sendPostMessage(sosUrl, authorizationToken,
+                    builder.build()));
         } catch (XmlException e) {
             throw new SosCommunicationException(e);
         } catch (IOException e) {

@@ -16,6 +16,7 @@ import java.net.URLEncoder;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -36,9 +37,16 @@ public class HttpSender {
 	
 	private static int TIME_OUT = 120000;
     private static final Logger LOGGER = Logger.getLogger(HttpSender.class);	
-	
-    public static String sendPostMessage(String serviceURL, XmlObject xmlObject) throws IOException {	
-        return sendPostMessage(serviceURL, XmlHelper.xmlText(xmlObject));
+	    
+    private static void addAuthorizationToken(HttpMethodBase httpMethod, String authorizationToken) {
+        if (authorizationToken != null && !authorizationToken.isEmpty()){
+            httpMethod.addRequestHeader("Authorization", authorizationToken);
+        }
+    }
+    
+    public static String sendPostMessage(String serviceURL, String authorizationToken, 
+            XmlObject xmlObject) throws IOException {	
+        return sendPostMessage(serviceURL, authorizationToken, XmlHelper.xmlText(xmlObject));
     }
 
 	/**
@@ -48,14 +56,15 @@ public class HttpSender {
 	 * @param message - the message to send to the URL
 	 * @return the response from the post message sent
 	 */
-	public static String sendPostMessage(String serviceURL, String message)
+	public static String sendPostMessage(String serviceURL, String authorizationToken, String message)
 			throws IOException {
 
 		InputStream is = null;
 		try {
 			HttpClient httpClient = new HttpClient();
 			PostMethod method = new PostMethod(serviceURL);
-
+			addAuthorizationToken(method, authorizationToken);			
+			
 			method.setRequestEntity(new StringRequestEntity(message, "text/xml",
 					"UTF-8"));
 
@@ -78,7 +87,8 @@ public class HttpSender {
 	
 	public static String sendGetMessage(String urlText) throws IOException {
 		HttpClient client = new HttpClient();
-		GetMethod method = new GetMethod(urlText);   
+		GetMethod method = new GetMethod(urlText);
+		
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
 				new DefaultHttpMethodRetryHandler(3, false));    
 		method.getParams().setSoTimeout(TIME_OUT);

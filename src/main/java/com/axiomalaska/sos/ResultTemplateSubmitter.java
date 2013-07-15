@@ -24,10 +24,13 @@ public class ResultTemplateSubmitter {
     private static final Logger LOGGER = Logger.getLogger(ResultTemplateSubmitter.class);
 
     private String sosUrl;
+    private String authorizationToken;    
     private Set<String> resultTemplatesInSos = new HashSet<String>();
     
-    public ResultTemplateSubmitter(String sosUrl) {
+    public ResultTemplateSubmitter(String sosUrl, String authorizationToken) {
         this.sosUrl = sosUrl;
+        this.authorizationToken = authorizationToken;
+        
     }
 
 	public boolean checkResultTemplateWithSos(SosSensor sensor, Phenomenon phenomenon, Geometry geometry)
@@ -52,7 +55,7 @@ public class ResultTemplateSubmitter {
         return false;
         //save this code in case a better way to check for specific result templates appears later
 //        XmlObject xbResponse = ResponseInterpretter.getXmlObject(
-//                HttpSender.sendPostMessage(sosUrl, new GetResultTemplateBuilder(sensor, phenomenon).build()));
+//                HttpSender.sendPostMessage(sosUrl, authorizationToken, new GetResultTemplateBuilder(sensor, phenomenon).build()));
 //        if (xbResponse == null || !(xbResponse instanceof GetResultTemplateResponseDocument)){
 //            return false;
 //        }
@@ -64,7 +67,8 @@ public class ResultTemplateSubmitter {
             Geometry geometry) throws IOException, XmlException, UnsupportedGeometryTypeException{
 		LOGGER.info("Creating result template " + resultTemplateId);
         XmlObject xbResponse = ResponseInterpretter.getXmlObject(
-		        HttpSender.sendPostMessage(sosUrl, new InsertResultTemplateBuilder(sensor, phenomenon, geometry).build())); 
+		        HttpSender.sendPostMessage(sosUrl, authorizationToken, 
+		                new InsertResultTemplateBuilder(sensor, phenomenon, geometry).build())); 
 		if (xbResponse == null || ResponseInterpretter.isError(xbResponse)) {
 		    //XXX ugly hack to work around inability to check for a specific foi or result template id in GetResultTemplate
 		    if (ResponseInterpretter.onlyExceptionContains((ExceptionReportDocument) xbResponse,

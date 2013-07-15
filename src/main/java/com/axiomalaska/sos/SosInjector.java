@@ -31,7 +31,7 @@ public class SosInjector {
 	// -------------------------------------------------------------------------
 	
 	private static final Logger LOGGER = Logger.getLogger(SosInjector.class);
-    private String name;    
+    private String name;
 	private StationRetriever stationRetriever;
 	private ObservationRetriever observationRetriever;
 	private ISOFileWriter isoWriter;
@@ -45,6 +45,17 @@ public class SosInjector {
     public SosInjector(
             String name,
             String sosUrl,
+            PublisherInfo publisherInfo,
+            StationRetriever stationRetriever,            
+            ObservationRetriever observationRetriever,
+            ISOFileWriter fileWriter) throws SosInjectorConfigurationException {
+        this(name, sosUrl, null, publisherInfo, stationRetriever, observationRetriever, fileWriter);
+    }
+
+    public SosInjector(
+            String name,
+            String sosUrl,
+            String authorizationToken,
             PublisherInfo publisherInfo,
             StationRetriever stationRetriever,            
             ObservationRetriever observationRetriever,
@@ -72,10 +83,11 @@ public class SosInjector {
         this.stationRetriever = stationRetriever;
         this.observationRetriever = observationRetriever;
         this.isoWriter = fileWriter;
-        this.procedureSubmitter = new ProcedureSubmitter(sosUrl, publisherInfo);
-        this.observationSubmitter = new ObservationSubmitter(sosUrl);
+        this.procedureSubmitter = new ProcedureSubmitter(sosUrl, authorizationToken, publisherInfo);
+        this.observationSubmitter = new ObservationSubmitter(sosUrl, authorizationToken);
+        
     }
-
+    
 	// -------------------------------------------------------------------------
 	// Public Members
 	// -------------------------------------------------------------------------
