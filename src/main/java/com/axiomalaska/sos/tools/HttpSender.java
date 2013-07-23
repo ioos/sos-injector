@@ -43,16 +43,50 @@ public class HttpSender {
             httpMethod.addRequestHeader("Authorization", authorizationToken);
         }
     }
-    
+
+    /**
+     * Sends an XML document in the body of an HTTP post message
+     * 
+     * @param serviceURL - the URL to send the post message
+     * @param xmlObject - xmlbeans XmlObject to send as the POST body
+     * @return HTTP reponse 
+     * @throws IOException
+     */    
+    public static String sendPostMessage(String serviceURL, XmlObject xmlObject) throws IOException {   
+        return sendPostMessage(serviceURL, null, xmlObject);
+    }
+
+    /**
+     * Sends an XML document in the body of an HTTP post message with an authorization token
+     * 
+     * @param serviceURL - the URL to send the post message
+     * @param authorizationToken - authorization header token
+     * @param xmlObject - xmlbeans XmlObject to send as the POST body
+     * @return HTTP reponse 
+     * @throws IOException
+     */
     public static String sendPostMessage(String serviceURL, String authorizationToken, 
             XmlObject xmlObject) throws IOException {	
         return sendPostMessage(serviceURL, authorizationToken, XmlHelper.xmlText(xmlObject));
+    }
+
+    
+    /**
+     * Send a HTTP post message 
+     * 
+     * @param serviceURL - the URL to send the post message
+     * @param message - the message to send to the URL
+     * @return the response from the post message sent
+     */
+    public static String sendPostMessage(String serviceURL, String message) throws IOException {
+        return sendPostMessage(serviceURL, null, message);
     }
 
 	/**
 	 * Send a HTTP post message 
 	 * 
 	 * @param serviceURL - the URL to send the post message
+     * @param authorizationToken - authorization header token 
 	 * @param message - the message to send to the URL
 	 * @return the response from the post message sent
 	 */
