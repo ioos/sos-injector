@@ -8,9 +8,7 @@ import com.axiomalaska.sos.exception.UnsupportedSosAssetTypeException;
 import com.axiomalaska.sos.xmlbuilder.DescribeSensorBuilder;
 import com.axiomalaska.sos.xmlbuilder.GetNewestObservationBuilder;
 import com.axiomalaska.sos.xmlbuilder.GetOldestObservationBuilder;
-import com.axiomalaska.sos.xmlbuilder.GetResultTemplateBuilder;
-import com.axiomalaska.sos.xmlbuilder.InsertResultBuilder;
-import com.axiomalaska.sos.xmlbuilder.InsertResultTemplateBuilder;
+import com.axiomalaska.sos.xmlbuilder.InsertObservationBuilder;
 import com.axiomalaska.sos.xmlbuilder.InsertSensorBuilder;
 import com.axiomalaska.sos.xmlbuilder.NetworkSensorMLBuilder;
 import com.axiomalaska.sos.xmlbuilder.SensorSensorMLBuilder;
@@ -49,18 +47,8 @@ public class XmlBuildersTest extends AbstractXmlBuildersTest {
     }
 
     @Test
-    public void testInsertResultTemplateBuilder() throws UnsupportedGeometryTypeException  {
-        validateXmlDocument( new InsertResultTemplateBuilder(TEST_SENSOR, TEST_PHENOMENON, TEST_FOI_POINT).build() );
-    }
-    
-    @Test
-    public void testInsertResultBuilder() throws UnsupportedGeometryTypeException  {
-        validateXmlDocument( new InsertResultBuilder(TEST_OBSERVATION_COLLECTION).build() );
-    }
-
-    @Test
-    public void testGetResultTemplateBuilder()  {
-        validateXmlDocument( new GetResultTemplateBuilder(TEST_SENSOR, TEST_PHENOMENON).build() );
+    public void testInsertObservationBuilder() throws UnsupportedGeometryTypeException  {
+        validateXmlDocument( new InsertObservationBuilder(TEST_OBSERVATION_COLLECTION).build() );
     }
 
     @Test

@@ -49,7 +49,7 @@ public class SensorSensorMLBuilder extends AbstractSensorMLBuilder  {
 	    List<Phenomenon> phenomena = removeDuplicatePhenomena(sensor.getPhenomena());      
 	    createInputs(phenomena);
 	    createOutputs(phenomena);
-        createOffering(sensor);
+	    //dont create offerings, sensor will use offerings from procedure parents (station and networks)
 	    return xbSensorMLDocument;
 	}
 	

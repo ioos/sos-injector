@@ -9,17 +9,21 @@ public class SosInjectorConstants {
     public static final String SOS_V200 = "2.0.0";
     public static final String SML_V101 = "1.0.1";
     
+    // https://wiki.52north.org/bin/view/SensorWeb/SensorObservationServiceIVDocumentation#SplitDataArrayIntoObservations
+    public static final String SPLIT_OBSERVATIONS_EXTENSION = "SplitDataArrayIntoObservations";
+    
     public static final String IOOS_SML_FORMAT = "text/xml;subtype=\"sensorML/1.0.1/profiles/ioos_sos/1.0\"";
     public static final String NONE_OBS_PROP = "NONE";
+    public static final String SWE_ARRAY_DEF = "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_SWEArrayObservation";
     public static final String MEASUREMENT_DEF = "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement";
     public static final String SAMPLING_POINT_DEF = "http://www.opengis.net/def/samplingFeatureType/OGC-OM/2.0/SF_SamplingPoint";
     public static final String PHENOMENON_TIME = "phenomenonTime";
     public static final String UNKNOWN_DEF = "http://www.opengis.net/def/nil/OGC/0/unknown";
 
     public static final String TEMPLATE = "template";
-    public static final String RESULT_TEMPLATE_TOKEN_SEPARATOR = "@";
-    public static final String RESULT_TEMPLATE_BLOCK_SEPARATOR = "#";
-    public static final String RESULT_TEMPLATE_DECIMAL_SEPARATOR = ".";
+    public static final String TOKEN_SEPARATOR = "@";
+    public static final String BLOCK_SEPARATOR = "#";
+    public static final String DECIMAL_SEPARATOR = ".";
     
     public static final String LATEST = "latest";
     public static final String FIRST = "first";

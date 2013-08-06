@@ -133,11 +133,11 @@ public class SosInjector {
                 if (procedureSubmitter.checkProcedureWithSos(sensor)) {
                     for(Phenomenon phenomenon : sensor.getPhenomena()){
                         observationSubmitter.update(sensor, phenomenon, observationRetriever);
-                    }           
+                    }
                 }
             }
         }
-	    
+
         if (isoWriter != null) {
             for (SosStation station : stationRetriever.getStations()) {
                 isoWriter.writeISOFileForStation(station);

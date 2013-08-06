@@ -24,7 +24,7 @@ import com.axiomalaska.sos.tools.XmlHelper;
 import com.axiomalaska.sos.xmlbuilder.GetNewestObservationBuilder;
 import com.axiomalaska.sos.xmlbuilder.GetObservationBuilder;
 import com.axiomalaska.sos.xmlbuilder.GetOldestObservationBuilder;
-import com.axiomalaska.sos.xmlbuilder.InsertResultBuilder;
+import com.axiomalaska.sos.xmlbuilder.InsertObservationBuilder;
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
@@ -50,7 +50,6 @@ public class ObservationSubmitter {
 	private static final Logger LOGGER = Logger.getLogger(ObservationSubmitter.class);
 	private String sosUrl;
     private String authorizationToken;	
-	private ResultTemplateSubmitter resultTemplateSubmitter;
 	
 	// -------------------------------------------------------------------------
 	// Public Members
@@ -59,7 +58,6 @@ public class ObservationSubmitter {
 	public ObservationSubmitter(String sosUrl, String authorizationToken) {
 	    this.sosUrl = sosUrl;
 	    this.authorizationToken = authorizationToken;	    
-	    this.resultTemplateSubmitter = new ResultTemplateSubmitter(sosUrl, authorizationToken);
 	}	
 	
 	/**
@@ -144,30 +142,24 @@ public class ObservationSubmitter {
 	    if (!observationCollection.isValid()) {
 	        throw new InvalidObservationCollectionException(observationCollection);
 	    }
-		SosSensor sensor = observationCollection.getSensor();
-		Phenomenon phenomenon = observationCollection.getPhenomenon();
-		Geometry geometry = observationCollection.getGeometry();
-		observationCollection.filterObservations(oldestObservationInSosDate, newestObservationInSosDate);
-		
+		observationCollection.filterObservations(oldestObservationInSosDate, newestObservationInSosDate);		
 		if (observationCollection.getObservationValues().size() > 0) {
-		    if (resultTemplateSubmitter.checkResultTemplateWithSos(sensor, phenomenon, geometry)) {
-		        XmlObject xbResponse;
-                try {
-                    xbResponse = ResponseInterpretter.getXmlObject(
-                            HttpSender.sendPostMessage(sosUrl, authorizationToken,
-                                    new InsertResultBuilder(observationCollection).build()));
-                } catch (XmlException e) {
-                    throw new SosCommunicationException(e);
-                } catch (IOException e) {
-                    throw new SosCommunicationException(e);
-                } 
-		        if (xbResponse == null || ResponseInterpretter.isError(xbResponse)) {
-                    LOGGER.error("Error while inserting " + observationCollection.toString()
-                            + ":\n" + XmlHelper.xmlText(xbResponse));		            
-		        } else {
-                    LOGGER.info("Inserted " + observationCollection.toString());
-		        }		        
-		    }
+		    XmlObject xbResponse;
+            try {
+                xbResponse = ResponseInterpretter.getXmlObject(
+                    HttpSender.sendPostMessage(sosUrl, authorizationToken,
+                            new InsertObservationBuilder(observationCollection).build()));
+            } catch (XmlException e) {
+                throw new SosCommunicationException(e);
+            } catch (IOException e) {
+                throw new SosCommunicationException(e);
+            }
+            if (xbResponse == null || ResponseInterpretter.isError(xbResponse)) {
+                LOGGER.error("Error while inserting " + observationCollection.toString()
+                        + ":\n" + XmlHelper.xmlText(xbResponse));                   
+            } else {
+                LOGGER.info("Inserted " + observationCollection.toString());
+            }               
 		}
 	}
 	
