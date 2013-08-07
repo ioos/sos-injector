@@ -8,7 +8,7 @@ import org.n52.sos.ioos.asset.SensorAsset;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.vividsolutions.jts.geom.Point;
 
-public class SosSensor extends AbstractSosAsset{
+public class SosSensor extends AbstractSosAsset implements AssetWithLocation{
 	// -------------------------------------------------------------------------
 	// Private Data
 	// -------------------------------------------------------------------------

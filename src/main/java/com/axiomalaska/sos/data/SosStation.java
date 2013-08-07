@@ -7,7 +7,7 @@ import org.n52.sos.ioos.asset.StationAsset;
 
 import com.vividsolutions.jts.geom.Point;
 
-public class SosStation extends AbstractSosAsset {
+public class SosStation extends AbstractSosAsset implements AssetWithLocation {
 	// -------------------------------------------------------------------------
 	// Private Members
 	// -------------------------------------------------------------------------

@@ -1,13 +1,10 @@
 package com.axiomalaska.sos.tools;
 
 import ucar.units.Unit;
-import ucar.units.UnitFormatManager;
 
 import com.axiomalaska.ioos.sos.IoosSosConstants;
-import com.axiomalaska.phenomena.Phenomena;
 import com.axiomalaska.phenomena.Phenomenon;
-import com.axiomalaska.phenomena.UnitCreationException;
-import com.axiomalaska.phenomena.UnitResolver;
+import com.axiomalaska.sos.data.AssetWithLocation;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
 import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
@@ -36,10 +33,14 @@ public class IdCreator {
 
     public static String createObservationFeatureOfInterestId(SosSensor sensor, Geometry foiGeometry)
             throws UnsupportedGeometryTypeException {
+        //use station as the feature asset if sensor location is the same (minimize number of fois in SOS)
+        AssetWithLocation asset = sensor.getLocation().equals(sensor.getStation().getLocation()) ?
+                sensor.getStation() : sensor;
+
         StringBuilder builder = new StringBuilder();
         if (foiGeometry instanceof Point){
             Point foiPoint = (Point) foiGeometry;
-            if (!GeomHelper.equal2d(sensor.getLocation(), foiPoint)) {
+            if (!GeomHelper.equal2d(asset.getLocation(), foiPoint)) {
                 builder.append("lat" + foiPoint.getY());
                 builder.append("lng" + foiPoint.getX());
             }
@@ -48,9 +49,9 @@ public class IdCreator {
             }
         }
         if (builder.length() > 0 ){
-            return sensor.getId() + "(" + builder.toString() + ")";
+            return asset.getId() + "(" + builder.toString() + ")";
         } else {
-            return sensor.getId();
+            return asset.getId();
         }
     }
 
