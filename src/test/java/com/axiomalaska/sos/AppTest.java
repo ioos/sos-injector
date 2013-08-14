@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.n52.sos.ioos.asset.SensorAsset;
 import org.n52.sos.ioos.asset.StationAsset;
 
+import com.axiomalaska.ioos.sos.GeomHelper;
 import com.axiomalaska.phenomena.Phenomena;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.phenomena.PhenomenonImp;
@@ -19,7 +20,6 @@ import com.axiomalaska.phenomena.UnitResolver;
 import com.axiomalaska.sos.data.ObservationCollection;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
-import com.axiomalaska.sos.tools.GeomHelper;
 
 public class AppTest {
 	@Test

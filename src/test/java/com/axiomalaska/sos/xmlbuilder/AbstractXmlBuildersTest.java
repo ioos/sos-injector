@@ -18,6 +18,7 @@ import org.n52.sos.ioos.asset.NetworkAsset;
 import org.n52.sos.ioos.asset.SensorAsset;
 import org.n52.sos.ioos.asset.StationAsset;
 
+import com.axiomalaska.ioos.sos.GeomHelper;
 import com.axiomalaska.phenomena.Phenomena;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.phenomena.PhenomenonImp;
@@ -27,7 +28,6 @@ import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosSource;
 import com.axiomalaska.sos.data.SosStation;
-import com.axiomalaska.sos.tools.GeomHelper;
 import com.vividsolutions.jts.geom.Point;
 
 public class AbstractXmlBuildersTest {

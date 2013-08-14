@@ -11,13 +11,13 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.joda.time.DateTime;
 
+import com.axiomalaska.ioos.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.data.ObservationCollection;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.exception.InvalidObservationCollectionException;
 import com.axiomalaska.sos.exception.ObservationRetrievalException;
 import com.axiomalaska.sos.exception.SosCommunicationException;
-import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.sos.tools.HttpSender;
 import com.axiomalaska.sos.tools.ResponseInterpretter;
 import com.axiomalaska.sos.tools.XmlHelper;

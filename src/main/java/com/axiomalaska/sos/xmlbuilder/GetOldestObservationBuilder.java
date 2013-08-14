@@ -2,10 +2,10 @@ package com.axiomalaska.sos.xmlbuilder;
 
 import net.opengis.sos.x20.GetObservationDocument;
 
+import com.axiomalaska.ioos.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.data.SosSensor;
-import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
 import com.vividsolutions.jts.geom.Geometry;
 
 public class GetOldestObservationBuilder extends GetObservationBuilder {

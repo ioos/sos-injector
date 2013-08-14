@@ -3,7 +3,7 @@ package com.axiomalaska.sos.xmlbuilder;
 import org.apache.xmlbeans.XmlException;
 import org.junit.Test;
 
-import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
+import com.axiomalaska.ioos.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.sos.exception.UnsupportedSosAssetTypeException;
 import com.axiomalaska.sos.xmlbuilder.DescribeSensorBuilder;
 import com.axiomalaska.sos.xmlbuilder.GetNewestObservationBuilder;

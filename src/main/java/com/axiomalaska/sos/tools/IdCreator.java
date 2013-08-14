@@ -2,12 +2,13 @@ package com.axiomalaska.sos.tools;
 
 import ucar.units.Unit;
 
+import com.axiomalaska.ioos.sos.GeomHelper;
 import com.axiomalaska.ioos.sos.IoosSosConstants;
+import com.axiomalaska.ioos.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.data.AssetWithLocation;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
-import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 

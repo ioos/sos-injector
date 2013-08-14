@@ -7,6 +7,7 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
 
+import com.axiomalaska.ioos.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosSensor;
@@ -16,7 +17,6 @@ import com.axiomalaska.sos.exception.ObservationRetrievalException;
 import com.axiomalaska.sos.exception.SosCommunicationException;
 import com.axiomalaska.sos.exception.SosInjectorConfigurationException;
 import com.axiomalaska.sos.exception.StationCreationException;
-import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.sos.exception.UnsupportedSosAssetTypeException;
 
 /**

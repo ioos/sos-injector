@@ -6,10 +6,10 @@ import net.opengis.gml.x32.TimeInstantType;
 import net.opengis.sos.x20.GetObservationDocument;
 import net.opengis.sos.x20.GetObservationType;
 
+import com.axiomalaska.ioos.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.data.SosSensor;
-import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.sos.tools.IdCreator;
 import com.axiomalaska.sos.tools.XmlHelper;
 import com.vividsolutions.jts.geom.Geometry;

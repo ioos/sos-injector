@@ -27,12 +27,12 @@ import net.opengis.swe.x20.TimeType;
 
 import org.joda.time.DateTime;
 
+import com.axiomalaska.ioos.sos.GeomHelper;
 import com.axiomalaska.ioos.sos.IoosSosConstants;
+import com.axiomalaska.ioos.sos.PosEncodedGeom;
+import com.axiomalaska.ioos.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.data.ObservationCollection;
-import com.axiomalaska.sos.data.PosEncodedGeom;
-import com.axiomalaska.sos.exception.UnsupportedGeometryTypeException;
-import com.axiomalaska.sos.tools.GeomHelper;
 import com.axiomalaska.sos.tools.IdCreator;
 import com.axiomalaska.sos.tools.XmlHelper;
 import com.vividsolutions.jts.geom.Geometry;
