@@ -1,7 +1,9 @@
 package com.axiomalaska.sos.xmlbuilder;
 
 import java.math.BigInteger;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import net.opengis.gml.x32.AbstractGeometryType;
 import net.opengis.gml.x32.CodeWithAuthorityType;
@@ -261,14 +263,17 @@ public class InsertObservationBuilder {
     private String encodeResultValues(ObservationCollection obsCollection) {
         StringBuilder str = new StringBuilder();
         boolean first = true;
-        for (Entry<DateTime,Double> value : obsCollection.getObservationValues().entrySet()) {
+        List<DateTime> obsTimes = new ArrayList<DateTime>(obsCollection.getObservationValues().keySet());
+        Collections.sort(obsTimes);
+        for (DateTime time : obsTimes) {
+            Double value = obsCollection.getObservationValues().get(time);
             if (!first) {
                 str.append(SosInjectorConstants.BLOCK_SEPARATOR);               
             }
             first = false;
-            str.append(value.getKey());
+            str.append(time);
             str.append(SosInjectorConstants.TOKEN_SEPARATOR);
-            str.append(value.getValue());           
+            str.append(value);           
         }
         return str.toString();
     }	

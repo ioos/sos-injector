@@ -1,9 +1,9 @@
 package com.axiomalaska.sos.data;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -24,7 +24,7 @@ public class ObservationCollection {
 	private static final Logger LOGGER = Logger.getLogger(ObservationCollection.class);
 	private SosSensor sensor;
 	private Phenomenon phenomenon;
-	private Map<DateTime,Double> observationValues = new HashMap<DateTime,Double>();
+	private SortedMap<DateTime,Double> observationValues = new TreeMap<DateTime,Double>();
 	private Geometry geometry = null;
 	
 	// -------------------------------------------------------------------------
@@ -66,11 +66,11 @@ public class ObservationCollection {
         this.sensor = sensor;
     }
 	
-    public Map<DateTime, Double> getObservationValues() {
+    public SortedMap<DateTime, Double> getObservationValues() {
         return observationValues;
     }
 
-    public void setObservationValues(Map<DateTime, Double> observationValues) {
+    public void setObservationValues(SortedMap<DateTime, Double> observationValues) {
         this.observationValues = observationValues;
     }
 
@@ -139,7 +139,9 @@ public class ObservationCollection {
                 + "sensor: " + (sensor == null ? "null" : sensor.getId())
                 + ",phenomenon: " + (phenomenon == null ? "null" : phenomenon.getId())
                 + ",geometry: " + (geometry == null ? "null" : geometry.toString())
-                + ",size: " + observationValues.size()
+                + ",size: " + (observationValues == null ? "null" : observationValues.size())
+                + ",firstTime: " + (observationValues == null ? "null" : observationValues.firstKey())
+                + ",lastTime: " + (observationValues == null ? "null" : observationValues.lastKey())
                 + "]";
     }
 }

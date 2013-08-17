@@ -95,7 +95,7 @@ public class HttpSender {
 
 		InputStream is = null;
 		try {
-			HttpClient httpClient = new HttpClient();
+			HttpClient httpClient = getHttpClient();
 			PostMethod method = new PostMethod(serviceURL);
 			addAuthorizationToken(method, authorizationToken);			
 			
@@ -120,7 +120,7 @@ public class HttpSender {
 	}
 	
 	public static String sendGetMessage(String urlText) throws IOException {
-		HttpClient client = new HttpClient();
+		HttpClient client = getHttpClient();
 		GetMethod method = new GetMethod(urlText);
 		
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
@@ -138,6 +138,13 @@ public class HttpSender {
 		} finally {
 			method.releaseConnection();    
 		} 
+	}
+	
+	private static HttpClient getHttpClient(){
+	    HttpClient client = new HttpClient();
+	    client.getParams().setSoTimeout(TIME_OUT);
+	    client.getParams().setConnectionManagerTimeout(TIME_OUT);
+	    return client;
 	}
 	
 	public static String sendGetMessage(String serviceURL, Iterable<HttpPart> httpParts, boolean needsEncoded)

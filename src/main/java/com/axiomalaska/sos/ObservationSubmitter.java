@@ -1,6 +1,8 @@
 package com.axiomalaska.sos;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.opengis.ows.x11.ExceptionReportDocument;
@@ -49,7 +51,8 @@ public class ObservationSubmitter {
 	// -------------------------------------------------------------------------
 	private static final Logger LOGGER = Logger.getLogger(ObservationSubmitter.class);
 	private String sosUrl;
-    private String authorizationToken;	
+    private String authorizationToken;
+    private final int MAX_OBS_COLLECTION_SIZE = 200;
 	
 	// -------------------------------------------------------------------------
 	// Public Members
@@ -144,23 +147,54 @@ public class ObservationSubmitter {
 	    }
 		observationCollection.filterObservations(oldestObservationInSosDate, newestObservationInSosDate);		
 		if (observationCollection.getObservationValues().size() > 0) {
-		    XmlObject xbResponse;
-            try {
-                xbResponse = ResponseInterpretter.getXmlObject(
-                    HttpSender.sendPostMessage(sosUrl, authorizationToken,
-                            new InsertObservationBuilder(observationCollection).build()));
-            } catch (XmlException e) {
-                throw new SosCommunicationException(e);
-            } catch (IOException e) {
-                throw new SosCommunicationException(e);
-            }
-            if (xbResponse == null || ResponseInterpretter.isError(xbResponse)) {
-                LOGGER.error("Error while inserting " + observationCollection.toString()
-                        + ":\n" + XmlHelper.xmlText(xbResponse));                   
-            } else {
-                LOGGER.info("Inserted " + observationCollection.toString());
-            }               
+            XmlObject xbResponse;		    
+		    for (ObservationCollection splitObsCollection : splitObservationCollection(observationCollection)){
+                LOGGER.info("Inserting " + splitObsCollection.toString());		        
+	            try {
+	                xbResponse = ResponseInterpretter.getXmlObject(
+	                    HttpSender.sendPostMessage(sosUrl, authorizationToken,
+	                            new InsertObservationBuilder(splitObsCollection).build()));
+	            } catch (XmlException e) {
+	                throw new SosCommunicationException(e);
+	            } catch (IOException e) {
+	                throw new SosCommunicationException(e);
+	            }
+	            if (xbResponse == null || ResponseInterpretter.isError(xbResponse)) {
+	                LOGGER.error("Error while inserting " + splitObsCollection.toString()
+	                        + ":\n" + XmlHelper.xmlText(xbResponse));                   
+	            } else {
+	                LOGGER.info("Inserted " + splitObsCollection.toString());
+	            }               		        
+		    }
 		}
+	}
+	
+	private List<ObservationCollection> splitObservationCollection(ObservationCollection obsCollection) {
+	    List<ObservationCollection> obsCollections = new ArrayList<ObservationCollection>();
+	    
+	    //if obs collection is under size limit, return it in a list
+	    if( obsCollection.getObservationValues().size() <= MAX_OBS_COLLECTION_SIZE ){
+	        obsCollections.add(obsCollection);
+	        return obsCollections;
+	    }
+	    
+        List<DateTime> times = new ArrayList<DateTime>(
+                obsCollection.getObservationValues().keySet());
+        Collections.sort(times);
+        
+        for (int i = 0; i < times.size(); i += MAX_OBS_COLLECTION_SIZE) {
+            List<DateTime> thisTimeRange = times.subList(i,
+                    i + Math.min(MAX_OBS_COLLECTION_SIZE, times.size() - i));
+            
+            ObservationCollection thisChunk = new ObservationCollection();
+            thisChunk.setGeometry(obsCollection.getGeometry());
+            thisChunk.setPhenomenon(obsCollection.getPhenomenon());
+            thisChunk.setSensor(obsCollection.getSensor());
+            
+            thisChunk.setObservationValues(obsCollection.getObservationValues().subMap(
+                    thisTimeRange.get(0), thisTimeRange.get(thisTimeRange.size()-1)));
+        }
+	    return obsCollections;
 	}
 	
 	private DateTime getNewestObservationDateForAllGeometries(SosSensor sensor,
