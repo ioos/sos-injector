@@ -250,7 +250,7 @@ public class HttpSender {
 				strContent.append((char) ch);
 			}
 		} catch (Exception e) {
-			System.out.println(e);
+			LOGGER.error(e);
 		}
 		finally{
 			if(fin != null){
@@ -274,7 +274,7 @@ public class HttpSender {
             URLConnection uc = u.openConnection();
             InputStream raw = uc.getInputStream();
             in = new BufferedInputStream(raw);
-            System.out.println("Attempting to create file: " + filename + ".zip");
+            LOGGER.debug("Attempting to create file: " + filename + ".zip");
             file = File.createTempFile(filename, ".zip");
             out = new FileOutputStream(file);
 
@@ -283,14 +283,14 @@ public class HttpSender {
             while (bytesRead != -1) {
                 bytesRead = in.read(data);
                 if (bytesRead > -1) {
-                    System.out.println("Read in " + bytesRead + " bytes .. writing out");
+                    LOGGER.debug("Read in " + bytesRead + " bytes .. writing out");
                     out.write(data, 0, bytesRead);
                 } else {
                     out.flush();
                 }
             }
         } catch (Exception ex) {
-            System.err.println(ex.toString());
+            LOGGER.error(ex.toString());
             ex.printStackTrace();
             return null;
         } finally {
@@ -298,14 +298,14 @@ public class HttpSender {
                 try {
                     in.close();
                 } catch (IOException ex) {
-                    System.err.println(ex.toString());
+                    LOGGER.error(ex.toString());
                 }
             }
             if(out != null){
                 try {
                     out.close();
                 } catch (IOException ex) {
-                    System.err.println(ex.toString());
+                    LOGGER.error(ex.toString());
                 }
             }
         }
@@ -342,10 +342,10 @@ public class HttpSender {
                                 bytesRead = in.read(data, offset, data.length - offset);
                                 if (bytesRead > -1) {
                                     offset += bytesRead;
-                                    System.out.println("offset now at: " + offset);
+                                    LOGGER.trace("offset now at: " + offset);
                                     if (offset >= data.length) {
                                         // increase buffer
-                                        System.out.println("Increasing buffer size by 1mb");
+                                        LOGGER.trace("Increasing buffer size by 1mb");
                                         byte[] temp = java.util.Arrays.copyOf(data, data.length);
                                         data = java.util.Arrays.copyOf(temp, temp.length + mallocSize);
                                         // for GC
@@ -368,7 +368,7 @@ public class HttpSender {
 		if (contentLength > 0 && offset != contentLength) {
 //			throw new IOException("Only read " + offset + " bytes; Expected "
 //					+ contentLength + " bytes");
-                        System.err.println("Only read " + offset + " bytes; Expected "
+	        LOGGER.error("Only read " + offset + " bytes; Expected "
 					+ contentLength + " bytes");
 			return null;
 		}
@@ -383,8 +383,8 @@ public class HttpSender {
 			out.write(data);
 			out.flush();
 		} catch(Exception e){
-                        System.err.println(e.toString());
-                        e.printStackTrace();
+	        LOGGER.error(e.toString());
+	        e.printStackTrace();
 			return null;
 		}
 		finally {
