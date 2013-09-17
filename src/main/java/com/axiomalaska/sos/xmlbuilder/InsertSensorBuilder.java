@@ -8,6 +8,7 @@ import net.opengis.sos.x20.SosInsertionMetadataType;
 import net.opengis.swes.x20.InsertSensorDocument;
 import net.opengis.swes.x20.InsertSensorType;
 
+import com.axiomalaska.ioos.sos.IoosSosConstants;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.XmlNamespaceConstants;
@@ -64,7 +65,7 @@ public class InsertSensorBuilder extends AbstractSwesBuilder {
 	    InsertSensorType xbInsertSensor = xbInsertSensorDoc.addNewInsertSensor();
 	    xbInsertSensor.setService(SosInjectorConstants.SOS_SERVICE);
 	    xbInsertSensor.setVersion(SosInjectorConstants.SOS_V200);
-	    xbInsertSensor.setProcedureDescriptionFormat(SosInjectorConstants.IOOS_SML_FORMAT);
+	    xbInsertSensor.setProcedureDescriptionFormat(IoosSosConstants.SML_PROFILE_M10);
 
 	    SosInsertionMetadataDocument xbSosInsertionMetadataDoc = SosInsertionMetadataDocument.Factory.newInstance();
 	    SosInsertionMetadataType xbSosInsertionMetadata = xbSosInsertionMetadataDoc.addNewSosInsertionMetadata();

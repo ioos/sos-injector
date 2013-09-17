@@ -3,6 +3,7 @@ package com.axiomalaska.sos.xmlbuilder;
 import net.opengis.sos.x10.DescribeSensorDocument;
 import net.opengis.sos.x10.DescribeSensorDocument.DescribeSensor;
 
+import com.axiomalaska.ioos.sos.IoosSosConstants;
 import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.data.AbstractSosAsset;
 import com.axiomalaska.sos.tools.XmlOptionsHelper;
@@ -48,7 +49,7 @@ public class DescribeSensorBuilder {
 	    DescribeSensor xbDescribeSensor = xbDescribeSensorDoc.addNewDescribeSensor();
 	    xbDescribeSensor.setService(SosInjectorConstants.SOS_SERVICE);
 	    xbDescribeSensor.setVersion(SosInjectorConstants.SOS_V100);
-	    xbDescribeSensor.setOutputFormat(SosInjectorConstants.IOOS_SML_FORMAT);
+	    xbDescribeSensor.setOutputFormat(IoosSosConstants.SML_PROFILE_M10);
 	    xbDescribeSensor.setProcedure(asset.getId());
 	    return xbDescribeSensorDoc;
 	}

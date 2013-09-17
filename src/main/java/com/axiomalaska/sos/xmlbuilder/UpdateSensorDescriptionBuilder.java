@@ -3,6 +3,7 @@ package com.axiomalaska.sos.xmlbuilder;
 import net.opengis.swes.x20.UpdateSensorDescriptionDocument;
 import net.opengis.swes.x20.UpdateSensorDescriptionType;
 
+import com.axiomalaska.ioos.sos.IoosSosConstants;
 import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.data.AbstractSosAsset;
 import com.axiomalaska.sos.data.PublisherInfo;
@@ -57,7 +58,7 @@ public class UpdateSensorDescriptionBuilder extends AbstractSwesBuilder {
 	    xbUpdateSensorDescription.setService(SosInjectorConstants.SOS_SERVICE);
 	    xbUpdateSensorDescription.setVersion(SosInjectorConstants.SOS_V200);
 	    xbUpdateSensorDescription.setProcedure(asset.getId());
-	    xbUpdateSensorDescription.setProcedureDescriptionFormat(SosInjectorConstants.IOOS_SML_FORMAT);
+	    xbUpdateSensorDescription.setProcedureDescriptionFormat(IoosSosConstants.SML_PROFILE_M10);
 
 	    //add sensorml
 	    xbUpdateSensorDescription.addNewDescription().addNewSensorDescription()

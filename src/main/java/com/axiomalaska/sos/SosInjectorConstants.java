@@ -12,7 +12,7 @@ public class SosInjectorConstants {
     // https://wiki.52north.org/bin/view/SensorWeb/SensorObservationServiceIVDocumentation#SplitDataArrayIntoObservations
     public static final String SPLIT_OBSERVATIONS_EXTENSION = "SplitDataArrayIntoObservations";
     
-    public static final String IOOS_SML_FORMAT = "text/xml; subtype=\"sensorML/1.0.1/profiles/ioos_sos/1.0\"";
+    //public static final String IOOS_SML_FORMAT = "text/xml; subtype=\"sensorML/1.0.1/profiles/ioos_sos/1.0\"";
     public static final String NONE_OBS_PROP = "NONE";
     public static final String SWE_ARRAY_DEF = "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_SWEArrayObservation";
     public static final String MEASUREMENT_DEF = "http://www.opengis.net/def/observationType/OGC-OM/2.0/OM_Measurement";
