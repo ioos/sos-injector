@@ -193,6 +193,8 @@ public class ObservationSubmitter {
             
             thisChunk.setObservationValues(obsCollection.getObservationValues().subMap(
                     thisTimeRange.get(0), thisTimeRange.get(thisTimeRange.size()-1)));
+            
+            obsCollections.add(thisChunk);
         }
 	    return obsCollections;
 	}
