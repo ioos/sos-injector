@@ -21,6 +21,7 @@ import com.axiomalaska.sos.exception.InvalidObservationCollectionException;
 import com.axiomalaska.sos.exception.ObservationRetrievalException;
 import com.axiomalaska.sos.exception.SosCommunicationException;
 import com.axiomalaska.sos.tools.HttpSender;
+import com.axiomalaska.sos.tools.IdCreator;
 import com.axiomalaska.sos.tools.ResponseInterpretter;
 import com.axiomalaska.sos.tools.XmlHelper;
 import com.axiomalaska.sos.xmlbuilder.GetNewestObservationBuilder;
@@ -50,7 +51,8 @@ public class ObservationSubmitter {
 	// Private Data
 	// -------------------------------------------------------------------------
 	private static final Logger LOGGER = Logger.getLogger(ObservationSubmitter.class);
-	private String sosUrl;
+	private String sosPoxUrl;
+	private String sosFeatureExistsUrl;
     private String authorizationToken;
     private final int MAX_OBS_COLLECTION_SIZE = 200;
 	
@@ -59,7 +61,8 @@ public class ObservationSubmitter {
 	// -------------------------------------------------------------------------
 
 	public ObservationSubmitter(String sosUrl, String authorizationToken) {
-	    this.sosUrl = sosUrl;
+	    this.sosPoxUrl = sosUrl + SosInjectorConstants.POX_ENDPOINT;
+	    this.sosFeatureExistsUrl = sosUrl + SosInjectorConstants.FEATURE_EXISTS_ENDPOINT;
 	    this.authorizationToken = authorizationToken;	    
 	}	
 	
@@ -152,7 +155,7 @@ public class ObservationSubmitter {
                 LOGGER.info("Inserting " + splitObsCollection.toString());		        
 	            try {
 	                xbResponse = ResponseInterpretter.getXmlObject(
-	                    HttpSender.sendPostMessage(sosUrl, authorizationToken,
+	                    HttpSender.sendPostMessage(sosPoxUrl, authorizationToken,
 	                            new InsertObservationBuilder(splitObsCollection).build()));
 	            } catch (XmlException e) {
 	                throw new SosCommunicationException(e);
@@ -244,7 +247,7 @@ public class ObservationSubmitter {
 	}
 	
     /**
-     * Get the oldest observation date from the SOS server for the station and phenomenon. 
+     * Get the observation date extrema from the SOS server for the station and phenomenon. 
      * 
      * @param station - the station to look up the date from
      * @param phenomenon - the phenomenon to look up the date from
@@ -259,6 +262,17 @@ public class ObservationSubmitter {
     private DateTime getObservationDateExtrema(SosSensor sensor, Phenomenon phenomenon, Geometry geometry,
             ObservationExtremaType type) throws ObservationRetrievalException, SosCommunicationException,
             UnsupportedGeometryTypeException {
+        //try to check feature existence first with shortcut
+        try {
+            if (!ResponseInterpretter.getExists(HttpSender.sendGetMessage(sosFeatureExistsUrl + 
+                    IdCreator.createObservationFeatureOfInterestId(sensor, geometry)))){
+                //observation feature doesn't exist yet, return null for extrema time
+                return null;
+            }
+        } catch (Exception e) {
+            //NOOP, keep going and ignore foi error if it's not created yet
+        }
+        
         GetObservationBuilder builder = null;
         switch (type){
             case NEWEST:
@@ -271,7 +285,7 @@ public class ObservationSubmitter {
         
         XmlObject xbResponse = null;
         try {
-            xbResponse = ResponseInterpretter.getXmlObject(HttpSender.sendPostMessage(sosUrl, authorizationToken,
+            xbResponse = ResponseInterpretter.getXmlObject(HttpSender.sendPostMessage(sosPoxUrl, authorizationToken,
                     builder.build()));
         } catch (XmlException e) {
             throw new SosCommunicationException(e);

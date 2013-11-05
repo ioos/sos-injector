@@ -1,6 +1,7 @@
 package com.axiomalaska.sos.tools;
 
 import java.io.IOException;
+import java.util.Map;
 
 import net.opengis.gml.x32.AbstractTimeObjectType;
 import net.opengis.gml.x32.TimeInstantType;
@@ -15,7 +16,13 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class ResponseInterpretter {
+    private static final ObjectMapper jsonMapper = new ObjectMapper();
+    
     public static boolean isError(XmlObject xmlObject) {
         return xmlObject instanceof ExceptionReportDocument;
     }
@@ -60,4 +67,8 @@ public class ResponseInterpretter {
         //TODO should this throw an exception instead of returning null?
         return null;
     }
+    
+    public static boolean getExists(String jsonExistsResponse) throws JsonParseException, JsonMappingException, IOException{
+        return (Boolean) jsonMapper.readValue(jsonExistsResponse, Map.class).get("exists");
+    } 
 }

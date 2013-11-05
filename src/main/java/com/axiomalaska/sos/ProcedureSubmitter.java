@@ -26,13 +26,15 @@ import com.axiomalaska.sos.xmlbuilder.InsertSensorBuilder;
 public class ProcedureSubmitter {
     private static final Logger LOGGER = Logger.getLogger(ProcedureSubmitter.class);
 
-    private String sosUrl;
+    private String sosPoxUrl;
+    private String sosProcedureExistsUrl;
     private String authorizationToken;
     private PublisherInfo publisherInfo;
     private Set<AbstractSosAsset> proceduresInSos = new HashSet<AbstractSosAsset>();
     
     public ProcedureSubmitter(String sosUrl, String authorizationToken, PublisherInfo publisherInfo) {
-        this.sosUrl = sosUrl;
+        this.sosPoxUrl = sosUrl + SosInjectorConstants.POX_ENDPOINT;
+        this.sosProcedureExistsUrl = sosUrl + SosInjectorConstants.PROCEDURE_EXISTS_ENDPOINT;
         this.authorizationToken = authorizationToken;        
         this.publisherInfo = publisherInfo;
     }
@@ -54,9 +56,17 @@ public class ProcedureSubmitter {
         }
 	}
 
-    private boolean isProcedureCreated(AbstractSosAsset asset) throws XmlException, IOException{        
+    private boolean isProcedureCreated(AbstractSosAsset asset) throws XmlException, IOException{
+        //try shortcut first
+        try {
+            return ResponseInterpretter.getExists(HttpSender.sendGetMessage(
+                    sosProcedureExistsUrl + asset.getId()));
+        } catch (Exception e) {
+            //NOOP, keep going and try the normal SOS request
+        }
+
         XmlObject xbResponse = ResponseInterpretter.getXmlObject(
-                HttpSender.sendPostMessage(sosUrl, authorizationToken,
+                HttpSender.sendPostMessage(sosPoxUrl, authorizationToken,
                         new DescribeSensorBuilder(asset).build()));
         if (xbResponse == null || !(xbResponse instanceof SensorMLDocument)){
             return false;
@@ -69,7 +79,7 @@ public class ProcedureSubmitter {
 	        UnsupportedSosAssetTypeException {
 		LOGGER.info("Creating procedure: " + asset.getId());
         XmlObject xbResponse = ResponseInterpretter.getXmlObject(
-		        HttpSender.sendPostMessage(sosUrl, authorizationToken,
+		        HttpSender.sendPostMessage(sosPoxUrl, authorizationToken,
 		                new InsertSensorBuilder(asset, publisherInfo).build())); 
 		if (xbResponse == null || ResponseInterpretter.isError(xbResponse)) {
 			LOGGER.error("Error creating procedure " + asset.getId() + ":\n" + xbResponse);

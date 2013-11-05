@@ -9,6 +9,11 @@ public class SosInjectorConstants {
     public static final String SOS_V200 = "2.0.0";
     public static final String SML_V101 = "1.0.1";
     
+    public static final String POX_ENDPOINT = "/sos/pox";
+    public static final String PROCEDURE_EXISTS_ENDPOINT = "/info/exists/procedure/";
+    public static final String OFFERING_EXISTS_ENDPOINT = "/info/exists/offering/";
+    public static final String FEATURE_EXISTS_ENDPOINT = "/info/exists/feature/";
+    
     // https://wiki.52north.org/bin/view/SensorWeb/SensorObservationServiceIVDocumentation#SplitDataArrayIntoObservations
     public static final String SPLIT_OBSERVATIONS_EXTENSION = "SplitDataArrayIntoObservations";
     
