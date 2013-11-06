@@ -1,16 +1,11 @@
 package com.axiomalaska.sos.tools;
 
-import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
@@ -35,7 +30,7 @@ public class HttpSender {
 	// Public Members
 	// -------------------------------------------------------------------------
 	
-	private static int TIME_OUT = 120000;
+	private static int TIME_OUT = 600000; //10 minutes
     private static final Logger LOGGER = Logger.getLogger(HttpSender.class);	
 	    
     private static void addAuthorizationToken(HttpMethodBase httpMethod, String authorizationToken) {
@@ -97,6 +92,8 @@ public class HttpSender {
 		try {
 			HttpClient httpClient = getHttpClient();
 			PostMethod method = new PostMethod(serviceURL);
+	        setMethodParams(method);
+	        
 			addAuthorizationToken(method, authorizationToken);			
 			
 			method.setRequestEntity(new StringRequestEntity(message, "text/xml",
@@ -105,13 +102,10 @@ public class HttpSender {
 			HostConfiguration hostConfig = getHostConfiguration(new URL(serviceURL));
 			httpClient.setHostConfiguration(hostConfig);
 			if( HttpStatus.SC_OK != httpClient.executeMethod(method)) {
-                LOGGER.error("Error while sending post message: " + method.getStatusLine());
-			    return null;
+			    throw new IOException("Error while sending post message: " + method.getStatusLine());
 			}
 			is = method.getResponseBodyAsStream();
 			return getStringResult(is);
-		} catch (Exception e) {
-			return null;
 		} finally {
 			if(is != null){
 				is.close();
@@ -122,10 +116,7 @@ public class HttpSender {
 	public static String sendGetMessage(String urlText) throws IOException {
 		HttpClient client = getHttpClient();
 		GetMethod method = new GetMethod(urlText);
-		
-		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
-				new DefaultHttpMethodRetryHandler(3, false));    
-		method.getParams().setSoTimeout(TIME_OUT);
+		setMethodParams(method);
 		
 		try {
 			if (client.executeMethod(method) != HttpStatus.SC_OK) {
@@ -133,8 +124,6 @@ public class HttpSender {
 				return null;
 			}
 			return getStringResult(method.getResponseBodyAsStream());
-		} catch (Exception e) {
-			return null;
 		} finally {
 			method.releaseConnection();    
 		} 
@@ -146,11 +135,17 @@ public class HttpSender {
 	    client.getParams().setConnectionManagerTimeout(TIME_OUT);
 	    return client;
 	}
+
+    private static void setMethodParams(HttpMethodBase method){
+        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
+                new DefaultHttpMethodRetryHandler(3, false));    
+        method.getParams().setSoTimeout(TIME_OUT);        
+    }
+	
 	
 	public static String sendGetMessage(String serviceURL, Iterable<HttpPart> httpParts, boolean needsEncoded)
 	        throws IOException{
 		String buildUrl = buildUrl(serviceURL, httpParts, needsEncoded);
-//		LOGGER.info("url build: " + buildUrl);
 		return sendGetMessage(buildUrl);
 	}
 
@@ -183,8 +178,6 @@ public class HttpSender {
 			}
 			out.writeBytes(content);
 			out.flush();
-		} catch(Exception e){
-			return null;
 		} finally {
 			if(out != null){
 				out.close();
@@ -195,206 +188,13 @@ public class HttpSender {
 		try {
 			inputStream = conn.getInputStream();
 			return getStringResult(inputStream);
-		} catch(Exception e){
-			return null;
-		}
-		finally {
+		} finally {
 			if(inputStream != null){
 				inputStream.close();
 			}
 		}
 	}
-	
-	public static boolean doesUrlExist(String serviceURL) {
-		try {
-			URL url = new URL(serviceURL);
-			HttpURLConnection huc = null;
-			try {
-				huc = (HttpURLConnection) url.openConnection();
 
-				huc.setRequestMethod("GET");
-				huc.setRequestProperty(
-						"User-Agent",
-						"Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 (.NET CLR 3.5.30729)");
-				huc.connect();
-			} catch (Exception e) {
-				return false;
-			}
-
-			switch (huc.getResponseCode()) {
-			case 200: // do nothing
-				break;
-			case 404:
-				return false;
-			case 300:
-				return false;
-			default:
-				return false;
-			}
-
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-	
-	public static String downloadReadFile(String url) throws IOException {
-		StringBuffer strContent = new StringBuffer("");
-		FileInputStream fin = null;
-		try {
-			String filename = downloadFile(url);
-			File file = new File(filename);
-			int ch;
-			fin = new FileInputStream(file);
-			while ((ch = fin.read()) != -1){
-				strContent.append((char) ch);
-			}
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
-		finally{
-			if(fin != null){
-				fin.close();
-			}
-		}
-		return strContent.toString();
-	}
-        
-    public static String downloadFileConcurrently(String fileUrl, String filename) {
-        BufferedInputStream in = null;
-        byte[] data = null;
-        int bytesRead = 0;
-        int mallocSize = 1048576;
-        
-        FileOutputStream out = null;
-        File file = null;
-        
-        try {
-            URL u = new URL(fileUrl);
-            URLConnection uc = u.openConnection();
-            InputStream raw = uc.getInputStream();
-            in = new BufferedInputStream(raw);
-            LOGGER.debug("Attempting to create file: " + filename + ".zip");
-            file = File.createTempFile(filename, ".zip");
-            out = new FileOutputStream(file);
-
-            // read then write
-            data = new byte[mallocSize];
-            while (bytesRead != -1) {
-                bytesRead = in.read(data);
-                if (bytesRead > -1) {
-                    LOGGER.debug("Read in " + bytesRead + " bytes .. writing out");
-                    out.write(data, 0, bytesRead);
-                } else {
-                    out.flush();
-                }
-            }
-        } catch (Exception ex) {
-            LOGGER.error(ex.toString());
-            ex.printStackTrace();
-            return null;
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException ex) {
-                    LOGGER.error(ex.toString());
-                }
-            }
-            if(out != null){
-                try {
-                    out.close();
-                } catch (IOException ex) {
-                    LOGGER.error(ex.toString());
-                }
-            }
-        }
-        
-        return file.getAbsolutePath();
-    }
-
-	public static String downloadFile(String fileUrl) throws IOException {
-		URL u = new URL(fileUrl);
-
-		int offset = 0;
-		int contentLength = 0;
-		BufferedInputStream in = null;
-		byte[] data = null;
-		try {
-			URLConnection uc = u.openConnection();
-			contentLength = uc.getContentLength();
-			InputStream raw = uc.getInputStream();
-			in = new BufferedInputStream(raw);
-                        if (contentLength > 0) {
-                            data = new byte[contentLength];
-                            int bytesRead = 0;
-                            while (offset < contentLength && bytesRead != -1) {
-                                    bytesRead = in.read(data, offset, data.length - offset);
-                                    if (bytesRead != -1)
-                                            offset += bytesRead;
-                            }
-                        } else {
-                            // don't know the content length, need to read in 1mb at a time
-                            int mallocSize = 1048576;
-                            data = new byte[mallocSize];
-                            int bytesRead = 0;
-                            while (bytesRead != -1) {
-                                bytesRead = in.read(data, offset, data.length - offset);
-                                if (bytesRead > -1) {
-                                    offset += bytesRead;
-                                    LOGGER.trace("offset now at: " + offset);
-                                    if (offset >= data.length) {
-                                        // increase buffer
-                                        LOGGER.trace("Increasing buffer size by 1mb");
-                                        byte[] temp = java.util.Arrays.copyOf(data, data.length);
-                                        data = java.util.Arrays.copyOf(temp, temp.length + mallocSize);
-                                        // for GC
-                                        temp = null;
-                                    }
-                                }
-                            }
-                        }
-		} catch(Exception e){
-                        System.err.println(e.toString());
-                        e.printStackTrace();
-			return null;
-		}
-		finally {
-			if (in != null) {
-				in.close();
-			}
-		}
-
-		if (contentLength > 0 && offset != contentLength) {
-//			throw new IOException("Only read " + offset + " bytes; Expected "
-//					+ contentLength + " bytes");
-	        LOGGER.error("Only read " + offset + " bytes; Expected "
-					+ contentLength + " bytes");
-			return null;
-		}
-
-		FileOutputStream out = null;
-		File file = null;
-		try {
-			String filename = u.getFile().substring(
-					u.getFile().lastIndexOf('/') + 1);
-			file = File.createTempFile(filename, ".zip");
-			out = new FileOutputStream(file);
-			out.write(data);
-			out.flush();
-		} catch(Exception e){
-	        LOGGER.error(e.toString());
-	        e.printStackTrace();
-			return null;
-		}
-		finally {
-			if(out != null){
-				out.close();
-			}
-		}
-		return file.getAbsolutePath();
-	}
-	
 	// -------------------------------------------------------------------------
 	// Private Members
 	// -------------------------------------------------------------------------

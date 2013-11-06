@@ -31,7 +31,7 @@ public class ResponseInterpretter {
         if (string == null || string.isEmpty()) {
             throw new IOException("Response was blank");
         }
-        
+
         return XmlObject.Factory.parse(string);
     }
     
