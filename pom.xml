@@ -32,7 +32,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <n52.xml.version>1.1.4</n52.xml.version>
+    <n52.xml.version>1.1.5</n52.xml.version>
   </properties>
 
   <dependencies>

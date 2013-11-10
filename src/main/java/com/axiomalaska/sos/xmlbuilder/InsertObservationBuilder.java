@@ -18,7 +18,7 @@ import net.opengis.sos.x20.InsertObservationDocument;
 import net.opengis.sos.x20.InsertObservationType;
 import net.opengis.swe.x20.BooleanDocument;
 import net.opengis.swe.x20.BooleanType;
-import net.opengis.swe.x20.DataArrayPropertyType;
+import net.opengis.swe.x20.DataArrayDocument;
 import net.opengis.swe.x20.DataArrayType;
 import net.opengis.swe.x20.DataArrayType.ElementType;
 import net.opengis.swe.x20.DataRecordType;
@@ -37,6 +37,7 @@ import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.data.ObservationCollection;
 import com.axiomalaska.sos.tools.IdCreator;
 import com.axiomalaska.sos.tools.XmlHelper;
+import com.axiomalaska.sos.tools.XmlOptionsHelper;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
@@ -146,13 +147,15 @@ public class InsertObservationBuilder {
      * @ 
 	 */
 	public InsertObservationDocument build() throws UnsupportedGeometryTypeException{
-	    InsertObservationDocument xbInsertObservationDoc = InsertObservationDocument.Factory.newInstance();
+	    InsertObservationDocument xbInsertObservationDoc = InsertObservationDocument.Factory.newInstance(
+	            XmlOptionsHelper.getInstance().getXmlOptions());
 	    InsertObservationType xbInsertObservation = xbInsertObservationDoc.addNewInsertObservation();
 	    xbInsertObservation.setService(SosInjectorConstants.SOS_SERVICE);
 	    xbInsertObservation.setVersion(SosInjectorConstants.SOS_V200);
 	    
 	    // set SplitDataArrayIntoObservations extension
-	    BooleanDocument xbSplitArrayExtensionDoc = BooleanDocument.Factory.newInstance();
+	    BooleanDocument xbSplitArrayExtensionDoc = BooleanDocument.Factory.newInstance(
+	            XmlOptionsHelper.getInstance().getXmlOptions());
 	    BooleanType xbSplitArrayExtension = xbSplitArrayExtensionDoc.addNewBoolean();
 	    xbSplitArrayExtension.setDefinition(SosInjectorConstants.SPLIT_OBSERVATIONS_EXTENSION);
 	    xbSplitArrayExtension.setValue(Boolean.TRUE);
@@ -173,7 +176,8 @@ public class InsertObservationBuilder {
 	    
 	    //feature
 	    SFSpatialSamplingFeatureDocument xbSfSpatialSamplingFeatureDoc =
-	            SFSpatialSamplingFeatureDocument.Factory.newInstance();
+	            SFSpatialSamplingFeatureDocument.Factory.newInstance(
+	                    XmlOptionsHelper.getInstance().getXmlOptions());
 	    SFSpatialSamplingFeatureType xbSfSpatialSamplingFeature = xbSfSpatialSamplingFeatureDoc.addNewSFSpatialSamplingFeature();
 	    xbSfSpatialSamplingFeature.setId("foi1"); 
 	    CodeWithAuthorityType xbFoiGmlIdentifier = xbSfSpatialSamplingFeature.addNewIdentifier();
@@ -191,8 +195,9 @@ public class InsertObservationBuilder {
 	    XmlHelper.append(xbOMObservation.addNewFeatureOfInterest(), xbSfSpatialSamplingFeatureDoc);
 
 	    //result
-	    DataArrayPropertyType xbDataArrayProperty = DataArrayPropertyType.Factory.newInstance();
-	    DataArrayType xbDataArray = xbDataArrayProperty.addNewDataArray1();
+	    DataArrayDocument xbDataArrayDoc = DataArrayDocument.Factory.newInstance(
+	            XmlOptionsHelper.getInstance().getXmlOptions());
+	    DataArrayType xbDataArray = xbDataArrayDoc.addNewDataArray1();
 	    xbDataArray.addNewElementCount().addNewCount().setValue(BigInteger.valueOf(
 	            observationCollection.getObservationValues().size()));
 	    ElementType xbElementType = xbDataArray.addNewElementType();
@@ -222,7 +227,7 @@ public class InsertObservationBuilder {
 	    
 	    xbDataArray.addNewValues().newCursor().setTextValue(encodeResultValues(observationCollection));
 
-	    xbOMObservation.addNewResult().set(xbDataArrayProperty);	    
+	    xbOMObservation.addNewResult().set(xbDataArrayDoc);	    
 	    return xbInsertObservationDoc;
 	}
 	

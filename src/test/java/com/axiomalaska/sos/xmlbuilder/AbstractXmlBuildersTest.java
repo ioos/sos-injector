@@ -28,6 +28,7 @@ import com.axiomalaska.sos.data.SosNetwork;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosSource;
 import com.axiomalaska.sos.data.SosStation;
+import com.axiomalaska.sos.tools.XmlOptionsHelper;
 import com.vividsolutions.jts.geom.Point;
 
 public class AbstractXmlBuildersTest {
@@ -180,6 +181,11 @@ public class AbstractXmlBuildersTest {
             if( !skip ){
                 fail( validationError.getMessage() );
             }
+        }
+        
+        String xmlStr = xmlDocument.xmlText(XmlOptionsHelper.getInstance().getXmlOptions());
+        if (xmlStr.contains("xmlns:ns=")){
+            fail("Document contains ns: namespace: \n" + xmlStr);
         }
     }
     
