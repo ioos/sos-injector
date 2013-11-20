@@ -1,11 +1,16 @@
 package com.axiomalaska.sos.tools;
 
+import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
@@ -195,6 +200,194 @@ public class HttpSender {
 		}
 	}
 
+	public static boolean doesUrlExist(String serviceURL) {
+	    try {
+	        URL url = new URL(serviceURL);
+	        HttpURLConnection huc = null;
+	        try {
+	            huc = (HttpURLConnection) url.openConnection();
+	            huc.setRequestMethod("GET");
+	            huc.setRequestProperty(
+                    "User-Agent",
+                    "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 (.NET CLR 3.5.30729)");
+	            huc.connect();
+	        } catch (Exception e) {
+	            return false;
+	        }
+
+	        switch (huc.getResponseCode()) {
+	        case 200: // do nothing
+	            break;
+	        case 404:
+	            return false;
+	        case 300:
+	            return false;
+	        default:
+	            return false;
+	        }
+
+	        return true;
+	    } catch (Exception e) {
+        return false;
+	    }
+	}
+  
+	public static String downloadReadFile(String url) throws IOException {
+	    StringBuffer strContent = new StringBuffer("");
+	    FileInputStream fin = null;
+	    try {
+	        String filename = downloadFile(url);
+	        File file = new File(filename);
+	        int ch;
+	        fin = new FileInputStream(file);
+	        while ((ch = fin.read()) != -1){
+	            strContent.append((char) ch);
+	        }
+	    } catch (Exception e) {
+	        LOGGER.error(e);
+	    } finally{
+	        if(fin != null){
+	            fin.close();
+	        }
+	    }
+	    return strContent.toString();
+	}
+        
+    public static String downloadFileConcurrently(String fileUrl, String filename) {
+        BufferedInputStream in = null;
+        byte[] data = null;
+        int bytesRead = 0;
+        int mallocSize = 1048576;
+        
+        FileOutputStream out = null;
+        File file = null;
+        
+        try {
+            URL u = new URL(fileUrl);
+            URLConnection uc = u.openConnection();
+            InputStream raw = uc.getInputStream();
+            in = new BufferedInputStream(raw);
+            LOGGER.debug("Attempting to create file: " + filename + ".zip");
+            file = File.createTempFile(filename, ".zip");
+            out = new FileOutputStream(file);
+
+            // read then write
+            data = new byte[mallocSize];
+            while (bytesRead != -1) {
+                bytesRead = in.read(data);
+                if (bytesRead > -1) {
+                    LOGGER.debug("Read in " + bytesRead + " bytes .. writing out");
+                    out.write(data, 0, bytesRead);
+                } else {
+                    out.flush();
+                }
+            }
+        } catch (Exception ex) {
+            LOGGER.error(ex.toString());
+            ex.printStackTrace();
+            return null;
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException ex) {
+                    LOGGER.error(ex.toString());
+                }
+            }
+            if(out != null){
+                try {
+                    out.close();
+                } catch (IOException ex) {
+                    LOGGER.error(ex.toString());
+                }
+            }
+        }
+        
+        return file.getAbsolutePath();
+    }
+
+    public static String downloadFile(String fileUrl) throws IOException {
+        URL u = new URL(fileUrl);
+
+        int offset = 0;
+        int contentLength = 0;
+        BufferedInputStream in = null;
+        byte[] data = null;
+        try {
+            URLConnection uc = u.openConnection();
+            contentLength = uc.getContentLength();
+            InputStream raw = uc.getInputStream();
+            in = new BufferedInputStream(raw);
+            if (contentLength > 0) {
+                data = new byte[contentLength];
+                int bytesRead = 0;
+                while (offset < contentLength && bytesRead != -1) {
+                    bytesRead = in.read(data, offset, data.length - offset);
+                    if (bytesRead != -1)
+                        offset += bytesRead;
+                }
+            } else {
+                // don't know the content length, need to read in 1mb at a time
+                int mallocSize = 1048576;
+                data = new byte[mallocSize];
+                int bytesRead = 0;
+                while (bytesRead != -1) {
+                    bytesRead = in.read(data, offset, data.length - offset);
+                    if (bytesRead > -1) {
+                        offset += bytesRead;
+                        LOGGER.trace("offset now at: " + offset);
+                        if (offset >= data.length) {
+                            // increase buffer
+                            LOGGER.trace("Increasing buffer size by 1mb");
+                            byte[] temp = java.util.Arrays.copyOf(data,
+                                    data.length);
+                            data = java.util.Arrays.copyOf(temp, temp.length
+                                    + mallocSize);
+                            // for GC
+                            temp = null;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
+
+        if (contentLength > 0 && offset != contentLength) {
+            // throw new IOException("Only read " + offset + " bytes; Expected "
+            // + contentLength + " bytes");
+            LOGGER.error("Only read " + offset + " bytes; Expected "
+                    + contentLength + " bytes");
+            return null;
+        }
+
+        FileOutputStream out = null;
+        File file = null;
+        try {
+            String filename = u.getFile().substring(
+                    u.getFile().lastIndexOf('/') + 1);
+            file = File.createTempFile(filename, ".zip");
+            out = new FileOutputStream(file);
+            out.write(data);
+            out.flush();
+        } catch (Exception e) {
+            LOGGER.error(e.toString());
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+        }
+        return file.getAbsolutePath();
+    }
+	
 	// -------------------------------------------------------------------------
 	// Private Members
 	// -------------------------------------------------------------------------
