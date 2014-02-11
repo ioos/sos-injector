@@ -42,7 +42,10 @@ public abstract class AbstractSosAsset implements SosAsset{
 
     @Override    
     public String toString(){
-        return getAsset().toString();
+        if (getAsset() != null) {
+            return getAsset().toString(); 
+        }
+        return "SosAsset with asset unset";
     }
 
     @Override

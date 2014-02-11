@@ -1,6 +1,7 @@
 package com.axiomalaska.sos;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,15 +47,16 @@ import com.vividsolutions.jts.geom.Geometry;
  * 
  * @author Lance Finfrock
  */
-public class ObservationSubmitter {
+public class ObservationSubmitter implements IObservationSubmitter {
 	// -------------------------------------------------------------------------
 	// Private Data
-	// -------------------------------------------------------------------------
+	// -------------------------------------------------------------------------    
 	private static final Logger LOGGER = Logger.getLogger(ObservationSubmitter.class);
+	private final DecimalFormat threePlaceDecimalFormat = new DecimalFormat("#.###");
 	private String sosPoxUrl;
 	private String sosFeatureExistsUrl;
     private String authorizationToken;
-    private final int MAX_OBS_COLLECTION_SIZE = 200;
+    private final int MAX_OBS_COLLECTION_SIZE = 1000;
 	
 	// -------------------------------------------------------------------------
 	// Public Members
@@ -64,20 +66,13 @@ public class ObservationSubmitter {
 	    this.sosPoxUrl = sosUrl + SosInjectorConstants.POX_ENDPOINT;
 	    this.sosFeatureExistsUrl = sosUrl + SosInjectorConstants.FEATURE_EXISTS_ENDPOINT;
 	    this.authorizationToken = authorizationToken;	    
-	}	
-	
-	/**
-	 * Pull: Update the observations of a station with a specific phenomenon in the SOS server.
-	 * 
-	 * @param sensor - the sensor from which to pull observations 
-	 * @param phenomenon - the phenomenon for which to pull observations 
-	 * @param observationRetriever - retrieves observations from the sensor
-	 * @throws InvalidObservationCollectionException 
-	 * @throws ObservationRetrievalException 
-	 * @throws SosCommunicationException 
-	 * @throws UnsupportedGeometryTypeException 
-	 */
-	public void update(SosSensor sensor, Phenomenon phenomenon, ObservationRetriever observationRetriever)
+	}
+
+	/* (non-Javadoc)
+     * @see com.axiomalaska.sos.IObservationSubmitter#update(com.axiomalaska.sos.data.SosSensor, com.axiomalaska.phenomena.Phenomenon, com.axiomalaska.sos.ObservationRetriever)
+     */
+	@Override
+    public void update(SosSensor sensor, Phenomenon phenomenon, ObservationRetriever observationRetriever)
 	           throws InvalidObservationCollectionException, ObservationRetrievalException, SosCommunicationException,
 	           UnsupportedGeometryTypeException{
 		DateTime startDateForAllGeometries = getNewestObservationDateForAllGeometries(sensor, phenomenon);
@@ -152,7 +147,8 @@ public class ObservationSubmitter {
 		if (observationCollection.getObservationValues().size() > 0) {
             XmlObject xbResponse;		    
 		    for (ObservationCollection splitObsCollection : splitObservationCollection(observationCollection)){
-                LOGGER.info("Inserting " + splitObsCollection.toString());		        
+                LOGGER.info("Inserting " + splitObsCollection.toString());
+                long startTime = System.currentTimeMillis();
 	            try {
 	                xbResponse = ResponseInterpretter.getXmlObject(
 	                    HttpSender.sendPostMessage(sosPoxUrl, authorizationToken,
@@ -166,7 +162,12 @@ public class ObservationSubmitter {
 	                LOGGER.error("Error while inserting " + splitObsCollection.toString()
 	                        + ":\n" + XmlHelper.xmlText(xbResponse));                   
 	            } else {
-	                LOGGER.info("Inserted " + splitObsCollection.toString());
+	                long elapsedTime = System.currentTimeMillis() - startTime;
+	                double elapsedSeconds = elapsedTime / 1000.0;
+	                double rate = splitObsCollection.getObservationValues().size() / elapsedSeconds;
+	                LOGGER.info("Inserted " + splitObsCollection.toString() + " in " +
+	                        threePlaceDecimalFormat.format(elapsedSeconds) + " seconds (" +
+	                        threePlaceDecimalFormat.format(rate) + " obs/s)");
 	            }               		        
 		    }
 		}
@@ -184,19 +185,23 @@ public class ObservationSubmitter {
         List<DateTime> times = new ArrayList<DateTime>(
                 obsCollection.getObservationValues().keySet());
         Collections.sort(times);
-        
+
         for (int i = 0; i < times.size(); i += MAX_OBS_COLLECTION_SIZE) {
-            List<DateTime> thisTimeRange = times.subList(i,
-                    i + Math.min(MAX_OBS_COLLECTION_SIZE, times.size() - i));
+            int timesInThisChunk = Math.min(MAX_OBS_COLLECTION_SIZE, times.size() - i);
+            int endIndexPlusOne = i + timesInThisChunk;
+            //don't subtract 1 from endIndexPlusOne because List.subList's toIndex arg is exclusive (it's ok to overshoot the real index here)
+            List<DateTime> thisTimeRange = times.subList(i, endIndexPlusOne);
+            DateTime firstTime = thisTimeRange.get(0);
+            DateTime lastTime = thisTimeRange.get(thisTimeRange.size() - 1);            
             
             ObservationCollection thisChunk = new ObservationCollection();
             thisChunk.setGeometry(obsCollection.getGeometry());
             thisChunk.setPhenomenon(obsCollection.getPhenomenon());
             thisChunk.setSensor(obsCollection.getSensor());
-            
-            thisChunk.setObservationValues(obsCollection.getObservationValues().subMap(
-                    thisTimeRange.get(0), thisTimeRange.get(thisTimeRange.size()-1)));
-            
+
+            //set thisChunk to the correct subset of observation values
+            thisChunk.setObservationValues(obsCollection.getObservationValues()
+                    .subMap(firstTime, true, lastTime, true));
             obsCollections.add(thisChunk);
         }
 	    return obsCollections;
@@ -223,7 +228,7 @@ public class ObservationSubmitter {
 	 */
 	private DateTime getNewestObservationDate(SosSensor sensor, Phenomenon phenomenon, Geometry geometry)
 	        throws ObservationRetrievalException, SosCommunicationException, UnsupportedGeometryTypeException {
-        DateTime dateTime = getObservationDateExtrema(sensor, phenomenon, geometry, ObservationExtremaType.NEWEST);
+        DateTime dateTime = getObservationDateExtrema(sensor, phenomenon, geometry, DateExtremaType.NEWEST);
         return dateTime != null ? dateTime : new DateTime(1970,1,1,0,0);        
 	}
 
@@ -242,7 +247,7 @@ public class ObservationSubmitter {
 	 */
 	private DateTime getOldestObservationDate(SosSensor sensor, Phenomenon phenomenon, Geometry geometry)
 	        throws ObservationRetrievalException, SosCommunicationException, UnsupportedGeometryTypeException{
-	    DateTime dateTime = getObservationDateExtrema(sensor, phenomenon, geometry, ObservationExtremaType.OLDEST);
+	    DateTime dateTime = getObservationDateExtrema(sensor, phenomenon, geometry, DateExtremaType.OLDEST);
 	    return dateTime != null ? dateTime : new DateTime(1,1,1,0,0); 
 	}
 	
@@ -260,11 +265,11 @@ public class ObservationSubmitter {
      * @throws UnsupportedGeometryTypeException 
      */
     private DateTime getObservationDateExtrema(SosSensor sensor, Phenomenon phenomenon, Geometry geometry,
-            ObservationExtremaType type) throws ObservationRetrievalException, SosCommunicationException,
+            DateExtremaType type) throws ObservationRetrievalException, SosCommunicationException,
             UnsupportedGeometryTypeException {
         //try to check feature existence first with shortcut
         try {
-            if (!ResponseInterpretter.getExists(HttpSender.sendGetMessage(sosFeatureExistsUrl + 
+            if (geometry != null && !ResponseInterpretter.getExists(HttpSender.sendGetMessage(sosFeatureExistsUrl + 
                     IdCreator.createObservationFeatureOfInterestId(sensor, geometry)))){
                 //observation feature doesn't exist yet, return null for extrema time
                 return null;
@@ -301,7 +306,7 @@ public class ObservationSubmitter {
                 throw new ObservationRetrievalException(sensor, phenomenon, geometry, type);
             }
         } else {
-            dateTime = ResponseInterpretter.parseDateFromGetObservationResponse(
+            dateTime = ResponseInterpretter.parseMaxDateFromGetObservationResponse(
                     (GetObservationResponseDocument) xbResponse);            
         }
 

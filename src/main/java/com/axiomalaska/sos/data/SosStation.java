@@ -98,7 +98,11 @@ public class SosStation extends AbstractSosAsset implements AssetWithLocation {
 	public void setSensors(List<SosSensor> sensors) {
 		this.sensors = sensors;
 	}
-		
+
+    public void addSensor(SosSensor sensor) {
+        this.sensors.add(sensor);
+    }
+
 	/**
 	 * A list of networks this station is associated to
 	 * @return

@@ -2,6 +2,7 @@ package com.axiomalaska.sos.data;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.NavigableMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -24,7 +25,7 @@ public class ObservationCollection {
 	private static final Logger LOGGER = Logger.getLogger(ObservationCollection.class);
 	private SosSensor sensor;
 	private Phenomenon phenomenon;
-	private SortedMap<DateTime,Double> observationValues = new TreeMap<DateTime,Double>();
+	private NavigableMap<DateTime,Double> observationValues = new TreeMap<DateTime,Double>();
 	private Geometry geometry = null;
 	
 	// -------------------------------------------------------------------------
@@ -66,11 +67,11 @@ public class ObservationCollection {
         this.sensor = sensor;
     }
 	
-    public SortedMap<DateTime, Double> getObservationValues() {
+    public NavigableMap<DateTime, Double> getObservationValues() {
         return observationValues;
     }
 
-    public void setObservationValues(SortedMap<DateTime, Double> observationValues) {
+    public void setObservationValues(NavigableMap<DateTime, Double> observationValues) {
         this.observationValues = observationValues;
     }
 

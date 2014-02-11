@@ -16,6 +16,7 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.joda.time.DateTime;
 
+import com.axiomalaska.sos.DateExtremaType;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,27 +46,66 @@ public class ResponseInterpretter {
                     .contains(text);
     }    
     
-    public static DateTime parseDateFromGetObservationResponse(GetObservationResponseDocument xbGetObsResposeDoc) {
+    public static DateTime parseMinDateFromGetObservationResponse(GetObservationResponseDocument xbGetObsResposeDoc) {
+        return parseDateExtremaFromGetObservationResponse(xbGetObsResposeDoc, DateExtremaType.OLDEST);
+    }
+    
+    public static DateTime parseMaxDateFromGetObservationResponse(GetObservationResponseDocument xbGetObsResposeDoc) {
+        return parseDateExtremaFromGetObservationResponse(xbGetObsResposeDoc, DateExtremaType.NEWEST);
+    }
+    
+    public static DateTime parseDateExtremaFromGetObservationResponse(GetObservationResponseDocument xbGetObsResposeDoc,
+            DateExtremaType dateExtremaType) {
         GetObservationResponseType xbGetObsResponse = xbGetObsResposeDoc.getGetObservationResponse();
-        if(xbGetObsResponse.getObservationDataArray() != null && xbGetObsResponse.getObservationDataArray().length == 1) {
-            ObservationData xbObsDataArray = xbGetObsResponse.getObservationDataArray(0);
-            if (xbObsDataArray.getOMObservation() != null) {
-                OMObservationType xbOmObservation = xbObsDataArray.getOMObservation();
-                if (xbOmObservation.getPhenomenonTime() != null) {
-                    AbstractTimeObjectType xbPhenomenonTime = xbOmObservation.getPhenomenonTime().getAbstractTimeObject();
-                    if (xbPhenomenonTime instanceof TimeInstantType) {
-                        TimeInstantType xbTimeInstant = (TimeInstantType) xbPhenomenonTime;
-                        return DateTime.parse(xbTimeInstant.getTimePosition().getStringValue());
-                    } else if (xbPhenomenonTime instanceof TimePeriodType) {
-                        TimePeriodType xbTimePeriod = (TimePeriodType) xbPhenomenonTime;
-                        //TODO should this be the phenomenon end position instead of start?
-                        return DateTime.parse(xbTimePeriod.getBeginPosition().getStringValue());                        
+        DateTime mostExtremeDate = null;
+        if(xbGetObsResponse.getObservationDataArray() != null) {
+            for (ObservationData xbObsData : xbGetObsResponse.getObservationDataArray()) {
+                if (xbObsData.getOMObservation() != null) {
+                    OMObservationType xbOmObservation = xbObsData.getOMObservation();
+                    if (xbOmObservation.getPhenomenonTime() != null) {
+                        AbstractTimeObjectType xbPhenomenonTime = xbOmObservation.getPhenomenonTime().getAbstractTimeObject();
+                        DateTime thisDate = null;
+                        if (xbPhenomenonTime instanceof TimeInstantType) {
+                            TimeInstantType xbTimeInstant = (TimeInstantType) xbPhenomenonTime;
+                            thisDate = DateTime.parse(xbTimeInstant.getTimePosition().getStringValue());
+                        } else if (xbPhenomenonTime instanceof TimePeriodType) {
+                            TimePeriodType xbTimePeriod = (TimePeriodType) xbPhenomenonTime;
+                            //TODO should this be the phenomenon end position instead of start?
+                            thisDate = DateTime.parse(xbTimePeriod.getBeginPosition().getStringValue());                        
+                        }
+                        if(isMoreExtreme(mostExtremeDate, thisDate, dateExtremaType)) {
+                            mostExtremeDate = thisDate;
+                        }
                     }
                 }
             }
         }
-        //TODO should this throw an exception instead of returning null?
-        return null;
+        //TODO should this throw an exception if null?
+        return mostExtremeDate;
+    }
+
+    /**
+     * Is date2 more extreme than date1?
+     * @param date1 Date to compare against
+     * @param date2 Date to compare
+     * @param dateExtremaType The type of temporal extremity (newer or older)
+     * @return The more extreme (newer or older) date
+     */
+    private static boolean isMoreExtreme(DateTime date1, DateTime date2, DateExtremaType dateExtremaType) {
+        if (date1 == null) {
+            return true;
+        } else if (date2 == null) {
+            return false;
+        }
+        //both are not null
+        switch (dateExtremaType) {
+            case NEWEST:
+                return date2.isAfter(date1);
+            case OLDEST:
+                return date2.isBefore(date1);
+            default:
+                return false;
+        }
     }
     
     public static boolean getExists(String jsonExistsResponse) throws JsonParseException, JsonMappingException, IOException{

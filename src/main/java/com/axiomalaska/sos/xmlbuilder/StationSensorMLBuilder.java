@@ -335,7 +335,7 @@ public class StationSensorMLBuilder extends AbstractSensorMLBuilder  {
         if (station.getSource() != null || publisherInfo != null) {
             Contact xbContact = xbSystem.addNewContact();
             ContactList xbContactList = xbContact.addNewContactList();
-            
+
             //operator
             if (station.getSource() != null) {
                 ContactList.Member xbMember = xbContactList.addNewMember();
@@ -344,13 +344,27 @@ public class StationSensorMLBuilder extends AbstractSensorMLBuilder  {
                 xbResponsibleParty.setOrganizationName(station.getSource().getName());
                 ContactInfo xbContactInfo = xbResponsibleParty.addNewContactInfo();
                 Address xbAddress = xbContactInfo.addNewAddress();
-                xbAddress.addNewDeliveryPoint().setStringValue(station.getSource().getAddress());
-                xbAddress.setCity(station.getSource().getCity());
-                xbAddress.setAdministrativeArea(station.getSource().getState());
-                xbAddress.setPostalCode(station.getSource().getZipcode());
-                xbAddress.setCountry(station.getSource().getCountry());
-                xbAddress.setElectronicMailAddress(station.getSource().getEmail());
-                xbContactInfo.addNewOnlineResource().setHref(station.getSource().getWebAddress());
+                if (station.getSource().getAddress() != null) {
+                    xbAddress.addNewDeliveryPoint().setStringValue(station.getSource().getAddress());
+                }
+                if (station.getSource().getCity() != null) {
+                    xbAddress.setCity(station.getSource().getCity());    
+                }
+                if (station.getSource().getState() != null) {
+                    xbAddress.setAdministrativeArea(station.getSource().getState());    
+                }
+                if (station.getSource().getZipcode() != null) {
+                    xbAddress.setPostalCode(station.getSource().getZipcode());    
+                }
+                if (station.getSource().getCountry() != null) {
+                    xbAddress.setCountry(station.getSource().getCountry());    
+                }
+                if (station.getSource().getEmail() != null) {
+                    xbAddress.setElectronicMailAddress(station.getSource().getEmail());    
+                }
+                if (station.getSource().getWebAddress() != null) {
+                    xbContactInfo.addNewOnlineResource().setHref(station.getSource().getWebAddress());
+                }
             }
 
            if (publisherInfo != null) {
@@ -360,13 +374,19 @@ public class StationSensorMLBuilder extends AbstractSensorMLBuilder  {
                 xbResponsibleParty.setOrganizationName(publisherInfo.getName());
                 ContactInfo xbContactInfo = xbResponsibleParty.addNewContactInfo();
                 Address xbAddress = xbContactInfo.addNewAddress();
-                xbAddress.setCountry(publisherInfo.getCountry());
-                xbAddress.setElectronicMailAddress(publisherInfo.getEmail());
-                xbContactInfo.addNewOnlineResource().setHref(publisherInfo.getWebAddress());
+                if (publisherInfo.getCountry() != null) {
+                    xbAddress.setCountry(publisherInfo.getCountry());
+                }
+                if (publisherInfo.getEmail() != null) {
+                    xbAddress.setElectronicMailAddress(publisherInfo.getEmail());
+                }
+                if (publisherInfo.getWebAddress() != null) {
+                    xbContactInfo.addNewOnlineResource().setHref(publisherInfo.getWebAddress());
+                }
             }
         }       
     }
-    
+
     /**
      * Produces the XML below
          <sml:classification>

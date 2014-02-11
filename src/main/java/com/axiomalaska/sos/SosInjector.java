@@ -35,8 +35,8 @@ public class SosInjector {
 	private StationRetriever stationRetriever;
 	private ObservationRetriever observationRetriever;
 	private ISOFileWriter isoWriter;
-    private ProcedureSubmitter procedureSubmitter;	
-	private ObservationSubmitter observationSubmitter;
+    private IProcedureSubmitter procedureSubmitter;	
+	private IObservationSubmitter observationSubmitter;
 	
 	// -------------------------------------------------------------------------
 	// Constructor
@@ -57,7 +57,7 @@ public class SosInjector {
             String sosUrl,
             String authorizationToken,
             PublisherInfo publisherInfo,
-            StationRetriever stationRetriever,            
+            StationRetriever stationRetriever,
             ObservationRetriever observationRetriever,
             ISOFileWriter fileWriter) throws SosInjectorConfigurationException {
         if (name == null || name.isEmpty()){
@@ -86,6 +86,28 @@ public class SosInjector {
         this.procedureSubmitter = new ProcedureSubmitter(sosUrl, authorizationToken, publisherInfo);
         this.observationSubmitter = new ObservationSubmitter(sosUrl, authorizationToken);
         
+    }
+
+    /**
+     * Constructor with submitters (useful for mocking)
+     * 
+     * @param name
+     * @param stationRetriever
+     * @param observationRetriever
+     * @param procedureSubmitter
+     * @param observationSubmitter
+     */
+    public SosInjector(
+            String name,
+            StationRetriever stationRetriever,
+            ObservationRetriever observationRetriever,
+            IProcedureSubmitter procedureSubmitter,
+            IObservationSubmitter observationSubmitter) {
+        this.name = name;
+        this.stationRetriever = stationRetriever;
+        this.observationRetriever = observationRetriever;
+        this.procedureSubmitter = procedureSubmitter;
+        this.observationSubmitter = observationSubmitter;
     }
     
 	// -------------------------------------------------------------------------

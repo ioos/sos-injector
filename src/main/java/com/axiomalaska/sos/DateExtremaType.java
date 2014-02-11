@@ -1,5 +1,5 @@
 package com.axiomalaska.sos;
 
-public enum ObservationExtremaType {
+public enum DateExtremaType {
     NEWEST, OLDEST;
 }

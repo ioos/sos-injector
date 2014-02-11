@@ -65,7 +65,9 @@ public abstract class GetObservationBuilder {
 	    xbGetObservation.setVersion(SosInjectorConstants.SOS_V200);
 	    xbGetObservation.addProcedure(sensor.getId());
 	    xbGetObservation.addObservedProperty(phenomenon.getId());
-	    xbGetObservation.addFeatureOfInterest(IdCreator.createObservationFeatureOfInterestId(sensor, geometry));	    
+	    if (geometry != null) {
+	        xbGetObservation.addFeatureOfInterest(IdCreator.createObservationFeatureOfInterestId(sensor, geometry));
+	    }
 	    return xbGetObservationDoc;
 	}
 

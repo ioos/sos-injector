@@ -23,7 +23,7 @@ import com.axiomalaska.sos.tools.ResponseInterpretter;
 import com.axiomalaska.sos.xmlbuilder.DescribeSensorBuilder;
 import com.axiomalaska.sos.xmlbuilder.InsertSensorBuilder;
 
-public class ProcedureSubmitter {
+public class ProcedureSubmitter implements IProcedureSubmitter {
     private static final Logger LOGGER = Logger.getLogger(ProcedureSubmitter.class);
 
     private String sosPoxUrl;
@@ -39,7 +39,11 @@ public class ProcedureSubmitter {
         this.publisherInfo = publisherInfo;
     }
 
-	public boolean checkProcedureWithSos(AbstractSosAsset asset) throws SosCommunicationException{	    
+	/* (non-Javadoc)
+     * @see com.axiomalaska.sos.IProcedureSubmitter#checkProcedureWithSos(com.axiomalaska.sos.data.AbstractSosAsset)
+     */
+	@Override
+    public boolean checkProcedureWithSos(AbstractSosAsset asset) throws SosCommunicationException{	    
 	    if (asset instanceof SosStation) {
 	        SosStation station = (SosStation) asset;
 	        station.addNetwork(createNetworkAll());
