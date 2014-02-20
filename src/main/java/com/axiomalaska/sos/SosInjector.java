@@ -6,9 +6,12 @@ import org.apache.commons.validator.routines.RegexValidator;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import com.axiomalaska.ioos.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.phenomena.Phenomenon;
+import com.axiomalaska.sos.data.AbstractSosAsset;
 import com.axiomalaska.sos.data.PublisherInfo;
 import com.axiomalaska.sos.data.SosSensor;
 import com.axiomalaska.sos.data.SosStation;
@@ -108,6 +111,47 @@ public class SosInjector {
         this.observationRetriever = observationRetriever;
         this.procedureSubmitter = procedureSubmitter;
         this.observationSubmitter = observationSubmitter;
+    }
+
+    /**
+     * Create a mock SOS injector that can be used for testing. On update,
+     * station information will be retrieved from the StationRetriever. If the 
+     * retrieveObservations flag is true, observations since 1970-01-01
+     * will be retrieved from the ObservationRetriever. The queried information
+     * will not be submitted to any target SOS.
+     * 
+     * @param name Name of the mock SOS injector
+     * @param stationRetriever Implementation of StationRetriever
+     * @param observationRetriever Implementation of ObservationRetriever
+     * @param retrieveObservations Whether to retrieve observations or not
+     *      (can take a long time for large data sources)
+     * @return SosInjector
+     */
+    public static SosInjector mock(String name, StationRetriever stationRetriever,
+            ObservationRetriever observationRetriever, final boolean retrieveObservations) {
+        return new SosInjector(name, stationRetriever, observationRetriever,
+            new IProcedureSubmitter() {
+                @Override
+                public boolean checkProcedureWithSos(AbstractSosAsset asset) {
+                    // NOOP (mock)
+                    return true;
+                }
+            },
+            new IObservationSubmitter() {
+                @Override
+                public void update(SosSensor sensor, Phenomenon phenomenon,
+                        ObservationRetriever observationRetriever)
+                        throws InvalidObservationCollectionException,
+                        ObservationRetrievalException,
+                        SosCommunicationException,
+                        UnsupportedGeometryTypeException {
+                    if (retrieveObservations) {
+                        observationRetriever.getObservationCollection(sensor, phenomenon,
+                                new DateTime(1970, 1, 1, 0, 0, DateTimeZone.UTC));
+                    }
+                }
+            });
+        
     }
     
 	// -------------------------------------------------------------------------
