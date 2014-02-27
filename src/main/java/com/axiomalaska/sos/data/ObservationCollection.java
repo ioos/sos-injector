@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
+import com.axiomalaska.ioos.sos.GeomHelper;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -134,12 +135,12 @@ public class ObservationCollection {
 
         return true;
     }    
-    
+
     public String toString(){
         return "ObservationCollection["
                 + "sensor: " + (sensor == null ? "null" : sensor.getId())
                 + ",phenomenon: " + (phenomenon == null ? "null" : phenomenon.getId())
-                + ",geometry: " + (geometry == null ? "null" : geometry.toString())
+                + ",geometry: " + (geometry == null ? "null" : GeomHelper.toString3d(geometry))
                 + ",size: " + (observationValues == null ? "null" : observationValues.size())
                 + ",firstTime: " + (observationValues == null ? "null" : observationValues.firstKey())
                 + ",lastTime: " + (observationValues == null ? "null" : observationValues.lastKey())
