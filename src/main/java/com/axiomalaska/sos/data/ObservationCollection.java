@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import com.axiomalaska.ioos.sos.GeomHelper;
 import com.axiomalaska.phenomena.Phenomenon;
@@ -142,8 +143,10 @@ public class ObservationCollection {
                 + ",phenomenon: " + (phenomenon == null ? "null" : phenomenon.getId())
                 + ",geometry: " + (geometry == null ? "null" : GeomHelper.toString3d(geometry))
                 + ",size: " + (observationValues == null ? "null" : observationValues.size())
-                + ",firstTime: " + (observationValues == null ? "null" : observationValues.firstKey())
-                + ",lastTime: " + (observationValues == null ? "null" : observationValues.lastKey())
+                + ",firstTime: " + (observationValues == null ? "null" :
+                    new DateTime(observationValues.firstKey(), DateTimeZone.UTC))
+                + ",lastTime: " + (observationValues == null ? "null" :
+                    new DateTime(observationValues.lastKey(), DateTimeZone.UTC))
                 + "]";
     }
 }
