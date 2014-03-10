@@ -49,7 +49,7 @@ public abstract class AbstractSensorMLBuilder {
 	
 	protected void createClassifier(ClassifierList xbClassifierList, String name,
 			String definition, String codeSpaceHref, String value) {
-	    if (value != null) {
+	    if (value != null && value.trim().length() > 0) {
     	    Classifier xbClassifier = xbClassifierList.addNewClassifier();
     	    xbClassifier.setName(name);
     	    Term xbTerm = xbClassifier.addNewTerm();
