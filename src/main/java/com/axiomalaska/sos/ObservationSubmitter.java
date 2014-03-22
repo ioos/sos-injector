@@ -9,10 +9,11 @@ import java.util.List;
 import net.opengis.ows.x11.ExceptionReportDocument;
 import net.opengis.sos.x20.GetObservationResponseDocument;
 
-import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axiomalaska.ioos.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.phenomena.Phenomenon;
@@ -51,7 +52,7 @@ public class ObservationSubmitter implements IObservationSubmitter {
 	// -------------------------------------------------------------------------
 	// Private Data
 	// -------------------------------------------------------------------------    
-	private static final Logger LOGGER = Logger.getLogger(ObservationSubmitter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ObservationSubmitter.class);
 	private final DecimalFormat threePlaceDecimalFormat = new DecimalFormat("#.###");
 	private String sosPoxUrl;
 	private String sosFeatureExistsUrl;

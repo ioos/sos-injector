@@ -1,13 +1,15 @@
 package com.axiomalaska.sos;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.validator.routines.RegexValidator;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axiomalaska.ioos.sos.exception.UnsupportedGeometryTypeException;
 import com.axiomalaska.phenomena.Phenomenon;
@@ -33,7 +35,7 @@ public class SosInjector {
 	// Private Data
 	// -------------------------------------------------------------------------
 	
-	private static final Logger LOGGER = Logger.getLogger(SosInjector.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SosInjector.class);
     private String name;
 	private StationRetriever stationRetriever;
 	private ObservationRetriever observationRetriever;
@@ -186,7 +188,11 @@ public class SosInjector {
 	        ObservationRetrievalException, UnsupportedSosAssetTypeException, StationCreationException,
 	        SosCommunicationException, UnsupportedGeometryTypeException{
 	    LOGGER.info("Updating " + name);
-        for (SosStation station : stationRetriever.getStations()) {
+	    List<SosStation> stations = stationRetriever.getStations();
+	    int stationsSize = stations.size();
+	    int stationCounter = 0;
+        for (SosStation station : stations) {
+            LOGGER.info("Harvesting station {} of {}.", ++stationCounter, stationsSize);
             if (station.getSensors().isEmpty()) {
                 LOGGER.info("Station " + station.getId() + " does not have any sensors and will not be added.");
                 continue;

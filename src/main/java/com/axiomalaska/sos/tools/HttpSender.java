@@ -22,8 +22,9 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is a Helper for interfacing with servers with HTTP. 
@@ -36,7 +37,7 @@ public class HttpSender {
 	// -------------------------------------------------------------------------
 	
 	private static int TIME_OUT = 600000; //10 minutes
-    private static final Logger LOGGER = Logger.getLogger(HttpSender.class);	
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpSender.class);	
 	    
     private static void addAuthorizationToken(HttpMethodBase httpMethod, String authorizationToken) {
         if (authorizationToken != null && !authorizationToken.isEmpty()){
@@ -244,7 +245,7 @@ public class HttpSender {
 	            strContent.append((char) ch);
 	        }
 	    } catch (Exception e) {
-	        LOGGER.error(e);
+	        LOGGER.error("Exception while downloading file", e);
 	    } finally{
 	        if(fin != null){
 	            fin.close();

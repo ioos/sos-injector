@@ -3,12 +3,12 @@ package com.axiomalaska.sos.data;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axiomalaska.ioos.sos.GeomHelper;
 import com.axiomalaska.phenomena.Phenomenon;
@@ -24,7 +24,7 @@ public class ObservationCollection {
 	// -------------------------------------------------------------------------
 	// Private Data
 	// -------------------------------------------------------------------------
-	private static final Logger LOGGER = Logger.getLogger(ObservationCollection.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ObservationCollection.class);
 	private SosSensor sensor;
 	private Phenomenon phenomenon;
 	private NavigableMap<DateTime,Double> observationValues = new TreeMap<DateTime,Double>();

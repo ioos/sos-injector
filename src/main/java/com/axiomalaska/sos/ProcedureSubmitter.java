@@ -6,10 +6,11 @@ import java.util.Set;
 
 import net.opengis.sensorML.x101.SensorMLDocument;
 
-import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.n52.sos.ioos.asset.NetworkAsset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axiomalaska.sos.data.AbstractSosAsset;
 import com.axiomalaska.sos.data.PublisherInfo;
@@ -24,7 +25,7 @@ import com.axiomalaska.sos.xmlbuilder.DescribeSensorBuilder;
 import com.axiomalaska.sos.xmlbuilder.InsertSensorBuilder;
 
 public class ProcedureSubmitter implements IProcedureSubmitter {
-    private static final Logger LOGGER = Logger.getLogger(ProcedureSubmitter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcedureSubmitter.class);
 
     private String sosPoxUrl;
     private String sosProcedureExistsUrl;

@@ -48,11 +48,6 @@
       <version>3.1</version>
     </dependency>
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.16</version>
-    </dependency>
-    <dependency>
       <groupId>com.axiomalaska</groupId>
       <artifactId>phenomena</artifactId>
       <version>0.2-SNAPSHOT</version>    
