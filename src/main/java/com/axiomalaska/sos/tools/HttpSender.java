@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HostConfiguration;
@@ -22,6 +23,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +39,9 @@ public class HttpSender {
 	// -------------------------------------------------------------------------
 	
 	private static int TIME_OUT = 600000; //10 minutes
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpSender.class);	
-	    
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpSender.class);    
+    private static HttpClient HTTP_CLIENT = null;
+    
     private static void addAuthorizationToken(HttpMethodBase httpMethod, String authorizationToken) {
         if (authorizationToken != null && !authorizationToken.isEmpty()){
             httpMethod.addRequestHeader("Authorization", authorizationToken);
@@ -93,61 +96,64 @@ public class HttpSender {
 	 */
 	public static String sendPostMessage(String serviceURL, String authorizationToken, String message)
 			throws IOException {
-
+	    String result = null;
 		InputStream is = null;
-		try {
-			HttpClient httpClient = getHttpClient();
-			PostMethod method = new PostMethod(serviceURL);
-	        setMethodParams(method);
-	        
-			addAuthorizationToken(method, authorizationToken);			
-			
-			method.setRequestEntity(new StringRequestEntity(message, "text/xml",
-					"UTF-8"));
+		PostMethod method = new PostMethod(serviceURL);
+		setMethodParams(method);
+        addAuthorizationToken(method, authorizationToken);
 
-			HostConfiguration hostConfig = getHostConfiguration(new URL(serviceURL));
-			httpClient.setHostConfiguration(hostConfig);
-			if( HttpStatus.SC_OK != httpClient.executeMethod(method)) {
-			    throw new IOException("Error while sending post message: " + method.getStatusLine());
-			}
+		try {
+	        method.setRequestEntity(new StringRequestEntity(message, "text/xml", "UTF-8"));		    
+	        if( HttpStatus.SC_OK != getHttpClient().executeMethod(method)) {
+	            throw new IOException("Error while sending post message: " + method.getStatusLine());
+	        }
 			is = method.getResponseBodyAsStream();
-			return getStringResult(is);
+            result = IOUtils.toString(is, StandardCharsets.UTF_8.displayName());
 		} finally {
 			if(is != null){
 				is.close();
 			}
+			method.releaseConnection();
 		}
+		return result;
 	}
 	
 	public static String sendGetMessage(String urlText) throws IOException {
-		HttpClient client = getHttpClient();
+	    String result = null;
 		GetMethod method = new GetMethod(urlText);
 		setMethodParams(method);
-		
+		InputStream is = null;
+
 		try {
-			if (client.executeMethod(method) != HttpStatus.SC_OK) {
+			if (getHttpClient().executeMethod(method) != HttpStatus.SC_OK) {
 			    LOGGER.error("Error while sending get message: " + method.getStatusLine());
 				return null;
 			}
-			return getStringResult(method.getResponseBodyAsStream());
+			is = method.getResponseBodyAsStream();
+            result = IOUtils.toString(is, StandardCharsets.UTF_8.displayName());
 		} finally {
+            if(is != null){
+                is.close();
+            }
 			method.releaseConnection();    
 		} 
+		return result;
 	}
 	
 	private static HttpClient getHttpClient(){
-	    HttpClient client = new HttpClient();
-	    client.getParams().setSoTimeout(TIME_OUT);
-	    client.getParams().setConnectionManagerTimeout(TIME_OUT);
-	    return client;
+	    if (HTTP_CLIENT == null) {
+	        HTTP_CLIENT = new HttpClient();
+	        HTTP_CLIENT.getParams().setSoTimeout(TIME_OUT);
+	        HTTP_CLIENT.getParams().setConnectionManagerTimeout(TIME_OUT);	        
+	    }
+	    return HTTP_CLIENT;
 	}
 
     private static void setMethodParams(HttpMethodBase method){
         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
                 new DefaultHttpMethodRetryHandler(3, false));    
-        method.getParams().setSoTimeout(TIME_OUT);        
+        method.getParams().setSoTimeout(TIME_OUT);
     }
-	
 	
 	public static String sendGetMessage(String serviceURL, Iterable<HttpPart> httpParts, boolean needsEncoded)
 	        throws IOException{
@@ -162,8 +168,8 @@ public class HttpSender {
 	
 	public String sendPostMessage(String serviceURL, Iterable<HttpPart> httpParts)
 	        throws IOException{
+	    String result = null;
 		URL siteUrl = new URL(serviceURL);
-
 		DataOutputStream out = null;
 		HttpURLConnection conn = null;
 		try {
@@ -190,15 +196,16 @@ public class HttpSender {
 			}
 		}
 
-		InputStream inputStream = null;
+		InputStream is = null;
 		try {
-			inputStream = conn.getInputStream();
-			return getStringResult(inputStream);
+		    is = conn.getInputStream();
+			result = IOUtils.toString(is, StandardCharsets.UTF_8.displayName());
 		} finally {
-			if(inputStream != null){
-				inputStream.close();
+			if (is != null) {
+			    is.close();
 			}
 		}
+		return result;
 	}
 
 	public static boolean doesUrlExist(String serviceURL) {
@@ -409,68 +416,5 @@ public class HttpSender {
 		url = url.substring(0, url.length() - 1);
 
 		return url;
-	}
-	
-	private static HostConfiguration getHostConfiguration(URL serviceURL) {
-		HostConfiguration hostConfig = new HostConfiguration();
-
-		// apply proxy settings:
-		String host = System.getProperty("http.proxyHost");
-		String port = System.getProperty("http.proxyPort");
-		String nonProxyHosts = System.getProperty("http.nonProxyHosts");
-
-		// check if service url is among the non-proxy-hosts:
-		boolean serviceIsNonProxyHost = false;
-		if (nonProxyHosts != null && nonProxyHosts.length() > 0) {
-			String[] nonProxyHostsArray = nonProxyHosts.split("\\|");
-			String serviceHost = serviceURL.getHost();
-
-			for (String nonProxyHost : nonProxyHostsArray) {
-				if (nonProxyHost.equals(serviceHost)) {
-					serviceIsNonProxyHost = true;
-				}
-			}
-		}
-		// set proxy:
-		if (serviceIsNonProxyHost == false && host != null && host.length() > 0
-				&& port != null && port.length() > 0) {
-			Integer portNumber = Integer.parseInt(port);
-			hostConfig.setProxy(host, portNumber);
-		}
-
-		return hostConfig;
-	}
-
-	private static String getStringResult(InputStream incomingStream)
-			throws IOException {
-		int bufferSize = 128000;
-		byte[] buffer = new byte[bufferSize];
-
-		int byteRead = 0;
-		int numOfBytesRead = 0;
-
-		byteRead = incomingStream.read();
-		while (byteRead != -1) {
-			if (numOfBytesRead >= buffer.length) {
-
-				byte[] newBuffer = new byte[buffer.length + bufferSize];
-
-				// copy elements from the old "buffer" to the new "newBuffer"
-				System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
-
-				buffer = newBuffer;
-			}
-
-			buffer[numOfBytesRead] = (byte) byteRead;
-
-			numOfBytesRead += 1;
-
-			byteRead = incomingStream.read();
-		}
-
-		byte[] incomingResult = new byte[numOfBytesRead];
-		System.arraycopy(buffer, 0, incomingResult, 0, numOfBytesRead);
-
-		return new String(incomingResult);
 	}
 }
