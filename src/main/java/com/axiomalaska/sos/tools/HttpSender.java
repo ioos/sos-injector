@@ -1,6 +1,5 @@
 package com.axiomalaska.sos.tools;
 
-import java.awt.PageAttributes.MediaType;
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
