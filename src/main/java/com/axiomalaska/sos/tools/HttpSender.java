@@ -1,5 +1,6 @@
 package com.axiomalaska.sos.tools;
 
+import java.awt.PageAttributes.MediaType;
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -12,10 +13,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
@@ -41,6 +40,8 @@ public class HttpSender {
 	private static int TIME_OUT = 600000; //10 minutes
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpSender.class);    
     private static HttpClient HTTP_CLIENT = null;
+    private static final String UTF_8 = "UTF-8";
+    private static final String TEXT_XML = "text/xml";
     
     private static void addAuthorizationToken(HttpMethodBase httpMethod, String authorizationToken) {
         if (authorizationToken != null && !authorizationToken.isEmpty()){
@@ -103,12 +104,12 @@ public class HttpSender {
         addAuthorizationToken(method, authorizationToken);
 
 		try {
-	        method.setRequestEntity(new StringRequestEntity(message, "text/xml", "UTF-8"));		    
+	        method.setRequestEntity(new StringRequestEntity(message, TEXT_XML, UTF_8));		    
 	        if( HttpStatus.SC_OK != getHttpClient().executeMethod(method)) {
 	            throw new IOException("Error while sending post message: " + method.getStatusLine());
 	        }
 			is = method.getResponseBodyAsStream();
-            result = IOUtils.toString(is, StandardCharsets.UTF_8.displayName());
+            result = IOUtils.toString(is, UTF_8);
 		} finally {
 			if(is != null){
 				is.close();
@@ -130,7 +131,7 @@ public class HttpSender {
 				return null;
 			}
 			is = method.getResponseBodyAsStream();
-            result = IOUtils.toString(is, StandardCharsets.UTF_8.displayName());
+            result = IOUtils.toString(is, UTF_8);
 		} finally {
             if(is != null){
                 is.close();
@@ -186,7 +187,7 @@ public class HttpSender {
 					content += "&";
 				}
 				content += httpPart.getName() + "="
-						+ URLEncoder.encode(httpPart.getValue(), "UTF-8");
+						+ URLEncoder.encode(httpPart.getValue(), UTF_8);
 			}
 			out.writeBytes(content);
 			out.flush();
@@ -199,7 +200,7 @@ public class HttpSender {
 		InputStream is = null;
 		try {
 		    is = conn.getInputStream();
-			result = IOUtils.toString(is, StandardCharsets.UTF_8.displayName());
+			result = IOUtils.toString(is, UTF_8);
 		} finally {
 			if (is != null) {
 			    is.close();
@@ -407,7 +408,7 @@ public class HttpSender {
 		for (HttpPart httpPart : httpParts) {
 			if (needsEncoded) {
 				url += httpPart.getName() + "="
-						+ URLEncoder.encode(httpPart.getValue(), "UTF-8") + "&";
+						+ URLEncoder.encode(httpPart.getValue(), UTF_8) + "&";
 			} else {
 				url += httpPart.getName() + "=" + httpPart.getValue() + "&";
 			}
