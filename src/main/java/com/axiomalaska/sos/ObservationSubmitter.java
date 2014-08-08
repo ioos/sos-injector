@@ -304,7 +304,7 @@ public class ObservationSubmitter implements IObservationSubmitter {
             //ignore foi errors, since the foi won't be valid until the first result is inserted
             if( !ResponseInterpretter.onlyExceptionContains((ExceptionReportDocument) xbResponse,
                     "of the parameter 'featureOfInterest' is invalid")) {
-                throw new ObservationRetrievalException(sensor, phenomenon, geometry, type);
+                throw new ObservationRetrievalException(sensor, phenomenon, geometry, type, xbResponse.toString());
             }
         } else {
             dateTime = ResponseInterpretter.parseMaxDateFromGetObservationResponse(
