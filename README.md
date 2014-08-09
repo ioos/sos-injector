@@ -1,8 +1,7 @@
 # SOS Observation Injector
 
 The SOS Observation Injector is a Java toolkit that can be used to enter sensor observations
-into an [IOOS customized](https://code.google.com/p/ioostech/) 
-[52&deg;North SOS](http://52north.org/communities/sensorweb/sos/).
+into a deployment of the [i52n-sos](http://ioos.github.com/i52n-sos/) server.
 
 Applications using this toolkit should provide implementations of StationRetriever and ObservationRetriever 
 that properly construct data objects (SosStation, SosSensor, ObservationCollection, etc) for the targeted
@@ -28,7 +27,7 @@ To add this project to a Maven project insert the below code into your pom.xml f
       ....
       <dependency>
         <groupId>com.axiomalaska</groupId>
-        <artifactId>sos-injection</artifactId>
+        <artifactId>sos-injector</artifactId>
         <version>VERSION_HERE</version>
       </dependency>
       ....
