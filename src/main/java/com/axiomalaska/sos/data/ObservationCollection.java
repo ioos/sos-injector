@@ -144,9 +144,9 @@ public class ObservationCollection {
                 + ",geometry: " + (geometry == null ? "null" : GeomHelper.toString3d(geometry))
                 + ",size: " + (observationValues == null ? "null" : observationValues.size())
                 + ",firstTime: " + (observationValues == null ? "null" :
-                    new DateTime(observationValues.firstKey(), DateTimeZone.UTC))
+                    observationValues.isEmpty() ? "empty" : new DateTime(observationValues.firstKey(), DateTimeZone.UTC))
                 + ",lastTime: " + (observationValues == null ? "null" :
-                    new DateTime(observationValues.lastKey(), DateTimeZone.UTC))
+                    observationValues.isEmpty() ? "empty" : new DateTime(observationValues.lastKey(), DateTimeZone.UTC))
                 + "]";
     }
 }
