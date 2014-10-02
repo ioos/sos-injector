@@ -7,7 +7,6 @@ import org.apache.commons.validator.routines.RegexValidator;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.apache.xmlbeans.XmlException;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,7 +117,27 @@ public class SosInjector {
     /**
      * Create a mock SOS injector that can be used for testing. On update,
      * station information will be retrieved from the StationRetriever. If the 
-     * retrieveObservations flag is true, observations since 1970-01-01
+     * retrieveObservations flag is true, observations since 1970-01-01 UTC
+     * will be retrieved from the ObservationRetriever. The queried information
+     * will not be submitted to any target SOS.
+     * 
+     * @param name Name of the mock SOS injector
+     * @param stationRetriever Implementation of StationRetriever
+     * @param observationRetriever Implementation of ObservationRetriever
+     * @param retrieveObservations Whether to retrieve observations or not
+     *      (can take a long time for large data sources)       
+     * @return SosInjector
+     */
+    public static SosInjector mock(String name, StationRetriever stationRetriever,
+            ObservationRetriever observationRetriever, final boolean retrieveObservations) {
+        return mock(name, stationRetriever, observationRetriever, retrieveObservations,
+                SosInjectorConstants.DEFAULT_START_DATE);
+    }
+    
+    /**
+     * Create a mock SOS injector that can be used for testing. On update,
+     * station information will be retrieved from the StationRetriever. If the 
+     * retrieveObservations flag is true, observations since the provided start date
      * will be retrieved from the ObservationRetriever. The queried information
      * will not be submitted to any target SOS.
      * 
@@ -127,10 +146,12 @@ public class SosInjector {
      * @param observationRetriever Implementation of ObservationRetriever
      * @param retrieveObservations Whether to retrieve observations or not
      *      (can take a long time for large data sources)
+     * @param startDate Start date to retrieve observations       
      * @return SosInjector
      */
     public static SosInjector mock(String name, StationRetriever stationRetriever,
-            ObservationRetriever observationRetriever, final boolean retrieveObservations) {
+            ObservationRetriever observationRetriever, final boolean retrieveObservations,
+            final DateTime startDate) {
         return new SosInjector(name, stationRetriever, observationRetriever,
             new IProcedureSubmitter() {
                 @Override
@@ -148,8 +169,7 @@ public class SosInjector {
                         SosCommunicationException,
                         UnsupportedGeometryTypeException {
                     if (retrieveObservations) {
-                        observationRetriever.getObservationCollection(sensor, phenomenon,
-                                new DateTime(1970, 1, 1, 0, 0, DateTimeZone.UTC));
+                        observationRetriever.getObservationCollection(sensor, phenomenon, startDate);
                     }
                 }
             });

@@ -230,7 +230,7 @@ public class ObservationSubmitter implements IObservationSubmitter {
 	private DateTime getNewestObservationDate(SosSensor sensor, Phenomenon phenomenon, Geometry geometry)
 	        throws ObservationRetrievalException, SosCommunicationException, UnsupportedGeometryTypeException {
         DateTime dateTime = getObservationDateExtrema(sensor, phenomenon, geometry, DateExtremaType.NEWEST);
-        return dateTime != null ? dateTime : new DateTime(1970,1,1,0,0);        
+        return dateTime != null ? dateTime : SosInjectorConstants.DEFAULT_START_DATE;        
 	}
 
 	/**
@@ -249,7 +249,7 @@ public class ObservationSubmitter implements IObservationSubmitter {
 	private DateTime getOldestObservationDate(SosSensor sensor, Phenomenon phenomenon, Geometry geometry)
 	        throws ObservationRetrievalException, SosCommunicationException, UnsupportedGeometryTypeException{
 	    DateTime dateTime = getObservationDateExtrema(sensor, phenomenon, geometry, DateExtremaType.OLDEST);
-	    return dateTime != null ? dateTime : new DateTime(1,1,1,0,0); 
+	    return dateTime != null ? dateTime : SosInjectorConstants.DEFAULT_START_DATE; 
 	}
 	
     /**

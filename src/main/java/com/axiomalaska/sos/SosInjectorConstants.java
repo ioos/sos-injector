@@ -2,8 +2,13 @@ package com.axiomalaska.sos;
 
 import javax.xml.namespace.QName;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 
 public class SosInjectorConstants {
+    public static final DateTime DEFAULT_START_DATE = new DateTime(1970, 1, 1, 0, 0, DateTimeZone.UTC);
+    
     public static final String SOS_SERVICE = "SOS";
     public static final String SOS_V100 = "1.0.0";
     public static final String SOS_V200 = "2.0.0";
