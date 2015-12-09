@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.axiomalaska</groupId>
   <artifactId>sos-injector</artifactId>
-  <version>1.7.12</version>
+  <version>1.7.13</version>
   <packaging>jar</packaging>
 
   <distributionManagement>
@@ -73,7 +73,7 @@
     <dependency>
       <groupId>com.axiomalaska</groupId>
       <artifactId>phenomena</artifactId>
-      <version>1.0.12</version>
+      <version>1.0.13</version>
     </dependency>
 	<dependency>
       <groupId>joda-time</groupId>
