@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.axiomalaska</groupId>
   <artifactId>sos-injector</artifactId>
-  <version>1.7.15</version>
+  <version>1.7.16-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <distributionManagement>
@@ -30,14 +30,14 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <n52.xml.version>1.1.5</n52.xml.version>
+    <n52.xml.version>2.1.0</n52.xml.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -73,22 +73,22 @@
     <dependency>
       <groupId>com.axiomalaska</groupId>
       <artifactId>phenomena</artifactId>
-      <version>1.0.15</version>
+      <version>1.0.18</version>
     </dependency>
 	<dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-      <version>2.2</version>
+      <version>2.9.4</version>
 	</dependency>
 	<dependency>
       <groupId>commons-validator</groupId>
       <artifactId>commons-validator</artifactId>
-      <version>1.4.0</version>
+      <version>1.5.1</version>
 	</dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.4</version>
+      <version>2.5</version>
     </dependency>
 	<dependency>
 	  <groupId>com.vividsolutions</groupId>
@@ -98,12 +98,12 @@
 	<dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.2.3</version>
+      <version>2.8.1</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.2.3</version>    
+      <version>2.8.1</version>
     </dependency>
   </dependencies>
 
@@ -113,7 +113,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.4</version>
+        <version>3.5.1</version>
         <configuration>
           <source>1.6</source>
           <target>1.6</target>
@@ -122,15 +122,15 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.14.1</version>
+        <version>2.19.1</version>
       </plugin>      
     </plugins>
   </build>
 
   <scm>
-    <connection>scm:git:https://github.com/ioos/sos-injector.git</connection>
-    <url>scm:git:https://github.com/ioos/sos-injector.git</url>
-    <developerConnection>scm:git:https://github.com/ioos/sos-injector.git</developerConnection>
+    <connection>scm:git:git@github.com:ioos/sos-injector.git</connection>
+    <url>scm:git:git@github.com:ioos/sos-injector.git</url>
+    <developerConnection>scm:git:git@github.com:ioos/sos-injector.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
   
