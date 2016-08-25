@@ -3,7 +3,6 @@ package com.axiomalaska.sos.xmlbuilder;
 import net.opengis.swes.x20.UpdateSensorDescriptionDocument;
 import net.opengis.swes.x20.UpdateSensorDescriptionType;
 
-import com.axiomalaska.ioos.sos.IoosSosConstants;
 import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.data.AbstractSosAsset;
 import com.axiomalaska.sos.data.PublisherInfo;
@@ -38,7 +37,7 @@ public class UpdateSensorDescriptionBuilder extends AbstractSwesBuilder {
         xmlns:xlink="http://www.w3.org/1999/xlink"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" service="SOS" version="2.0.0" xsi:schemaLocation="http://www.opengis.net/sos/2.0 http://schemas.opengis.net/sos/2.0/sosInsertSensor.xsd    http://www.opengis.net/swes/2.0 http://schemas.opengis.net/swes/2.0/swes.xsd">
         <swes:procedure>urn:ioos:station:wmo:41001</swes:procedure>
-        <swes:procedureDescriptionFormat>text/xml;subtype="sensorML/1.0.1/profiles/ioos_sos/1.0"</swes:procedureDescriptionFormat>
+        <swes:procedureDescriptionFormat>text/xml;subtype="sensorML/1.0.1"</swes:procedureDescriptionFormat>
         <swes:description>
             <swes:SensorDescription>
                 <swes:data>
@@ -58,7 +57,7 @@ public class UpdateSensorDescriptionBuilder extends AbstractSwesBuilder {
 	    xbUpdateSensorDescription.setService(SosInjectorConstants.SOS_SERVICE);
 	    xbUpdateSensorDescription.setVersion(SosInjectorConstants.SOS_V200);
 	    xbUpdateSensorDescription.setProcedure(asset.getId());
-	    xbUpdateSensorDescription.setProcedureDescriptionFormat(IoosSosConstants.SML_PROFILE_M10);
+	    xbUpdateSensorDescription.setProcedureDescriptionFormat(SosInjectorConstants.SML_FORMAT);
 
 	    //add sensorml
 	    xbUpdateSensorDescription.addNewDescription().addNewSensorDescription()
