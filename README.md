@@ -10,8 +10,8 @@ that properly construct data objects (SosStation, SosSensor, ObservationCollecti
 sensor provider. Alternatively, ObservationCollections can be constructed and inserted manually.
 
 ## Installation
-The only requirements for this project are that Java 1.6 or greater is installed and Maven is used to build 
-the project. All other dependencies are downloaded via Maven.
+The only requirements for this project are Java 1.7+ and Maven 3+.
+All other dependencies are downloaded via Maven.
 
 ## Maven Projects
 To add this project to a Maven project insert the below code into your pom.xml file. 
