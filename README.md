@@ -35,6 +35,10 @@ To add this project to a Maven project insert the below code into your pom.xml f
       ....
     </dependencies>
 
+See the [Axiom Nexus repository](http://nexus.axiomalaska.com/nexus/content/repositories/public/com/axiomalaska/sos-injector/maven-metadata.xml) for the latest version available:
+
+http://nexus.axiomalaska.com/nexus/content/repositories/public/com/axiomalaska/sos-injector/maven-metadata.xml
+
 ## Data Classes
 
 ### ObservationUpdater
