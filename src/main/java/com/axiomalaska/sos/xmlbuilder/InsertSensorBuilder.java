@@ -8,6 +8,7 @@ import net.opengis.sos.x20.SosInsertionMetadataType;
 import net.opengis.swes.x20.InsertSensorDocument;
 import net.opengis.swes.x20.InsertSensorType;
 
+import com.axiomalaska.ioos.sos.IoosSosConstants;
 import com.axiomalaska.phenomena.Phenomenon;
 import com.axiomalaska.sos.SosInjectorConstants;
 import com.axiomalaska.sos.XmlNamespaceConstants;
@@ -45,7 +46,7 @@ public class InsertSensorBuilder extends AbstractSwesBuilder {
             xmlns:gml="http://www.opengis.net/gml"
             xmlns:xlink="http://www.w3.org/1999/xlink"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" service="SOS" version="2.0.0" xsi:schemaLocation="http://www.opengis.net/sos/2.0 http://schemas.opengis.net/sos/2.0/sosInsertSensor.xsd    http://www.opengis.net/swes/2.0 http://schemas.opengis.net/swes/2.0/swes.xsd">
-            <swes:procedureDescriptionFormat>text/xml;subtype="sensorML/1.0.1"</swes:procedureDescriptionFormat>
+            <swes:procedureDescriptionFormat>text/xml; subtype="om/1.0.0/profiles/ioos_sos/1.0"</swes:procedureDescriptionFormat>
             <swes:procedureDescription>
                ...
             </swes:procedureDescription>
@@ -64,7 +65,7 @@ public class InsertSensorBuilder extends AbstractSwesBuilder {
 	    InsertSensorType xbInsertSensor = xbInsertSensorDoc.addNewInsertSensor();
 	    xbInsertSensor.setService(SosInjectorConstants.SOS_SERVICE);
 	    xbInsertSensor.setVersion(SosInjectorConstants.SOS_V200);
-	    xbInsertSensor.setProcedureDescriptionFormat(SosInjectorConstants.SML_FORMAT);
+	    xbInsertSensor.setProcedureDescriptionFormat(IoosSosConstants.SML_PROFILE_M10);
 
 	    SosInsertionMetadataDocument xbSosInsertionMetadataDoc = SosInsertionMetadataDocument.Factory.newInstance();
 	    SosInsertionMetadataType xbSosInsertionMetadata = xbSosInsertionMetadataDoc.addNewSosInsertionMetadata();
