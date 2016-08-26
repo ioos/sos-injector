@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ioos/sos-injector.svg?branch=master)](https://travis-ci.org/ioos/sos-injector)
+
 # SOS Observation Injector
 
 The SOS Observation Injector is a Java toolkit that can be used to enter sensor observations
