@@ -1,11 +1,9 @@
 package com.axiomalaska.sos;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.validator.routines.RegexValidator;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.apache.xmlbeans.XmlException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +18,8 @@ import com.axiomalaska.sos.exception.InvalidObservationCollectionException;
 import com.axiomalaska.sos.exception.ObservationRetrievalException;
 import com.axiomalaska.sos.exception.SosCommunicationException;
 import com.axiomalaska.sos.exception.SosInjectorConfigurationException;
+import com.axiomalaska.sos.exception.SosUpdateException;
 import com.axiomalaska.sos.exception.StationCreationException;
-import com.axiomalaska.sos.exception.UnsupportedSosAssetTypeException;
 
 /**
  * This class is used to update the SOS server
@@ -195,20 +193,16 @@ public class SosInjector {
 
 	/**
 	 * Update the SOS with new observations
-	 * @throws UnsupportedSosAssetTypeException 
-	 * @throws IOException 
-	 * @throws XmlException 
-	 * @throws ObservationRetrievalException 
-	 * @throws InvalidObservationCollectionException 
-	 * @throws SosCommunicationException 
-	 * @throws StationCreationException 
-	 * @throws UnsupportedGeometryTypeException 
+	 * @throws SosUpdateException  
 	 */
-	public void update() throws InvalidObservationCollectionException,
-	        ObservationRetrievalException, UnsupportedSosAssetTypeException, StationCreationException,
-	        SosCommunicationException, UnsupportedGeometryTypeException{
+	public void update() throws SosUpdateException {
 	    LOGGER.info("Updating " + name);
-	    List<SosStation> stations = stationRetriever.getStations();
+	    List<SosStation> stations;
+        try {
+            stations = stationRetriever.getStations();
+        } catch (StationCreationException e) {
+            throw new SosUpdateException(e);
+        }
 	    int stationsSize = stations.size();
 	    int stationCounter = 0;
         for (SosStation station : stations) {
@@ -222,17 +216,26 @@ public class SosInjector {
                     LOGGER.info("Sensor " + sensor.getId() + " does not have any phenomena and will not be added.");
                     continue;
                 }
-                if (procedureSubmitter.checkProcedureWithSos(sensor)) {
-                    for(Phenomenon phenomenon : sensor.getPhenomena()){
-                        observationSubmitter.update(sensor, phenomenon, observationRetriever);
+                try {
+                    if (procedureSubmitter.checkProcedureWithSos(sensor)) {
+                        for(Phenomenon phenomenon : sensor.getPhenomena()){
+                            observationSubmitter.update(sensor, phenomenon, observationRetriever);
+                        }
                     }
+                } catch (SosCommunicationException | InvalidObservationCollectionException
+                        | ObservationRetrievalException | UnsupportedGeometryTypeException e) {
+                    throw new SosUpdateException(e);
                 }
             }
         }
 
         if (isoWriter != null) {
-            for (SosStation station : stationRetriever.getStations()) {
-                isoWriter.writeISOFileForStation(station);
+            try {
+                for (SosStation station : stationRetriever.getStations()) {
+                    isoWriter.writeISOFileForStation(station);
+                }
+            } catch (StationCreationException e) {
+                throw new SosUpdateException(e);
             }
         }
 	}
